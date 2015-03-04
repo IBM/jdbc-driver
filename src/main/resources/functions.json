@@ -1,0 +1,184 @@
+{
+  "columns": [
+    {
+      "indexable": false,
+      "name": "utf8",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "referencemapsetcontains",
+      "argument_type": "BOOLEAN"
+    },
+    {
+      "indexable": false,
+      "name": "protocolname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "assetproperty",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "rulename",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "logsourcegroupname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "incidr",
+      "argument_type": "BOOLEAN"
+    },
+    {
+      "indexable": false,
+      "name": "referencetable",
+      "argument_type": "JAVA_OBJECT"
+    },
+    {
+      "indexable": false,
+      "name": "long",
+      "argument_type": "BIGINT"
+    },
+    {
+      "indexable": false,
+      "name": "networkname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "strlen",
+      "argument_type": "INTEGER"
+    },
+    {
+      "indexable": false,
+      "name": "domainname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "substring",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "logsourcetypename",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "xforce_ip_confidence",
+      "argument_type": "JAVA_OBJECT"
+    },
+    {
+      "indexable": false,
+      "name": "xforce_url_category",
+      "argument_type": "ARRAY"
+    },
+    {
+      "indexable": false,
+      "name": "xforce_ip_category",
+      "argument_type": "ARRAY"
+    },
+    {
+      "indexable": false,
+      "name": "matchesassetsearch",
+      "argument_type": "BOOLEAN"
+    },
+    {
+      "indexable": false,
+      "name": "hostname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "qidname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "processorname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "double",
+      "argument_type": "DOUBLE"
+    },
+    {
+      "indexable": false,
+      "name": "concat",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "base64",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "str",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "now",
+      "argument_type": "TIMESTAMP"
+    },
+    {
+      "indexable": false,
+      "name": "dateformat",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "logsourcename",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "applicationname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "assethostname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "categoryname",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "parsedatetime",
+      "argument_type": "TIMESTAMP"
+    },
+    {
+      "indexable": false,
+      "name": "assetuser",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "referencemap",
+      "argument_type": "JAVA_OBJECT"
+    },
+    {
+      "indexable": false,
+      "name": "qiddescription",
+      "argument_type": "VARCHAR"
+    },
+    {
+      "indexable": false,
+      "name": "referencesetcontains",
+      "argument_type": "BOOLEAN"
+    }
+  ]
+}
