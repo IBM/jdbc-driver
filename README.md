@@ -29,7 +29,24 @@ git clone https://github.com/ibm-security-intelligence/jdbc-driver.git
 
 ### USEFUL COMMANDS:
 
-#### 1) BUILD, Run ALL Tests, PACKAGE the driver as a jar:
+#### 1) BUILD, (with no tests), PACKAGE the driver jar:
+```
+mvn -Dmaven.test.skip=true clean package
+```
+
+
+If you want to both build AND run the test suite, or portions of the test suite.  You will need to edit all the *Test.properties files under the <jdbc-driver>/src/test directory amending all the properties in each file to suite your QRadar environment.  The username/password combination must be a valid Qradar user, attached to a User Role, defined with both Log Activity and Network Activity privileges granted.  For testing convenience, use the Qradar admin user for connection.
+
+
+```
+ip=localhost
+user=admin
+password=password
+url=jdbc:qradar://localhost/
+```
+
+
+#### 2) BUILD, Run ALL Tests, PACKAGE the driver jar:
 ```
 mvn clean package
 ```
@@ -39,10 +56,7 @@ mvn clean package
 mvn  -Dtest=SomeTestClass#someTestMethod test 
 ```
 
-#### 3) BUILD, (no tests),  PACKAGE:
-```
-mvn -Dmaven.test.skip=true clean package
-```
+
 
 ### OUTPUT
 
