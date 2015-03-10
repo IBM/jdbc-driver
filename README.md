@@ -1,4 +1,4 @@
-# jdbc_driver
+# jdbc-driver
 Extracting of Ariel data (events, flows and simulated arcs) out of a Qradar system through a JDBC driver.
 
 Overview
@@ -24,7 +24,7 @@ Development notes
 
 ### CLONE:
 ```
-git clone https://github.com/ibm-security-intelligence/jdbc_driver.git
+git clone https://github.com/ibm-security-intelligence/jdbc-driver.git
 ```
 
 ### USEFUL COMMANDS:
@@ -46,8 +46,8 @@ mvn -Dmaven.test.skip=true clean package
 
 ### OUTPUT
 
-- <jdbc_driver>/target/jaql-0.1.jar
-- <jdbc_driver>/target/jaql-0.1-jar-with-dependencies.jar
+- <jdbc-driver>/target/jaql-0.1.jar
+- <jdbc-driver>/target/jaql-0.1-jar-with-dependencies.jar
 
 Use the resulting **jaql-0.1-jar-with-dependencies.jar** as your jdbc driver, with your reporting engine / SQL client of choice to connect to an Ariel datastore.
 
