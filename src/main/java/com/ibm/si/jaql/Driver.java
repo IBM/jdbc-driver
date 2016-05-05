@@ -34,6 +34,7 @@ public class Driver implements java.sql.Driver
     public static final String URL       	= "prop.url";
     public static final String USER       	= "prop.user";
     public static final String PASSWORD 	= "prop.password";
+    public static final String PORT       = "prop.port";
 
 	static
 	{
@@ -206,7 +207,7 @@ public class Driver implements java.sql.Driver
 	                server = hostPort.substring(0, colonIdx);
 	                String port = hostPort.substring(colonIdx + 1);
 	                try {
-	                    Integer.parseInt(port);
+	                    props.put(PORT,Integer.parseInt(port));
 	                } catch (NumberFormatException ex) {
 	                    return null;
 	                }

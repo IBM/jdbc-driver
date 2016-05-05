@@ -23,12 +23,14 @@ public class ArielFactory
 	public static IArielDatabase getArielDatabase(
 			final String ip,
 			final String user,
-			final String password) throws ArielException
+			final String password,
+			final int port) throws ArielException
 	{
 		IArielDatabase result = dbCache.get(ip);
 		if (result == null)
 		{
-			result = new ArielDatabase(ip, user, password);
+			System.out.println("getArielDatabase: "+ip);
+			result = new ArielDatabase(ip, user, password,port);
 			dbCache.put(ip, result);
 		}
 		

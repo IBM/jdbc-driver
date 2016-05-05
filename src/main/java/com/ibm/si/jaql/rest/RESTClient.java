@@ -68,10 +68,19 @@ public class RESTClient
 	private BasicScheme basicAuth = null;
 	
 	public RESTClient(final String ip,
-					  final String user,
-					  final String password) throws ArielException
+		  final String user,
+		  final String password) throws ArielException
 	{
-		targetHost = new HttpHost(ip, 443, "https");
+		this(ip,user,password,443);
+	}
+	
+	public RESTClient(final String ip,
+					  final String user,
+					  final String password,
+					  final int port) throws ArielException
+	{
+		System.out.println("-->RESTClient("+ip+","+user+",password,"+port+");");
+		targetHost = new HttpHost(ip,port, "https");
 		credProvider = new BasicCredentialsProvider();
 		creds = new UsernamePasswordCredentials(user, password);
 		credProvider.setCredentials(new AuthScope(ip, AuthScope.ANY_PORT), creds);
@@ -90,7 +99,7 @@ public class RESTClient
 				.setSSLSocketFactory(getSSLFactory())
 				.build();
 		
-		final HttpGet wakeUp = new HttpGet(String.format("https://%s/restapi/doc", ip));
+		final HttpGet wakeUp = new HttpGet(String.format("https://%s:%d/restapi/doc", ip,port));
 		CloseableHttpResponse res = null;
 		
 		try

@@ -39,6 +39,7 @@ public class ArielDatabase implements IArielDatabase
 	private String password = null;
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;	
+	private int port=443;
 	
 	/**
 	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
@@ -46,12 +47,13 @@ public class ArielDatabase implements IArielDatabase
 	 * @param user
 	 * @param password
 	 */
-	public ArielDatabase(String ip, String user, String password) throws ArielException
+	public ArielDatabase(String ip, String user, String password,int port) throws ArielException
 	{
 		this.ip = ip;
 		this.userName = user;
 		this.password = password;
-		apiClient = new RESTClient(this.ip, this.userName, this.password);
+		this.port = port;
+		apiClient = new RESTClient(this.ip, this.userName, this.password,this.port);
 		gson = new GsonBuilder()
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
@@ -106,7 +108,7 @@ public class ArielDatabase implements IArielDatabase
 	public IArielConnection createConnection() throws ArielException
 	{
 		ArielConnection result = null;
-		final RESTClient client = new RESTClient(ip, userName, password);
+		final RESTClient client = new RESTClient(ip, userName, password,port);
 		result = new ArielConnection(client);
 		return result;
 	}
