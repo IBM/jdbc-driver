@@ -79,7 +79,7 @@ public class RESTClient
 					  final String password,
 					  final int port) throws ArielException
 	{
-		System.out.println("-->RESTClient("+ip+","+user+",password,"+port+");");
+		logger.debug("Opening REST Connection("+ip+","+user+",password,"+port+");");
 		targetHost = new HttpHost(ip,port, "https");
 		credProvider = new BasicCredentialsProvider();
 		creds = new UsernamePasswordCredentials(user, password);
