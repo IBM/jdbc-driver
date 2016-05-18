@@ -1,7 +1,5 @@
 package com.ibm.si.jaql.util;
 
-// import java.util.List;
-// import java.util.LinkedList;
 import java.lang.StringBuilder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
