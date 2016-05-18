@@ -46,6 +46,7 @@ public class QueryExecutor implements IQueryExecutor{
 		}
 	}
 
+	
 	/**
 	 * Main query execution method for connections/statements/preparedstatements etc
 	 * Phases:
@@ -66,6 +67,7 @@ public class QueryExecutor implements IQueryExecutor{
 			throw new SQLException( "Error getting Ariel database connection.", e );
 		}
 		
+		System.err.println("Executing query before: '" + query + "'");
 		//create search
 		ArielSearch search;
 		try {

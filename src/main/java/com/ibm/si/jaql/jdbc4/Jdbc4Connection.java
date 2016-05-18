@@ -23,7 +23,7 @@ import com.ibm.si.jaql.jdbc.ArielDatabaseMetaData;
 import com.ibm.si.jaql.jdbc.ArielResultSet;
 import com.ibm.si.jaql.jdbc.JdbcConnection;
 import com.ibm.si.jaql.jdbc.PreparedJdbcStatement;
-
+import com.ibm.si.jaql.util.SparkAQL;
 /**
  * Ariel JDBC connection handler
  * @author IBM
@@ -54,13 +54,21 @@ public class Jdbc4Connection extends JdbcConnection
     	return stmt;
     }
     
+    @Override
+    public PreparedStatement prepareStatement(final String sql, int resultSetType, 
+        int resultSetConcurrency) throws SQLException {
+        return prepareStatement(sql);
+	}
+    
     public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
+        logger.info("Jdbc4Connection>>>executeQuery(): query=",query);
+        final String newQuery = SparkAQL.sparkQueryUnwrapper(query);
         try
         {
-        	logger.debug("Jdbc4Connection>>>executeQuery(): query=",query);
-        	final ArielResult result = queryExecutor.executeQuery(query, parameters);
-        	ResultSet rs = toResultSet(result, query);
+        	logger.info("Jdbc4Connection>>>executeQuery(): query=",newQuery);
+        	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
+        	ResultSet rs = toResultSet(result, newQuery);
         	return rs ;
         }
         catch ( SQLException e )
@@ -71,7 +79,7 @@ public class Jdbc4Connection extends JdbcConnection
         catch ( Exception e )
         {
         	logger.error("Connection Exception:",e);
-            throw new SQLException( "Error executing query " + query + "\n with params " + parameters, e );
+            throw new SQLException( "Error executing query " + newQuery + "\n with params " + parameters, e );
         }
     }
     
@@ -143,7 +151,7 @@ public class Jdbc4Connection extends JdbcConnection
     	}
     	
     	ArielResultSet arielRS = new ArielResultSet( this, orderedResults, query ); 
-		return arielRS;    	
+		return arielRS;
 	}
     
 	@Override
