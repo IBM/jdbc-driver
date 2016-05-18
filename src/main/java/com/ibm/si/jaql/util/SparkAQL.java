@@ -18,7 +18,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class SparkAQL {
 	private static Pattern getSchemaPattern = Pattern.compile("^SELECT\\s+\\*\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+FROM\\s+(\\S+)\\s+WHERE\\s+(.*))\\)\\s+WHERE\\s+1=0$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-	private static Pattern selectStarPattern = Pattern.compile("^SELECT\\s+\\*\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+FROM\\s+(\\S+)\\s+WHERE\\s+(.*))\\)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+	private static Pattern selectStarPattern = Pattern.compile("^SELECT\\s+(.*?)\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+FROM\\s+(\\S+)\\s+WHERE\\s+(.*))\\)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+	static final Logger logger = LogManager.getLogger(SparkAQL.class.getName());
 
 	// Does the query contain a WHERE 1=0 Spark schema extractor
 	private static boolean isDetectingSchema(final String query)
@@ -38,8 +40,10 @@ public class SparkAQL {
 		if (isDetectingSchema(query))
 			return getSchemaQuery(query);
 		Matcher match = selectStarPattern.matcher(query);
-		if (match.matches())
-			return match.group(1);
+		if (match.matches()) {
+			// TODO match.group(1) might be a subset of the fields in the original select. Perform filtering
+			return match.group(2);
+		}
 		return query;
 	}
 	
@@ -49,13 +53,27 @@ public class SparkAQL {
 			if (tree.getChild(i).getPayload() instanceof org.antlr.v4.runtime.CommonToken) {
 				if (builder.length() > 0)
 					builder.append(sep);
+				logger.debug(tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getText());
 				builder.append(tree.getChild(i).getText());
-			} else
+			} else if (tree.getChild(i).getPayload() instanceof com.ibm.si.jaql.aql.AQLParser.LiteralStringContext) {
+				if (builder.length() > 0)
+					builder.append(sep);
+				logger.debug(tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getText());
+				// TODO Proper quote here
+				builder.append("'");
+				builder.append(tree.getChild(i).getText());
+				builder.append("'");
+			} else {
+				logger.debug(tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getText());
 				joinParseTree(tree.getChild(i), builder, sep);
+			}
 		}
 	}
 	
-	public static String getSchemaQuery(final String query)
+	/**
+	 * Reformats the query to insert a LIMIT 1 prior to a Time constraint
+	 */
+	private static String getSchemaQuery(final String query)
 	{
 		Matcher match = getSchemaPattern.matcher(query);
 		if (match.matches())
@@ -84,6 +102,7 @@ public class SparkAQL {
 					} else {
 						if (newQuery.length() > 0)
 							newQuery.append(' ');
+						logger.debug(queryTree.getChild(i).getPayload() + "\t" + queryTree.getChild(i).getPayload().getClass() + "\t" + queryTree.getChild(i).getText());
 						newQuery.append(queryTree.getChild(i).getText());
 						i++;
 						continue;
@@ -103,6 +122,7 @@ public class SparkAQL {
 			return newQuery.toString();
 		} else {
 			// Error; shouldn't ever get here
+			logger.fatal("Failed to parse and convert an SQL to AQL query. Should not get here.");
 			return query;
 		}
 	}
