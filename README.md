@@ -1,5 +1,5 @@
 # jdbc-driver
-Extracting of Ariel data (events, flows and simulated arcs) out of a Qradar system through a JDBC driver.
+Extracting of Ariel data (events, flows and simulated arcs) out of a QRadar system through a JDBC driver.
 
 Overview
 =======
@@ -12,7 +12,7 @@ These driver and project source code come without warranties of any kind.
 
 Any issues discovered using the samples should not be directed to QRadar support, but be reported on the Github issues tracker.  
 
-The driver does not aim to be fully compliant to the JDBC specification; but aims to allow QRadar Advance Query Lanaguage (AQL) sql statements to be run against a QRadar system, to return readonly datasets; whilst progressively implement improved compliance against the JDBC spec.
+The driver does not aim to be fully compliant to the JDBC specification; but aims to allow QRadar Advance Query Language (AQL) sql statements to be run against a QRadar system, to return readonly datasets; whilst progressively implement improved compliance against the JDBC spec.
 
 Development notes
 =============
@@ -35,7 +35,7 @@ mvn -Dmaven.test.skip=true clean package
 ```
 
 
-If you want to both build AND run the test suite, or portions of the test suite.  You will need to edit all the *Test.properties files under the <jdbc-driver>/src/test directory amending all the properties in each file to suite your QRadar environment.  The username/password combination must be a valid Qradar user, attached to a User Role, defined with both Log Activity and Network Activity privileges granted.  For testing convenience, use the Qradar admin user for connection.
+If you want to both build AND run the test suite, or portions of the test suite.  You will need to edit all the *Test.properties files under the <jdbc-driver>/src/test directory amending all the properties in each file to suite your QRadar environment.  The username/password combination must be a valid QRadar user, attached to a User Role, defined with both Log Activity and Network Activity privileges granted.  For testing convenience, use the QRadar admin user for connection.
 
 
 ```
@@ -76,6 +76,20 @@ Key notes for usage:
 
 AQL SQL Syntax
 ==============
-The publicly available documenettation stack for IBM's Qradar Security Intellience Platform, includes a reference section for Qradar's Ariel Database Query Language.
+The publicly available documentation stack for IBM's Qradar Security Intelligence Platform, includes a reference section for Qradar's Ariel Database Query Language.
 
 - http://www-01.ibm.com/support/knowledgecenter/SS42VS_7.2.4/com.ibm.qradar.doc_7.2.4/c_aql_intro.html?lang=en 
+
+### Optional
+There is a second project, spark, that includes a JDBC Dialect for SparkSQL. To build it,
+```
+cd spark
+sbt package
+```
+After that, you can register the dialect in Spark
+```
+import org.apache.spark.sql.jdbc.QRadarAqlDialect
+import org.apache.spark.sql.jdbc.JdbcDialects
+JdbcDialects.registerDialect(QRadarAqlDialect)
+```
+The dialect does not seem to be strictly required, as the changes made to the jdbc-driver appropriately converts the SQL into AQL. Works till needs to be done to map the types, but QRadar / AQL using the REST API may default to VARCHAR / Strings.
