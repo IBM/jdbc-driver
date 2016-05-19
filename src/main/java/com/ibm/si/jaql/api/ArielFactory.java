@@ -29,7 +29,6 @@ public class ArielFactory
 		IArielDatabase result = dbCache.get(ip);
 		if (result == null)
 		{
-			System.out.println("getArielDatabase: "+ip);
 			result = new ArielDatabase(ip, user, password,port);
 			dbCache.put(ip, result);
 		}

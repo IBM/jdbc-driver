@@ -66,8 +66,6 @@ public class QueryExecutor implements IQueryExecutor{
 		} catch (ArielException e) {
 			throw new SQLException( "Error getting Ariel database connection.", e );
 		}
-		
-		System.err.println("Executing query before: '" + query + "'");
 		//create search
 		ArielSearch search;
 		try {

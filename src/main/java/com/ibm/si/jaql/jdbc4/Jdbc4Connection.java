@@ -62,11 +62,11 @@ public class Jdbc4Connection extends JdbcConnection
     
     public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
-        logger.info("Jdbc4Connection>>>executeQuery(): query=",query);
+        logger.info("Jdbc4Connection>>>executeQuery(): before query=",query);
         final String newQuery = SparkAQL.sparkQueryUnwrapper(query);
         try
         {
-        	logger.info("Jdbc4Connection>>>executeQuery(): query=",newQuery);
+            logger.info("Jdbc4Connection>>>executeQuery(): after query=",newQuery);
         	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
         	ResultSet rs = toResultSet(result, newQuery);
         	return rs ;
