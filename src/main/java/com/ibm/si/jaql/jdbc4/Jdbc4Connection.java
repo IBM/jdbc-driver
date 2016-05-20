@@ -50,13 +50,14 @@ public class Jdbc4Connection extends JdbcConnection
     {
     	final PreparedJdbcStatement stmt = new PreparedJdbcStatement(this);
     	stmt.setPreparedSql(sql);
-    	
     	return stmt;
     }
     
     @Override
     public PreparedStatement prepareStatement(final String sql, int resultSetType, 
         int resultSetConcurrency) throws SQLException {
+        if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY) throw new SQLException("AQL REST interface is read only.");
+        if (resultSetType != ResultSet.TYPE_FORWARD_ONLY) throw new SQLException("AQL REST interface does not support non-forward cursors.");
         return prepareStatement(sql);
 	}
     
