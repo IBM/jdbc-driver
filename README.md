@@ -67,10 +67,10 @@ Usage
 =====
 Key notes for usage:
 
-- **main Driver class**: com.ibm.si.jaql.Driver
-- **url**: jdbc:qradar://<Qradar-Console>/
-- **username**:  <admin-user>
-- **password**:  <admin-user-password>
+- **main Driver class**: `com.ibm.si.jaql.Driver`
+- **url**: jdbc:qradar://_Qradar-Console_/
+- **username**:  _admin-user_
+- **password**:  _admin-user-password_
 
 AQL SQL Syntax
 ==============
@@ -97,11 +97,16 @@ JdbcDialects.registerDialect(QRadarAqlDialect)
 The dialect does not seem to be strictly required, as the changes made to the jdbc-driver appropriately converts the SQL into AQL. Works till needs to be done to map the types, but QRadar / AQL using the REST API may default to VARCHAR / Strings.
 
 ### Example
+```scala
+val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/").option("driver", "com.ibm.si.jaql.Driver").option("dbtable", "(SELECT sourceip,destinationip,username FROM events)").option("user", "admin").option("password", "password").load()
 ```
-scala> val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/").option("driver", "com.ibm.si.jaql.Driver").option("dbtable", "(SELECT sourceip,destinationip,username FROM events)").option("user", "admin").option("password", "password").load()
+```
 dataframe_qradar: org.apache.spark.sql.DataFrame = [sourceip: string, destinationip: string, username: string]
-
-scala> dataframe_qradar.show
+```
+```scala
+dataframe_qradar.show
+```
+```
 +------------+-------------+--------------+
 |    sourceip|destinationip|      username|
 +------------+-------------+--------------+
@@ -127,8 +132,9 @@ scala> dataframe_qradar.show
 |10.10.12.168|    127.0.0.1|          NULL|
 +------------+-------------+--------------+
 only showing top 20 rows
-
-scala> dataframe_qradar.groupBy("sourceip").count().show
+```
+```scala
+dataframe_qradar.groupBy("sourceip").count().show
 +------------+-----+
 |    sourceip|count|
 +------------+-----+
