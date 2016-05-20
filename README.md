@@ -135,6 +135,8 @@ only showing top 20 rows
 ```
 ```scala
 dataframe_qradar.groupBy("sourceip").count().show
+```
+```
 +------------+-----+
 |    sourceip|count|
 +------------+-----+
