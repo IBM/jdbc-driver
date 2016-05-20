@@ -56,8 +56,6 @@ mvn clean package
 mvn  -Dtest=SomeTestClass#someTestMethod test 
 ```
 
-
-
 ### OUTPUT
 
 - <jdbc-driver>/target/jaql-0.1.jar
@@ -70,15 +68,19 @@ Usage
 Key notes for usage:
 
 - **main Driver class**: com.ibm.si.jaql.Driver
-- **url**: jdbc:qradar://<<<Qradar-Console>>>/
-- **username**:  <<<admin-user>>>
-- **password**:  <<<admin-user-password>>>
+- **url**: jdbc:qradar://<Qradar-Console>/
+- **username**:  <admin-user>
+- **password**:  <admin-user-password>
 
 AQL SQL Syntax
 ==============
 The publicly available documentation stack for IBM's Qradar Security Intelligence Platform, includes a reference section for Qradar's Ariel Database Query Language.
 
 - http://www-01.ibm.com/support/knowledgecenter/SS42VS_7.2.4/com.ibm.qradar.doc_7.2.4/c_aql_intro.html?lang=en 
+
+SparkSQL Support
+================
+SparkSQL supports the ability to directly query an SQL database using a JDBC driver and load the results into a DataFrame for further processing. This package has experimental support for identifying and converting Spark-generated SQL queries into valid AQL queries and handling nuances of the AQL REST interface when possible. In Spark, when reading `jdbc` formatted data, simply specify add `com.ibm.si.jaql.Driver` for the `driver`. 
 
 ### Optional
 There is a second project, spark, that includes a JDBC Dialect for SparkSQL. To build it,
@@ -94,9 +96,9 @@ JdbcDialects.registerDialect(QRadarAqlDialect)
 ```
 The dialect does not seem to be strictly required, as the changes made to the jdbc-driver appropriately converts the SQL into AQL. Works till needs to be done to map the types, but QRadar / AQL using the REST API may default to VARCHAR / Strings.
 
-#### Example
+### Example
 ```
-scala> val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:9443/").option("driver", "com.ibm.si.jaql.Driver").option("dbtable", "(SELECT sourceip,destinationip,username FROM events)").option("user", "admin").option("password", "blackr@d@r").load()
+scala> val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/").option("driver", "com.ibm.si.jaql.Driver").option("dbtable", "(SELECT sourceip,destinationip,username FROM events)").option("user", "admin").option("password", "password").load()
 dataframe_qradar: org.apache.spark.sql.DataFrame = [sourceip: string, destinationip: string, username: string]
 
 scala> dataframe_qradar.show
