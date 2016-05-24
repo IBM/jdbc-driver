@@ -46,22 +46,34 @@ public class SparkAQL {
 		return query;
 	}
 	
+    private static void quoteString(StringBuilder builder, String s)
+    {
+		builder.append("'");
+		builder.append(s);
+		builder.append("'");
+    }
 	private static void joinParseTree(ParseTree tree, StringBuilder builder, char sep)
 	{
+        // TODO There seems to be some error in the parser.
+        // queryTime : START startTime=StringLiteral (STOP stopTime=StringLiteral)?
+        // But the LiteralStringContext are coming through as CommonTokens
+        logger.trace("@" + tree.getPayload().getClass() + "\t" + tree.getPayload() + "\t" + tree.getText());
 		for (int i = 0; i < tree.getChildCount(); i++) {
+            logger.trace(tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getText());
 			if (tree.getChild(i).getPayload() instanceof org.antlr.v4.runtime.CommonToken) {
 				if (builder.length() > 0)
 					builder.append(sep);
 				logger.debug(tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getText());
-				builder.append(tree.getChild(i).getText());
+                if (tree.getPayload() instanceof com.ibm.si.jaql.aql.AQLParser.QueryTimeContext && !(tree.getChild(i).getText().equals("STOP") || tree.getChild(i).getText().equals("START")))
+                    quoteString(builder, tree.getChild(i).getText());
+                else
+    				builder.append(tree.getChild(i).getText());
 			} else if (tree.getChild(i).getPayload() instanceof com.ibm.si.jaql.aql.AQLParser.LiteralStringContext) {
 				if (builder.length() > 0)
 					builder.append(sep);
 				logger.debug(tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getText());
 				// TODO Proper quote here
-				builder.append("'");
-				builder.append(tree.getChild(i).getText());
-				builder.append("'");
+                quoteString(builder, tree.getChild(i).getText());
 			} else {
 				logger.debug(tree.getChild(i).getPayload() + "\t" + tree.getChild(i).getPayload().getClass() + "\t" + tree.getChild(i).getText());
 				joinParseTree(tree.getChild(i), builder, sep);
