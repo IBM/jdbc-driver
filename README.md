@@ -89,12 +89,12 @@ cd spark
 sbt package
 ```
 After that, you can register the dialect in Spark
-```
+```scala
 import org.apache.spark.sql.jdbc.QRadarAqlDialect
 import org.apache.spark.sql.jdbc.JdbcDialects
 JdbcDialects.registerDialect(QRadarAqlDialect)
 ```
-The dialect does not seem to be strictly required, as the changes made to the jdbc-driver appropriately converts the SQL into AQL. Works till needs to be done to map the types, but QRadar / AQL using the REST API may default to VARCHAR / Strings.
+The dialect does not seem to be strictly required, as the changes made to the jdbc-driver appropriately converts the SQL into AQL. Works still needs to be done to map the types, but QRadar / AQL using the REST API may default to VARCHAR / Strings.
 
 ### Example
 ```scala
