@@ -47,6 +47,18 @@ public class ArielDatabase implements IArielDatabase
 	 * @param user
 	 * @param password
 	 */
+	public ArielDatabase(String ip, String user, String password) throws ArielException
+	{
+		this(ip, user, password, 443);
+	} 
+	
+	/**
+	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
+	 * @param ip
+	 * @param user
+	 * @param password
+	 * @param port
+	 */
 	public ArielDatabase(String ip, String user, String password,int port) throws ArielException
 	{
 		this.ip = ip;
