@@ -26,8 +26,7 @@ public class BlockingActionWorker implements Runnable
 		this.request = req;
 	}
 	
-	@Override
-	public void run()
+		public void run()
 	{
 		try
 		{

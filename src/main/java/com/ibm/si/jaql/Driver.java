@@ -75,7 +75,6 @@ public class Driver implements java.sql.Driver
 		}
 	}
 	
-	@Override
 	public Connection connect(String url, Properties info) throws SQLException
 	{
         Properties props = new Properties(_defaultConnectProperties);
@@ -96,7 +95,6 @@ public class Driver implements java.sql.Driver
 		return new Jdbc4Connection(url, props);
 	}
 
-	@Override
 	public boolean acceptsURL(final String url) throws SQLException
 	{
 		if (url == null) {
@@ -107,7 +105,6 @@ public class Driver implements java.sql.Driver
 
 	}
 
-	@Override
 	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
 			throws SQLException
 	{
@@ -123,24 +120,20 @@ public class Driver implements java.sql.Driver
         return _buildProperties.getProperty( PROP_MAJOR ) + "." + _buildProperties.getProperty( PROP_MINOR );
     }
 
-	@Override
 	public int getMajorVersion() {
 		int intMajor = Integer.parseInt(_buildProperties.getProperty( PROP_MAJOR ));
 		return intMajor;
     }
 
-	@Override
 	public int getMinorVersion() {
 		int intMajor = Integer.parseInt(_buildProperties.getProperty( PROP_MINOR ));
 		return intMajor;
 	}
 
-	@Override
 	public boolean jdbcCompliant() {
 		return false;
 	}
 
-	@Override
 	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		throw new AbstractMethodError();
 	}

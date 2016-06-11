@@ -42,8 +42,7 @@ public class ArielResultSet extends AbstractResultSet{
         return currentRow;
     }
     
-    @Override
-    public boolean next() throws SQLException
+        public boolean next() throws SQLException
     {
         if ( hasNext() )
         {
@@ -63,80 +62,67 @@ public class ArielResultSet extends AbstractResultSet{
     }
     
     
-    @Override
-    public boolean isBeforeFirst() throws SQLException
+        public boolean isBeforeFirst() throws SQLException
     {
         return row == -1;
     }
 
-    @Override
-    public boolean isAfterLast() throws SQLException
+        public boolean isAfterLast() throws SQLException
     {
         return !hasNext();
     }
 
-    @Override
-    public boolean isFirst() throws SQLException
+        public boolean isFirst() throws SQLException
     {
         return row == 0;
     }
 
-    @Override
-    public boolean isLast() throws SQLException
+        public boolean isLast() throws SQLException
     {
         return !hasNext();
     }
 
-    @Override
-    public void beforeFirst() throws SQLException
+        public void beforeFirst() throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
     
-    @Override
-    public void afterLast() throws SQLException
+        public void afterLast() throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
 
-    @Override
-    public boolean first() throws SQLException
+        public boolean first() throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
 
-    @Override
-    public boolean last() throws SQLException
+        public boolean last() throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
 
-    @Override
-    public int getRow() throws SQLException
+        public int getRow() throws SQLException
     {
         return row;
     }
 
-    @Override
-    public boolean absolute( int i ) throws SQLException
+        public boolean absolute( int i ) throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
 
-    @Override
-    public boolean relative( int i ) throws SQLException
+        public boolean relative( int i ) throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
 
-    @Override
-    public boolean previous() throws SQLException
+        public boolean previous() throws SQLException
     {
         throw new SQLException( "Result set type is TYPE_FORWARD_ONLY" );
     }
 
-    @Override
-    public void setFetchDirection( int i ) throws SQLException
+        public void setFetchDirection( int i ) throws SQLException
     {
         if ( i != ResultSet.FETCH_FORWARD )
         {
@@ -144,38 +130,32 @@ public class ArielResultSet extends AbstractResultSet{
         }
     }
 
-    @Override
-    public int getFetchDirection() throws SQLException
+        public int getFetchDirection() throws SQLException
     {
         return ResultSet.FETCH_FORWARD;
     }
 
-    @Override
-    public void setFetchSize( int i ) throws SQLException
+        public void setFetchSize( int i ) throws SQLException
     {
     	throw new SQLException( "setFetchSize is not supported" );
     }
 
-    @Override
-    public int getFetchSize() throws SQLException
+        public int getFetchSize() throws SQLException
     {
         throw new SQLException( "getFetchSize is not supported" );
     }
 
-    @Override
-    public int getType() throws SQLException
+        public int getType() throws SQLException
     {
         return ResultSet.TYPE_FORWARD_ONLY;
     }
 
-    @Override
-    public boolean isClosed() throws SQLException
+        public boolean isClosed() throws SQLException
     {
         return super.isClosed();
     }
 
-    @Override
-    public String toString()
+        public String toString()
     {
     	logger.debug(currentRow.values());
         return super.toString() + " current row " + row + ": " + Arrays.toString( (currentRow.values()).toArray() );
