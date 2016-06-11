@@ -50,8 +50,7 @@ public class ArielConnection implements IArielConnection
 		loadColumnMetaData();
 	}
 
-	@Override
-	public ArielSearch createSearch(final String query) throws ArielException
+		public ArielSearch createSearch(final String query) throws ArielException
 	{
 		ArielSearch result = null;
 		final Map<String,String> queryMap = new HashMap<String,String>();
@@ -78,8 +77,7 @@ public class ArielConnection implements IArielConnection
 		return result;
 	}
 
-	@Override
-	public void deleteSearch(final String searchId) throws ArielException
+		public void deleteSearch(final String searchId) throws ArielException
 	{
 		Result rawResult;
 		
@@ -98,8 +96,7 @@ public class ArielConnection implements IArielConnection
 		}
 	}
 
-	@Override
-	public String[] listSearches() throws ArielException
+		public String[] listSearches() throws ArielException
 	{
 		String[] result = null;
 		Result rawResult;
@@ -125,8 +122,7 @@ public class ArielConnection implements IArielConnection
 		return result;
 	}
 
-	@Override
-	public ArielSearch getSearch(final String id) throws ArielException
+		public ArielSearch getSearch(final String id) throws ArielException
 	{
 		ArielSearch result = null;
 		Result rawResult;
@@ -152,8 +148,7 @@ public class ArielConnection implements IArielConnection
 		return result;
 	}
 
-	@Override
-	public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException
+		public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException
 	{
 		ArielResult result = null;
 		Result rawResult = null;
@@ -184,8 +179,7 @@ public class ArielConnection implements IArielConnection
 		return result;
 	}
 
-	@Override
-	public void close()
+		public void close()
 	{
 	}
 	

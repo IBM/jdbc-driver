@@ -21,6 +21,13 @@ public class ArielFactory
 	}
 	
 	public static IArielDatabase getArielDatabase(
+		final String ip,
+		final String user,
+		final String password) throws ArielException
+	{
+		return getArielDatabase(ip,user,password,443);
+	}
+	public static IArielDatabase getArielDatabase(
 			final String ip,
 			final String user,
 			final String password,

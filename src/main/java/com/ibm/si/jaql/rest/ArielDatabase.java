@@ -47,6 +47,18 @@ public class ArielDatabase implements IArielDatabase
 	 * @param user
 	 * @param password
 	 */
+	public ArielDatabase(String ip, String user, String password) throws ArielException
+	{
+		this(ip, user, password, 443);
+	} 
+	
+	/**
+	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
+	 * @param ip
+	 * @param user
+	 * @param password
+	 * @param port
+	 */
 	public ArielDatabase(String ip, String user, String password,int port) throws ArielException
 	{
 		this.ip = ip;
@@ -68,8 +80,7 @@ public class ArielDatabase implements IArielDatabase
 	/**
 	 * get the databases, effectively rbdms tables 
 	 */
-	@Override
-	public String[] listDatabases() throws ArielException
+		public String[] listDatabases() throws ArielException
 	{
 		String[] result = null;
 		
@@ -104,8 +115,7 @@ public class ArielDatabase implements IArielDatabase
 	/**
 	 * Create the actual connection to ariel, via rest api endpoints over a http client 
 	 */
-	@Override
-	public IArielConnection createConnection() throws ArielException
+		public IArielConnection createConnection() throws ArielException
 	{
 		ArielConnection result = null;
 		final RESTClient client = new RESTClient(ip, userName, password,port);
@@ -161,14 +171,12 @@ public class ArielDatabase implements IArielDatabase
 	}
 	
 
-	@Override
-	public Map<String, ArielColumn> getMetaData(String tableName) throws ArielException
+		public Map<String, ArielColumn> getMetaData(String tableName) throws ArielException
 	{
 		return metaDataByDb.get(tableName);
 	}
 
-	@Override
-	public Map<String, String> getFunctionMetaData()
+		public Map<String, String> getFunctionMetaData()
 	{
 		return FunctionMetaData.getInstance().getTypes();
 	}	

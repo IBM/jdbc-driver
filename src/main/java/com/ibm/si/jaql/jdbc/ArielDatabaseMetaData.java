@@ -138,14 +138,12 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return result;
 	}
 	
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
+		public <T> T unwrap(Class<T> iface) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException
+		public boolean isWrapperFor(Class<?> iface) throws SQLException
 	{
 		boolean result = false;
 		
@@ -157,26 +155,22 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return result;
 	}
 
-	@Override
-	public boolean allProceduresAreCallable() throws SQLException
+		public boolean allProceduresAreCallable() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean allTablesAreSelectable() throws SQLException
+		public boolean allTablesAreSelectable() throws SQLException
 	{
 		return true;
 	}
 
-	@Override
-	public String getURL() throws SQLException
+		public String getURL() throws SQLException
 	{
 		return "http://www.ibm.com/security";
 	}
 
-	@Override
-	public String getUserName() throws SQLException
+		public String getUserName() throws SQLException
 	{
 		return "NotARealUser";
 	}
@@ -184,702 +178,586 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 	/**
 	 * No support for writing to Ariel over JDBC
 	 */
-	@Override
-	public boolean isReadOnly() throws SQLException
+		public boolean isReadOnly() throws SQLException
 	{
 		return true;
 	}
 
-	@Override
-	public boolean nullsAreSortedHigh() throws SQLException
+		public boolean nullsAreSortedHigh() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean nullsAreSortedLow() throws SQLException
+		public boolean nullsAreSortedLow() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean nullsAreSortedAtStart() throws SQLException
+		public boolean nullsAreSortedAtStart() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean nullsAreSortedAtEnd() throws SQLException
+		public boolean nullsAreSortedAtEnd() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public String getDatabaseProductName() throws SQLException
+		public String getDatabaseProductName() throws SQLException
 	{
 		return DATABASE_NAME;
 	}
 
-	@Override
-	public String getDatabaseProductVersion() throws SQLException
+		public String getDatabaseProductVersion() throws SQLException
 	{
 		return String.format("%d.%d", DATABASE_MAJOR_VERSION, DATABASE_MINOR_VERSION);
 	}
 
-	@Override
-	public String getDriverName() throws SQLException
+		public String getDriverName() throws SQLException
 	{
 		return "IBM QRadar Data Driver";
 	}
 
-	@Override
-	public String getDriverVersion() throws SQLException
+		public String getDriverVersion() throws SQLException
 	{
 		return String.format("%d.%d", DATABASE_MAJOR_VERSION, DATABASE_MINOR_VERSION);
 	}
 
-	@Override
-	public int getDriverMajorVersion()
+		public int getDriverMajorVersion()
 	{
 		return DATABASE_MAJOR_VERSION;
 	}
 
-	@Override
-	public int getDriverMinorVersion()
+		public int getDriverMinorVersion()
 	{
 		return DATABASE_MINOR_VERSION;
 	}
 
-	@Override
-	public boolean usesLocalFiles() throws SQLException
+		public boolean usesLocalFiles() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean usesLocalFilePerTable() throws SQLException
+		public boolean usesLocalFilePerTable() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean supportsMixedCaseIdentifiers() throws SQLException
+		public boolean supportsMixedCaseIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean storesUpperCaseIdentifiers() throws SQLException
+		public boolean storesUpperCaseIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean storesLowerCaseIdentifiers() throws SQLException
+		public boolean storesLowerCaseIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean storesMixedCaseIdentifiers() throws SQLException
+		public boolean storesMixedCaseIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean supportsMixedCaseQuotedIdentifiers() throws SQLException
+		public boolean supportsMixedCaseQuotedIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean storesUpperCaseQuotedIdentifiers() throws SQLException
+		public boolean storesUpperCaseQuotedIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public boolean storesLowerCaseQuotedIdentifiers() throws SQLException
+		public boolean storesLowerCaseQuotedIdentifiers() throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean storesMixedCaseQuotedIdentifiers() throws SQLException
+		public boolean storesMixedCaseQuotedIdentifiers() throws SQLException
 	{
 		return false;
 	}
 
-	@Override
-	public String getIdentifierQuoteString() throws SQLException
+		public String getIdentifierQuoteString() throws SQLException
 	{
 		return "'";
 	}
 
-	@Override
-	public String getSQLKeywords() throws SQLException {
+		public String getSQLKeywords() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getNumericFunctions() throws SQLException {
+		public String getNumericFunctions() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getStringFunctions() throws SQLException {
+		public String getStringFunctions() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getSystemFunctions() throws SQLException {
+		public String getSystemFunctions() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getTimeDateFunctions() throws SQLException {
+		public String getTimeDateFunctions() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getSearchStringEscape() throws SQLException {
+		public String getSearchStringEscape() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getExtraNameCharacters() throws SQLException {
+		public String getExtraNameCharacters() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public boolean supportsAlterTableWithAddColumn() throws SQLException {
+		public boolean supportsAlterTableWithAddColumn() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsAlterTableWithDropColumn() throws SQLException {
+		public boolean supportsAlterTableWithDropColumn() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsColumnAliasing() throws SQLException {
+		public boolean supportsColumnAliasing() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean nullPlusNonNullIsNull() throws SQLException {
+		public boolean nullPlusNonNullIsNull() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsConvert() throws SQLException {
+		public boolean supportsConvert() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsConvert(int fromType, int toType)
+		public boolean supportsConvert(int fromType, int toType)
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsTableCorrelationNames() throws SQLException {
+		public boolean supportsTableCorrelationNames() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsDifferentTableCorrelationNames() throws SQLException {
+		public boolean supportsDifferentTableCorrelationNames() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsExpressionsInOrderBy() throws SQLException {
+		public boolean supportsExpressionsInOrderBy() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsOrderByUnrelated() throws SQLException {
+		public boolean supportsOrderByUnrelated() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsGroupBy() throws SQLException {
+		public boolean supportsGroupBy() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsGroupByUnrelated() throws SQLException {
+		public boolean supportsGroupByUnrelated() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsGroupByBeyondSelect() throws SQLException {
+		public boolean supportsGroupByBeyondSelect() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsLikeEscapeClause() throws SQLException {
+		public boolean supportsLikeEscapeClause() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsMultipleResultSets() throws SQLException {
+		public boolean supportsMultipleResultSets() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsMultipleTransactions() throws SQLException {
+		public boolean supportsMultipleTransactions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsNonNullableColumns() throws SQLException {
+		public boolean supportsNonNullableColumns() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsMinimumSQLGrammar() throws SQLException {
+		public boolean supportsMinimumSQLGrammar() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCoreSQLGrammar() throws SQLException {
+		public boolean supportsCoreSQLGrammar() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsExtendedSQLGrammar() throws SQLException {
+		public boolean supportsExtendedSQLGrammar() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsANSI92EntryLevelSQL() throws SQLException {
+		public boolean supportsANSI92EntryLevelSQL() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsANSI92IntermediateSQL() throws SQLException {
+		public boolean supportsANSI92IntermediateSQL() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsANSI92FullSQL() throws SQLException {
+		public boolean supportsANSI92FullSQL() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsIntegrityEnhancementFacility() throws SQLException {
+		public boolean supportsIntegrityEnhancementFacility() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsOuterJoins() throws SQLException {
+		public boolean supportsOuterJoins() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsFullOuterJoins() throws SQLException {
+		public boolean supportsFullOuterJoins() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsLimitedOuterJoins() throws SQLException {
+		public boolean supportsLimitedOuterJoins() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public String getSchemaTerm() throws SQLException {
+		public String getSchemaTerm() throws SQLException {
 		return "schema";
 	}
 
-	@Override
-	public String getProcedureTerm() throws SQLException {
+		public String getProcedureTerm() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getCatalogTerm() throws SQLException {
+		public String getCatalogTerm() throws SQLException {
 		return "database";
 	}
 
-	@Override
-	public boolean isCatalogAtStart() throws SQLException {
+		public boolean isCatalogAtStart() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public String getCatalogSeparator() throws SQLException {
+		public String getCatalogSeparator() throws SQLException {
 		return ".";
 	}
 
-	@Override
-	public boolean supportsSchemasInDataManipulation() throws SQLException {
+		public boolean supportsSchemasInDataManipulation() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSchemasInProcedureCalls() throws SQLException {
+		public boolean supportsSchemasInProcedureCalls() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSchemasInTableDefinitions() throws SQLException {
+		public boolean supportsSchemasInTableDefinitions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSchemasInIndexDefinitions() throws SQLException {
+		public boolean supportsSchemasInIndexDefinitions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSchemasInPrivilegeDefinitions() throws SQLException {
+		public boolean supportsSchemasInPrivilegeDefinitions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCatalogsInDataManipulation() throws SQLException {
+		public boolean supportsCatalogsInDataManipulation() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCatalogsInProcedureCalls() throws SQLException {
+		public boolean supportsCatalogsInProcedureCalls() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCatalogsInTableDefinitions() throws SQLException {
+		public boolean supportsCatalogsInTableDefinitions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCatalogsInIndexDefinitions() throws SQLException {
+		public boolean supportsCatalogsInIndexDefinitions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCatalogsInPrivilegeDefinitions() throws SQLException {
+		public boolean supportsCatalogsInPrivilegeDefinitions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsPositionedDelete() throws SQLException {
+		public boolean supportsPositionedDelete() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsPositionedUpdate() throws SQLException {
+		public boolean supportsPositionedUpdate() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSelectForUpdate() throws SQLException {
+		public boolean supportsSelectForUpdate() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsStoredProcedures() throws SQLException {
+		public boolean supportsStoredProcedures() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSubqueriesInComparisons() throws SQLException {
+		public boolean supportsSubqueriesInComparisons() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSubqueriesInExists() throws SQLException {
+		public boolean supportsSubqueriesInExists() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSubqueriesInIns() throws SQLException {
+		public boolean supportsSubqueriesInIns() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsSubqueriesInQuantifieds() throws SQLException {
+		public boolean supportsSubqueriesInQuantifieds() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsCorrelatedSubqueries() throws SQLException {
+		public boolean supportsCorrelatedSubqueries() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsUnion() throws SQLException {
+		public boolean supportsUnion() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsUnionAll() throws SQLException {
+		public boolean supportsUnionAll() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsOpenCursorsAcrossCommit() throws SQLException {
+		public boolean supportsOpenCursorsAcrossCommit() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsOpenCursorsAcrossRollback() throws SQLException {
+		public boolean supportsOpenCursorsAcrossRollback() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsOpenStatementsAcrossCommit() throws SQLException {
+		public boolean supportsOpenStatementsAcrossCommit() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsOpenStatementsAcrossRollback() throws SQLException {
+		public boolean supportsOpenStatementsAcrossRollback() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public int getMaxBinaryLiteralLength() throws SQLException {
+		public int getMaxBinaryLiteralLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxCharLiteralLength() throws SQLException {
+		public int getMaxCharLiteralLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxColumnNameLength() throws SQLException {
+		public int getMaxColumnNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxColumnsInGroupBy() throws SQLException {
+		public int getMaxColumnsInGroupBy() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxColumnsInIndex() throws SQLException {
+		public int getMaxColumnsInIndex() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxColumnsInOrderBy() throws SQLException {
+		public int getMaxColumnsInOrderBy() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxColumnsInSelect() throws SQLException {
+		public int getMaxColumnsInSelect() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxColumnsInTable() throws SQLException {
+		public int getMaxColumnsInTable() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxConnections() throws SQLException
+		public int getMaxConnections() throws SQLException
 	{
 		return 10;
 	}
 
-	@Override
-	public int getMaxCursorNameLength() throws SQLException {
+		public int getMaxCursorNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxIndexLength() throws SQLException {
+		public int getMaxIndexLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxSchemaNameLength() throws SQLException {
+		public int getMaxSchemaNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxProcedureNameLength() throws SQLException {
+		public int getMaxProcedureNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxCatalogNameLength() throws SQLException {
+		public int getMaxCatalogNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxRowSize() throws SQLException {
+		public int getMaxRowSize() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public boolean doesMaxRowSizeIncludeBlobs() throws SQLException {
+		public boolean doesMaxRowSizeIncludeBlobs() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public int getMaxStatementLength() throws SQLException {
+		public int getMaxStatementLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxStatements() throws SQLException {
+		public int getMaxStatements() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxTableNameLength() throws SQLException {
+		public int getMaxTableNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxTablesInSelect() throws SQLException {
+		public int getMaxTablesInSelect() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getMaxUserNameLength() throws SQLException {
+		public int getMaxUserNameLength() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getDefaultTransactionIsolation() throws SQLException {
+		public int getDefaultTransactionIsolation() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public boolean supportsTransactions() throws SQLException {
+		public boolean supportsTransactions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsTransactionIsolationLevel(int level)
+		public boolean supportsTransactionIsolationLevel(int level)
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsDataDefinitionAndDataManipulationTransactions()
+		public boolean supportsDataDefinitionAndDataManipulationTransactions()
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsDataManipulationTransactionsOnly()
+		public boolean supportsDataManipulationTransactionsOnly()
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean dataDefinitionCausesTransactionCommit() throws SQLException {
+		public boolean dataDefinitionCausesTransactionCommit() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean dataDefinitionIgnoredInTransactions() throws SQLException {
+		public boolean dataDefinitionIgnoredInTransactions() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public ResultSet getProcedures(String catalog, String schemaPattern,
+		public ResultSet getProcedures(String catalog, String schemaPattern,
 			String procedureNamePattern) throws SQLException {
 		// TODO Auto-generated method stub
 		logger.debug("getProcedures>>");
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getProcedureColumns(String catalog, String schemaPattern,
+		public ResultSet getProcedureColumns(String catalog, String schemaPattern,
 			String procedureNamePattern, String columnNamePattern)
 			throws SQLException {
 		logger.debug("getProcedureColumns>>" + tableData.size());
@@ -887,8 +765,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getTables(String catalog, 
+		public ResultSet getTables(String catalog, 
 								String schemaPattern,
 								String tableNamePattern, 
 								String[] types) throws SQLException
@@ -907,8 +784,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(tableData);
 	}
 
-	@Override
-	public ResultSet getSchemas() throws SQLException {
+		public ResultSet getSchemas() throws SQLException {
 		List<Map<String,String>> cols = new ArrayList<Map<String,String>>();
 		Map<String,String> col = new HashMap<String,String>();
 		
@@ -919,8 +795,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(cols);
 	}
 
-	@Override
-	public ResultSet getCatalogs() throws SQLException
+		public ResultSet getCatalogs() throws SQLException
 	{
 		logger.debug("getCatalogs()>>");
 		final Map<String,String> catalogs = new HashMap<String,String>();
@@ -928,8 +803,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(catalogs);
 	}
 
-	@Override
-	public ResultSet getTableTypes() throws SQLException
+		public ResultSet getTableTypes() throws SQLException
 	{
 		logger.debug("getTableTypes()>>");
 		final Map<String,String> types = new HashMap<String,String>();
@@ -937,8 +811,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(types);
 	}
 
-	@Override
-	public ResultSet getColumns(String catalog, 
+		public ResultSet getColumns(String catalog, 
 								String schemaPattern,
 								String tableNamePattern, 
 								String columnNamePattern)	
@@ -949,8 +822,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(columnData.get(tableNamePattern));
 	}
 
-	@Override
-	public ResultSet getColumnPrivileges(String catalog, String schema,
+		public ResultSet getColumnPrivileges(String catalog, String schema,
 			String table, String columnNamePattern) throws SQLException
 	{
 		logger.debug("getColumnPrivileges()>>");
@@ -958,55 +830,48 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(privs);
 	}
 
-	@Override
-	public ResultSet getTablePrivileges(String catalog, String schemaPattern,
+		public ResultSet getTablePrivileges(String catalog, String schemaPattern,
 			String tableNamePattern) throws SQLException {
 		// TODO Auto-generated method stub
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getBestRowIdentifier(String catalog, String schema,
+		public ResultSet getBestRowIdentifier(String catalog, String schema,
 			String table, int scope, boolean nullable) throws SQLException {
 		// TODO Auto-generated method stub
 		logger.debug("getBestRowIdentifier()>>");
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getVersionColumns(String catalog, String schema,
+		public ResultSet getVersionColumns(String catalog, String schema,
 			String table) throws SQLException {
 		logger.debug("getVersionColumns()>>");
 		// TODO Auto-generated method stub
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getPrimaryKeys(String catalog, String schema, String table)
+		public ResultSet getPrimaryKeys(String catalog, String schema, String table)
 			throws SQLException {
 		logger.debug("getPrimaryKeys()>>");
 		// TODO Auto-generated method stub
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getImportedKeys(String catalog, String schema, String table)
+		public ResultSet getImportedKeys(String catalog, String schema, String table)
 			throws SQLException {
 		logger.debug("getImportedKeys()>>");
 		// TODO Auto-generated method stub
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getExportedKeys(String catalog, String schema, String table)
+		public ResultSet getExportedKeys(String catalog, String schema, String table)
 			throws SQLException {
 		logger.debug("getExportedKeys()>>");
 		// TODO Auto-generated method stub
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getCrossReference(String parentCatalog,
+		public ResultSet getCrossReference(String parentCatalog,
 			String parentSchema, String parentTable, String foreignCatalog,
 			String foreignSchema, String foreignTable) throws SQLException {
 		// TODO Auto-generated method stub
@@ -1014,8 +879,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getTypeInfo() throws SQLException
+		public ResultSet getTypeInfo() throws SQLException
 	{
 		logger.debug("getTypeInfo()>>");
 		Map<String,String> typeInfo = new HashMap<String,String>();
@@ -1023,8 +887,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getIndexInfo(String catalog, String schema, String table,
+		public ResultSet getIndexInfo(String catalog, String schema, String table,
 			boolean unique, boolean approximate) throws SQLException
 	{
 		logger.debug("getIndexInfo()>>");
@@ -1032,8 +895,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public boolean supportsResultSetType(int type) throws SQLException
+		public boolean supportsResultSetType(int type) throws SQLException
 	{
 		boolean result = true;
 		if (type == Types.ARRAY)
@@ -1044,75 +906,63 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return result;
 	}
 
-	@Override
-	public boolean supportsResultSetConcurrency(int type, int concurrency)
+		public boolean supportsResultSetConcurrency(int type, int concurrency)
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean ownUpdatesAreVisible(int type) throws SQLException {
+		public boolean ownUpdatesAreVisible(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean ownDeletesAreVisible(int type) throws SQLException {
+		public boolean ownDeletesAreVisible(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean ownInsertsAreVisible(int type) throws SQLException {
+		public boolean ownInsertsAreVisible(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean othersUpdatesAreVisible(int type) throws SQLException {
+		public boolean othersUpdatesAreVisible(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean othersDeletesAreVisible(int type) throws SQLException {
+		public boolean othersDeletesAreVisible(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean othersInsertsAreVisible(int type) throws SQLException {
+		public boolean othersInsertsAreVisible(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean updatesAreDetected(int type) throws SQLException {
+		public boolean updatesAreDetected(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean deletesAreDetected(int type) throws SQLException {
+		public boolean deletesAreDetected(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean insertsAreDetected(int type) throws SQLException {
+		public boolean insertsAreDetected(int type) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsBatchUpdates() throws SQLException {
+		public boolean supportsBatchUpdates() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public ResultSet getUDTs(String catalog, String schemaPattern,
+		public ResultSet getUDTs(String catalog, String schemaPattern,
 			String typeNamePattern, int[] types) throws SQLException {
 		
 		logger.debug("getUDTs()>>");
@@ -1129,121 +979,102 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
         return new MetaDataResultSet(udtMap);
 	}
 
-	@Override
-	public Connection getConnection() throws SQLException {
+		public Connection getConnection() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public boolean supportsSavepoints() throws SQLException {
+		public boolean supportsSavepoints() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsNamedParameters() throws SQLException {
+		public boolean supportsNamedParameters() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsMultipleOpenResults() throws SQLException {
+		public boolean supportsMultipleOpenResults() throws SQLException {
 		// TODO Auto-generated method stub
 	 	return false;
 	}
 
-	@Override
-	public boolean supportsGetGeneratedKeys() throws SQLException {
+		public boolean supportsGetGeneratedKeys() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public ResultSet getSuperTypes(String catalog, String schemaPattern,
+		public ResultSet getSuperTypes(String catalog, String schemaPattern,
 			String typeNamePattern) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public ResultSet getSuperTables(String catalog, String schemaPattern,
+		public ResultSet getSuperTables(String catalog, String schemaPattern,
 			String tableNamePattern) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public ResultSet getAttributes(String catalog, String schemaPattern,
+		public ResultSet getAttributes(String catalog, String schemaPattern,
 			String typeNamePattern, String attributeNamePattern)
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public boolean supportsResultSetHoldability(int holdability)
+		public boolean supportsResultSetHoldability(int holdability)
 			throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public int getResultSetHoldability() throws SQLException {
+		public int getResultSetHoldability() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getDatabaseMajorVersion() throws SQLException
+		public int getDatabaseMajorVersion() throws SQLException
 	{
 		return DATABASE_MAJOR_VERSION;
 	}
 
-	@Override
-	public int getDatabaseMinorVersion() throws SQLException
+		public int getDatabaseMinorVersion() throws SQLException
 	{
 		return DATABASE_MINOR_VERSION;
 	}
 
-	@Override
-	public int getJDBCMajorVersion() throws SQLException {
+		public int getJDBCMajorVersion() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getJDBCMinorVersion() throws SQLException {
+		public int getJDBCMinorVersion() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getSQLStateType() throws SQLException {
+		public int getSQLStateType() throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public boolean locatorsUpdateCopy() throws SQLException {
+		public boolean locatorsUpdateCopy() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean supportsStatementPooling() throws SQLException {
+		public boolean supportsStatementPooling() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public RowIdLifetime getRowIdLifetime() throws SQLException {
+		public RowIdLifetime getRowIdLifetime() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public ResultSet getSchemas(String catalog, String schemaPattern)
+		public ResultSet getSchemas(String catalog, String schemaPattern)
 			throws SQLException {
 		//final Map<String,String> schemaInfo = new HashMap<String,String>();
 		//schemaInfo.put("TABLE_SCHEM", "ariel");
@@ -1252,20 +1083,17 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return getSchemas();
 	}
 
-	@Override
-	public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
+		public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
+		public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public ResultSet getClientInfoProperties() throws SQLException {
+		public ResultSet getClientInfoProperties() throws SQLException {
 		// TODO Auto-generated method stub
 		logger.debug("getClientInfoProperties()>>");
 		
@@ -1279,16 +1107,14 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(clientInfo);
 	}
 
-	@Override
-	public ResultSet getFunctions(String catalog, String schemaPattern,
+		public ResultSet getFunctions(String catalog, String schemaPattern,
 			String functionNamePattern) throws SQLException {
 		// TODO Auto-generated method stub
 		logger.debug("getFunctions()>>");
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getFunctionColumns(String catalog, String schemaPattern,
+		public ResultSet getFunctionColumns(String catalog, String schemaPattern,
 			String functionNamePattern, String columnNamePattern)
 			throws SQLException {
 		logger.debug("getFunctionColumns()>>");
@@ -1296,8 +1122,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public ResultSet getPseudoColumns(String catalog, String schemaPattern,
+		public ResultSet getPseudoColumns(String catalog, String schemaPattern,
 			String tableNamePattern, String columnNamePattern)
 			throws SQLException {
 		logger.debug("getPseudoColumns()>>");
@@ -1305,8 +1130,7 @@ public class ArielDatabaseMetaData implements DatabaseMetaData
 		return new MetaDataResultSet(new HashMap<String,String>());
 	}
 
-	@Override
-	public boolean generatedKeyAlwaysReturned() throws SQLException {
+		public boolean generatedKeyAlwaysReturned() throws SQLException {
 		// TODO Auto-generated method stub
 		logger.debug("generatedKeyAlwaysReturned()>>");
 		return false;
