@@ -1,3 +1,5 @@
+[![Build Status](https://travis.innovate.ibm.com/infosec/jdbc-driver.svg?token=Fx3jYFGyqy98EpQ63Kbn&branch=travis)](https://travis.innovate.ibm.com/infosec/jdbc-driver)
+
 # jdbc-driver
 Extracting of Ariel data (events, flows and simulated arcs) out of a QRadar system through a JDBC driver.
 
