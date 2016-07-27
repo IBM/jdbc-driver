@@ -24,6 +24,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
 import com.ibm.si.jaql.jdbc4.Jdbc4Connection;
@@ -40,7 +43,8 @@ public abstract class AbstractResultSet implements ResultSet
 	 private int colSize;
 	 private List<Map<String,ColumnTuple>> results;
 	 private String query;
-	
+	 static final Logger logger = LogManager.getLogger(AbstractResultSet.class.getName());
+   
     public AbstractResultSet(final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final String query)
     {
         this.conn = conn;
@@ -101,106 +105,104 @@ public abstract class AbstractResultSet implements ResultSet
 	}
 
 		public boolean getBoolean(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
+			final Object value = get(columnIndex).getAs();
+			if (value instanceof Boolean )
+				return ((Boolean)value).booleanValue();
 		return false;
 	}
 
 		public byte getByte(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
+			final Object value = get(columnIndex).getAs();
+			if (value instanceof Number )
+				return ((Number)value).byteValue();
 		return 0;
 	}
 
 		public short getShort(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
+			final Object value = get(columnIndex).getAs();
+			if (value instanceof Number )
+				return ((Number)value).shortValue();
 		return 0;
 	}
 
 		public int getInt(int columnIndex) throws SQLException
 	{
 		int result = 0;
-		final ColumnTuple value = get(columnIndex);
-		
-		if (value.getType().equalsIgnoreCase("numeric"))
-		{
-			try
-			{
-				result = Integer.parseInt(value.getValue());
-			}
-			catch (NumberFormatException nfe)
-			{
-				throw new SQLException(nfe);
-			}
-		}
-
+		final Object value = get(columnIndex).getAs();
+		if (value instanceof Number )
+			return ((Number)value).intValue();
 		return result;
 	}
 
 		public long getLong(int columnIndex) throws SQLException
 	{
 		long result = 0L;
-		
-		final ColumnTuple value = get( columnIndex );
-		
-		try
-		{
-			result = Long.parseLong(value.getValue());
-		}
-		catch (NumberFormatException nfe)
-		{
-			throw new SQLException("Column is not of type long");
-		}
-		
+		final Object value = get(columnIndex).getAs();
+		if (value instanceof Number )
+			return ((Number)value).longValue();
 		return result;
 	}
 
 		public float getFloat(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+			float result = 0;
+			final Object value = get(columnIndex).getAs();
+			if (value instanceof Number )
+				return ((Number)value).floatValue();
+			return result;
 	}
 
 		public double getDouble(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+			double result = 0.;
+			final Object value = get(columnIndex).getAs();
+			if (value instanceof Number )
+				return ((Number)value).doubleValue();
+			return result;
 	}
 
 		public BigDecimal getBigDecimal(int columnIndex, int scale)
 			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+				return getBigDecimal(columnIndex).setScale(scale);
 	}
 
 		public byte[] getBytes(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("Empty getBytes");
 		return null;
 	}
 
 		public Date getDate(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("Empty getDate");
 		return null;
 	}
 
 		public Time getTime(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("Empty getTime");
 		return null;
 	}
 
 		public Timestamp getTimestamp(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("Empty getTimestamp");
 		return null;
 	}
 
 		public InputStream getAsciiStream(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("Empty getAsciiStream");
 		return null;
 	}
 
 		public InputStream getUnicodeStream(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("Empty getUnicodeStream");
 		return null;
 	}
 
 		public InputStream getBinaryStream(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getBinaryStream not implemented");
 		return null;
 	}
 
@@ -217,105 +219,100 @@ public abstract class AbstractResultSet implements ResultSet
 	}
 
 		public boolean getBoolean(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+			final Object value = currentRow().get(columnLabel).getAs();
+			if (value instanceof Boolean )
+				return ((Boolean)value).booleanValue();
+			return false;
 	}
 
 		public byte getByte(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
+			final Object value = currentRow().get(columnLabel).getAs();
+			if (value instanceof Number )
+				return ((Number)value).byteValue();
 		return 0;
 	}
 
 		public short getShort(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
+			final Object value = currentRow().get(columnLabel).getAs();
+			if (value instanceof Number )
+				return ((Number)value).shortValue();
 		return 0;
 	}
 
 		public int getInt(String columnLabel) throws SQLException
 	{
-		int result = 0;
-		final ColumnTuple value = currentRow().get(columnLabel);
-		
-		if (value.getType().equalsIgnoreCase("numeric"))
-		{
-			try
-			{
-				result = Integer.parseInt(value.getValue());
-			}
-			catch (NumberFormatException nfe)
-			{
-				throw new SQLException(nfe);
-			}
-		}
-
-		return result;		
+		final Object value = currentRow().get(columnLabel).getAs();
+		if (value instanceof Number )
+			return ((Number)value).intValue();
+		return 0;
 	}
 
 		public long getLong(String columnLabel) throws SQLException
 	{
-		long result = 0L;
-		final ColumnTuple tuple = currentRow().get(columnLabel);
-		
-		try
-		{
-			result = Long.parseLong(tuple.getValue());
-		}
-		catch (NumberFormatException nfe)
-		{
-			throw new SQLException("Column type is not LONG");
-		}
-		
-		return result;
+		final Object value = currentRow().get(columnLabel).getAs();
+		if (value instanceof Number )
+			return ((Number)value).longValue();
+		return 0L;
 	}
 
 		public float getFloat(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+			final Object value = currentRow().get(columnLabel).getAs();
+			if (value instanceof Number )
+				return ((Number)value).floatValue();
+			return 0;
 	}
 
 		public double getDouble(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+			final Object value = currentRow().get(columnLabel).getAs();
+			if (value instanceof Number )
+				return ((Number)value).doubleValue();
+			return 0.;
 	}
 
 		public BigDecimal getBigDecimal(String columnLabel, int scale)
 			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+			return getBigDecimal(columnLabel).setScale(scale);
 	}
 
 		public byte[] getBytes(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getBytes not implemented");
 		return null;
 	}
 
 		public Date getDate(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getDate not implemented");
 		return null;
 	}
 
 		public Time getTime(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getTime not implemented");
 		return null;
 	}
 
 		public Timestamp getTimestamp(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getTimestamp not implemented");
 		return null;
 	}
 
 		public InputStream getAsciiStream(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getAsciiStream not implemented");
 		return null;
 	}
 
 		public InputStream getUnicodeStream(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getUnicodeStream not implemented");
 		return null;
 	}
 
 		public InputStream getBinaryStream(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getBinaryStream not implemented");
 		return null;
 	}
 
@@ -349,38 +346,43 @@ public abstract class AbstractResultSet implements ResultSet
 
 		public Object getObject(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
-		return null;
+		return getString(columnIndex);
 	}
 
 		public Object getObject(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
-		return null;
+		return getString(columnLabel);
 	}
 
 		public int findColumn(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
+    int i = 1;
+    for (ColumnTuple column : (ColumnTuple[])currentRow().values().toArray()) {
+      if (column.getName().equalsIgnoreCase(columnLabel))
+        return i;
+      i++;
+    }
 		return 0;
 	}
 
 		public Reader getCharacterStream(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getCharacterStream not implemented");
 		return null;
 	}
 
 		public Reader getCharacterStream(String columnLabel) throws SQLException {
 		// TODO Auto-generated method stub
+    logger.warn("getCharacterStream not implemented");
 		return null;
 	}
 
 		public BigDecimal getBigDecimal(int columnIndex) throws SQLException
 	{
-		BigDecimal result = BigDecimal.ZERO;		
-		return result;
+		return new BigDecimal(getString(columnIndex));
 	}
 
 		public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+			return new BigDecimal(getString(columnLabel));
 	}
 
 		public boolean isBeforeFirst() throws SQLException {
