@@ -94,13 +94,8 @@ public class Jdbc4Connection extends JdbcConnection
     	//select STR(sourceIp), 1+1 from events
     	//select STR(sourceIp), 1+1 as alias1 from events
     	//select STR(sourceIp), 1+1 as alias1, (STRLEN(destinationIp) + 1) from events
-    	List<ParsedColumn> columns = StatementParser.parseAQLStatementForFieldList(query);
-    	
-    	if (columns == null || columns.size() == 0)
-    	{
-    		//get column defs from result set (i.e. asterix search performed)
-    		columns = rawRes.getFieldList();
-    	}
+      // CHANGED 2016-07-26 No longer looking at the parsing the query. Fails for queries like `SELECT *,foo FROM events` will return only the column `foo`
+      List<ParsedColumn> columns = rawRes.getFieldList();
     	
     	final List<LinkedHashMap<String,ColumnTuple>> results = rawRes.getResults();
     	final List<Map<String,ColumnTuple>> orderedResults = new ArrayList<Map<String,ColumnTuple>>();

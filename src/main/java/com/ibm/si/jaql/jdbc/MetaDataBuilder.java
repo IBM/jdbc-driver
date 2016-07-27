@@ -49,9 +49,9 @@ public class MetaDataBuilder
 		List<QueryFieldMetaData> fieldInfo = generateMetaData(db, aql);
 		
 		final String parsedTableName = StatementParser.parseAQLStatementForTable(aql);
-		
+
 		//wildcard search has been passed through
-		if (fieldInfo.size() == 0)
+		if (fieldInfo.size() ==0 || (results != null && results.size() > 0 && results.get(0).size() != fieldInfo.size()))
 		{
 			if (results != null && results.size() > 0)
 			{
