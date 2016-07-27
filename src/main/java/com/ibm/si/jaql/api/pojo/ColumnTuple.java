@@ -49,44 +49,6 @@ public class ColumnTuple
 		return this.type;
 	}
   
-  /*
-ARRAY 
-    BIGINT 
-BINARY 
-BIT 
-BLOB 
-BOOLEAN 
-  CHAR 
-CLOB 
-DATALINK 
-DATE 
-  DECIMAL 
-DISTINCT 
-  DOUBLE 
-  FLOAT 
-  INTEGER 
-JAVA_OBJECT 
-LONGNVARCHAR 
-LONGVARBINARY 
-LONGVARCHAR 
-NCHAR 
-NCLOB 
-NULL 
-  NUMERIC 
-NVARCHAR 
-OTHER 
-  REAL 
-REF 
-ROWID 
-  SMALLINT 
-SQLXML 
-STRUCT 
-TIME 
-TIMESTAMP 
-  TINYINT 
-VARBINARY 
-  VARCHAR 
-    */
     // Java 8 has a JDBCType Enum that would make this easier
   public Object getAs() throws SQLException
   {
