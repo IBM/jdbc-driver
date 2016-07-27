@@ -106,7 +106,6 @@ public class SparkAQL {
 			//what do we want to do if it the AQL query is non select ? thrown an exception ?
 			return query;
 		}
-		int count = statement.getChildCount();
 		ParseTree queryTree = statement.getChild(0);
 		StringBuilder newQuery = new StringBuilder();
 		boolean hasLimit = false;
