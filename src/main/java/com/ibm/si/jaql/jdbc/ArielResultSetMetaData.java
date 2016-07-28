@@ -25,7 +25,7 @@ public class ArielResultSetMetaData implements ResultSetMetaData
 	public void addColumnDef(final QueryFieldMetaData data)
 	{
 		String name = data.name;
-		if (data.isFunction)
+		if (data.isFunction || !data.alias.equals(""))
 		{
 			name = data.alias;
 		}
