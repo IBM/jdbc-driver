@@ -3,6 +3,10 @@ package com.ibm.si.jaql.util;
 import java.lang.StringBuilder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +20,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class SparkAQL {
 	private static Pattern getSchemaPattern = Pattern.compile("^SELECT\\s+\\*\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+FROM\\s+(\\S+)(.*))\\)\\s+WHERE\\s+1=0$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-	private static Pattern selectStarPattern = Pattern.compile("^SELECT\\s+(.*?)\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+FROM\\s+(\\S+)(.*))\\)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+	private static Pattern selectStarPattern = Pattern.compile("^SELECT\\s+(.*?)\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+(FROM\\s+(\\S+)(.*)))\\)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 	private static Pattern removeWherePattern = Pattern.compile("(.*)\\s*WHERE\\s+1\\s*=\\s*0\\s*$");
 
 	static final Logger logger = LogManager.getLogger(SparkAQL.class.getName());
@@ -40,10 +44,76 @@ public class SparkAQL {
 			return getSchemaQuery(query);
 		Matcher match = selectStarPattern.matcher(query);
 		if (match.matches()) {
-			// TODO match.group(1) might be a subset of the fields in the original select. Perform filtering
-			return match.group(2);
+			return "SELECT " + newColumns(match.group(1), match.group(3)) + " " + match.group(4);
 		}
 		return query;
+	}
+	
+	public static String getColumnName(String column) {
+		Pattern isAlias = Pattern.compile("^(.*)\\s+as\\s+([a-z_@#]+[a-z0-1_@#]*)$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+		Matcher match = isAlias.matcher(column);
+		if (match.matches())
+			return match.group(2).toLowerCase();
+		return column.toLowerCase();
+	}
+	
+	public static String newColumns(final String proj, final String selected) {
+		if (proj.equals("*"))
+			return selected;
+		Map<String,String> columnsSelected = new HashMap<String,String>();
+		int start = 0,end = 0;
+		boolean inquote = false;
+		boolean escape = false;
+		int infunction = 0;
+		boolean wasFunction = false;
+		int index = 1; // for un-named columns
+		while(end < selected.length()) {
+			if (selected.charAt(end) == ',' && !inquote && infunction == 0) {
+				String col = selected.substring(start,end);
+				columnsSelected.put(getColumnName(col), col);
+				end++;
+				escape = false;
+				wasFunction = false;
+				start = end;
+				continue;
+			} else if (selected.charAt(end) == '(' && !inquote) {
+				infunction++;
+				wasFunction = true;
+				escape = false;
+				end++;
+				continue;
+			} else if (selected.charAt(end) == ')' && !inquote) {
+				infunction--;
+				escape = false;
+				end++;
+				continue;
+			} else if (selected.charAt(end) == '\'' && !escape) {
+				inquote = !inquote;
+				escape = false;
+				end++;
+			} else if (selected.charAt(end) == '\\') {
+				escape = !escape;
+			} else
+				end++;
+		}
+		if (start != end) {
+			String col = selected.substring(start,end);
+			columnsSelected.put(getColumnName(col), col);
+		}
+		StringBuilder sb = new StringBuilder();
+		for (String s : proj.split(",")) {
+			if (columnsSelected.containsKey(s.toLowerCase()))
+			{
+				if (sb.length() > 0)
+					sb.append(",");
+				sb.append(columnsSelected.get(s.toLowerCase()));
+			} else if (columnsSelected.containsKey("*")) {
+				if (sb.length() > 0)
+					sb.append(",");
+				sb.append(s);
+			}
+		}
+		return sb.toString();
 	}
 	
     private static void quoteString(StringBuilder builder, String s)
