@@ -108,6 +108,7 @@ public class SparkAQL {
 		}
 		StringBuilder sb = new StringBuilder();
 		for (String s : proj.split(",")) {
+			s = s.replaceAll("\"", "");
 			if (columnsSelected.containsKey(s.toLowerCase()))
 			{
 				if (sb.length() > 0)
