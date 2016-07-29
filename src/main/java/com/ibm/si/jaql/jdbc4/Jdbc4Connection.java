@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import java.sql.ResultSetMetaData;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,6 +72,7 @@ public class Jdbc4Connection extends JdbcConnection
             logger.info("Jdbc4Connection>>>executeQuery(): after query=",newQuery);
         	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
         	ResultSet rs = toResultSet(result, newQuery);
+          ResultSetMetaData md = rs.getMetaData();
         	return rs ;
         }
         catch ( SQLException e )

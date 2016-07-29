@@ -378,11 +378,11 @@ public abstract class AbstractResultSet implements ResultSet
 
 		public BigDecimal getBigDecimal(int columnIndex) throws SQLException
 	{
-		return new BigDecimal(getString(columnIndex));
+		return (BigDecimal)get(columnIndex).getAs();
 	}
 
 		public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-			return new BigDecimal(getString(columnLabel));
+			return (BigDecimal)currentRow().get(columnLabel).getAs();
 	}
 
 		public boolean isBeforeFirst() throws SQLException {
