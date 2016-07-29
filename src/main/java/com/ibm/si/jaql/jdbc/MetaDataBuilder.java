@@ -47,11 +47,10 @@ public class MetaDataBuilder
 	{
 		ArielResultSetMetaData result = generateResultSetMetaData(db, aql);
 		List<QueryFieldMetaData> fieldInfo = generateMetaData(db, aql);
-		
 		final String parsedTableName = StatementParser.parseAQLStatementForTable(aql);
 
 		//wildcard search has been passed through
-		if (fieldInfo.size() ==0 || (results != null && results.size() > 0 && results.get(0).size() != fieldInfo.size()))
+		if (fieldInfo.size() == 0 || (results != null && results.size() > 0 && results.get(0).size() != fieldInfo.size()))
 		{
 			if (results != null && results.size() > 0)
 			{
@@ -65,9 +64,6 @@ public class MetaDataBuilder
 			result.addColumnDef(field);
 			logger.debug("QueryFieldMetaData> %s", field);
 		}
-		
-		
-		
 		return result;
 	}
 	
@@ -204,20 +200,7 @@ public class MetaDataBuilder
 			}
 			
 			result.add(md);
-	        
 	    }
-
 		return result;
 	}
-	
-	
-	
-	
-	
-
-
-	
-
 }
-
-
