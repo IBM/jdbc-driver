@@ -70,7 +70,10 @@ public class SparkAQL {
 		while(end < selected.length()) {
 			if (selected.charAt(end) == ',' && !inquote && infunction == 0) {
 				String col = selected.substring(start,end);
-				columnsSelected.put(getColumnName(col), col);
+				String alias = getColumnName(col);
+				columnsSelected.put(alias, col);
+				if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
+					columnsSelected.put(Integer.toString(index++), col);
 				end++;
 				escape = false;
 				wasFunction = false;
@@ -98,7 +101,10 @@ public class SparkAQL {
 		}
 		if (start != end) {
 			String col = selected.substring(start,end);
-			columnsSelected.put(getColumnName(col), col);
+			String alias = getColumnName(col);
+			columnsSelected.put(alias, col);
+			if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
+				columnsSelected.put(Integer.toString(index++), col);
 		}
 		StringBuilder sb = new StringBuilder();
 		for (String s : proj.split(",")) {
