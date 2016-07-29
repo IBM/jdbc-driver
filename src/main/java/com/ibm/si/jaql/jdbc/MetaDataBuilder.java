@@ -48,7 +48,6 @@ public class MetaDataBuilder
 		ArielResultSetMetaData result = generateResultSetMetaData(db, aql);
 		List<QueryFieldMetaData> fieldInfo = generateMetaData(db, aql);
 		final String parsedTableName = StatementParser.parseAQLStatementForTable(aql);
-
 		//wildcard search has been passed through
 		if (fieldInfo.size() == 0 || (results != null && results.size() > 0 && results.get(0).size() != fieldInfo.size()))
 		{
@@ -58,7 +57,6 @@ public class MetaDataBuilder
 				fieldInfo = generateMetaData(db, datarow, parsedTableName);
 			}
 		}
-
 		for (final QueryFieldMetaData field : fieldInfo)
 		{
 			result.addColumnDef(field);

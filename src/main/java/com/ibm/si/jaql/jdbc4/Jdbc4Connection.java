@@ -66,21 +66,13 @@ public class Jdbc4Connection extends JdbcConnection
     public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
         logger.info("Jdbc4Connection>>>executeQuery(): before query=",query);
-        System.err.println("Jdbc4Connection>>>executeQuery(): before query="+query);
         final String newQuery = SparkAQL.sparkQueryUnwrapper(query);
         try
         {
             logger.info("Jdbc4Connection>>>executeQuery(): after query=",newQuery);
-            System.err.println("Jdbc4Connection>>>executeQuery(): after query=" + newQuery);
         	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
-          for(Map.Entry<String,ColumnTuple> me : result.getResults().get(0).entrySet()) {
-            System.out.println("Key: " + me.getKey() + "\t" + me.getValue().getName() + "\t" + me.getValue().getType());
-          }
         	ResultSet rs = toResultSet(result, newQuery);
-          
           ResultSetMetaData md = rs.getMetaData();
-          for (int i = 1; i <= md.getColumnCount(); i++)
-            System.out.println("\t" + md.getColumnName(i) + "\t" + md.getColumnTypeName(i) + "\t" + md.getColumnType(i));
         	return rs ;
         }
         catch ( SQLException e )
