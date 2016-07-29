@@ -89,7 +89,7 @@ public class StatementParser
 					boolean isFunction = getIsParsedFunction(fieldContext);
 					boolean isArthExp = getIsArithemeticExpression(fieldContext);
 					String parsedName = getParsedName(fieldContext);
-					String parsedAlias = getParsedAlias(fieldContext, index);
+					String parsedAlias = getParsedAlias(fieldContext, index, isFunction);
 					index++;
 					
 					result.add(new ParsedColumn(parsedName, isFunction, parsedAlias, isArthExp));
@@ -165,9 +165,9 @@ public class StatementParser
 	 * @param columnCtx
 	 * @return either the alias name if found, or an index value 0..n, based on column position amongst other columns
 	 */
-	private static String getParsedAlias(DisplayColumnContext columnCtx, int index)
+	private static String getParsedAlias(DisplayColumnContext columnCtx, int index, boolean wasFunction)
 	{
-		String parsedAlias = null;
+		String parsedAlias = "";
 		
 		DisplayColumnExpressionContext displayCtx = (DisplayColumnExpressionContext) columnCtx;
 		if (displayCtx.alias != null)
@@ -176,9 +176,9 @@ public class StatementParser
 		}
 		else
 		{
-			if(parsedAlias == null)
+			if(parsedAlias == null && wasFunction)
 			{
-				parsedAlias = Integer.toString(index++);
+				parsedAlias = Integer.toString(index);
 			}
 		}
 		
