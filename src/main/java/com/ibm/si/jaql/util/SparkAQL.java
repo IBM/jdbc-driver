@@ -71,9 +71,10 @@ public class SparkAQL {
 			if (selected.charAt(end) == ',' && !inquote && infunction == 0) {
 				String col = selected.substring(start,end);
 				String alias = getColumnName(col);
-				columnsSelected.put(alias, col);
 				if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
 					columnsSelected.put(Integer.toString(index++), col);
+				else
+					columnsSelected.put(alias, col);
 				end++;
 				escape = false;
 				wasFunction = false;
