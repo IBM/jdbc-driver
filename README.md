@@ -56,7 +56,10 @@ mvn clean package
 mvn  -Dtest=SomeTestClass#someTestMethod test 
 ```
 
-
+### Download and set up Eclipse Dependancies
+```
+mvn -DoutputDirectory=./lib dependency:copy-dependencies
+```
 
 ### OUTPUT
 

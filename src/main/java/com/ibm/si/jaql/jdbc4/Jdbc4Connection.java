@@ -17,8 +17,7 @@ import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.IArielDatabase;
 import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
-import com.ibm.si.jaql.aql.ParsedColumn;
-import com.ibm.si.jaql.aql.StatementParser;
+import com.ibm.si.jaql.api.pojo.ParsedColumn;
 import com.ibm.si.jaql.jdbc.ArielDatabaseMetaData;
 import com.ibm.si.jaql.jdbc.ArielResultSet;
 import com.ibm.si.jaql.jdbc.JdbcConnection;
@@ -60,7 +59,7 @@ public class Jdbc4Connection extends JdbcConnection
         {
         	logger.debug("Jdbc4Connection>>>executeQuery(): query=",query);
         	final ArielResult result = queryExecutor.executeQuery(query, parameters);
-        	ResultSet rs = toResultSet(result, query);
+        	ResultSet rs = toResultSet(result);
         	return rs ;
         }
         catch ( SQLException e )
@@ -75,7 +74,7 @@ public class Jdbc4Connection extends JdbcConnection
         }
     }
     
-    private ResultSet toResultSet (ArielResult rawRes, String query) throws SQLException
+    private ResultSet toResultSet (ArielResult rawRes) throws SQLException
 	{
     	//some examples of AQL statements :
     	//select x,y,x from events order by y
@@ -85,7 +84,7 @@ public class Jdbc4Connection extends JdbcConnection
     	//select STR(sourceIp), 1+1 from events
     	//select STR(sourceIp), 1+1 as alias1 from events
     	//select STR(sourceIp), 1+1 as alias1, (STRLEN(destinationIp) + 1) from events
-    	List<ParsedColumn> columns = StatementParser.parseAQLStatementForFieldList(query);
+    	List<ParsedColumn> columns = rawRes.getFieldList();
     	
     	if (columns == null || columns.size() == 0)
     	{
@@ -142,7 +141,7 @@ public class Jdbc4Connection extends JdbcConnection
     		orderedResults.add(orderedMap);
     	}
     	
-    	ArielResultSet arielRS = new ArielResultSet( this, orderedResults, query ); 
+    	ArielResultSet arielRS = new ArielResultSet( this, orderedResults, rawRes ); 
 		return arielRS;    	
 	}
     

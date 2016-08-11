@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ibm.si.jaql.api.ArielException;
+import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
 import com.ibm.si.jaql.jdbc4.Jdbc4Connection;
 
@@ -36,16 +37,17 @@ import com.ibm.si.jaql.jdbc4.Jdbc4Connection;
  */
 public abstract class AbstractResultSet implements ResultSet
 {
-	 private Jdbc4Connection conn;
-	 private int colSize;
-	 private List<Map<String,ColumnTuple>> results;
-	 private String query;
-	
-    public AbstractResultSet(final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final String query)
+	private Jdbc4Connection conn;
+	private int colSize;
+	private List<Map<String, ColumnTuple>> results;
+	private ArielResult arielResult;
+
+    public AbstractResultSet(final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final ArielResult arielResult)
     {
         this.conn = conn;
         this.results = results;
-        this.query = query;
+        this.arielResult = arielResult;
+        
         if (results != null && results.size() > 0)
         {
         	if (results.get(0).keySet() != null)
@@ -378,7 +380,7 @@ public abstract class AbstractResultSet implements ResultSet
 	{
 		try
 		{
-			final ArielResultSetMetaData result = MetaDataBuilder.generateResultSetMetaData(this.conn.getArielDatabase(), query, results);
+			final ArielResultSetMetaData result = MetaDataBuilder.generateResultSetMetaData(this.conn.getArielDatabase(), arielResult, results);
 			return result;
 		}
 		catch (ArielException ae)

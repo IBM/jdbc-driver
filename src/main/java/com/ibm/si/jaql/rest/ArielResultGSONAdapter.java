@@ -61,6 +61,7 @@ public class ArielResultGSONAdapter implements JsonDeserializer<ArielResult>
 			{
 				final JsonArray rawResults = entry.getValue().getAsJsonArray();
 				final Iterator<JsonElement> elemItr = rawResults.iterator();
+				
 				while (elemItr.hasNext())
 				{
 					final JsonElement element = elemItr.next();

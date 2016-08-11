@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.IArielDatabase;
 import com.ibm.si.jaql.api.pojo.ArielColumn;
+import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
-import com.ibm.si.jaql.aql.ParsedColumn;
-import com.ibm.si.jaql.aql.StatementParser;
+import com.ibm.si.jaql.api.pojo.ParsedColumn;
 import com.ibm.si.jaql.rest.FunctionMetaData;
 
 /**
@@ -41,14 +41,14 @@ public class MetaDataBuilder
 	 * @return
 	 */
 	public static ArielResultSetMetaData generateResultSetMetaData(final IArielDatabase db, 
-																	final String aql, 
+																	final ArielResult arielResult, 
 																	List<Map<String,ColumnTuple>> results)
 																		throws ArielException
 	{
-		ArielResultSetMetaData result = generateResultSetMetaData(db, aql);
-		List<QueryFieldMetaData> fieldInfo = generateMetaData(db, aql);
+		ArielResultSetMetaData result = generateResultSetMetaData(db, arielResult);
+		List<QueryFieldMetaData> fieldInfo = generateMetaData(db, arielResult);
 		
-		final String parsedTableName = StatementParser.parseAQLStatementForTable(aql);
+		final String parsedTableName = arielResult.getName();
 		
 		//wildcard search has been passed through
 		if (fieldInfo.size() == 0)
@@ -77,11 +77,11 @@ public class MetaDataBuilder
 	 * @param aql
 	 * @return
 	 */
-	protected static ArielResultSetMetaData generateResultSetMetaData(final IArielDatabase db, final String aql)
+	protected static ArielResultSetMetaData generateResultSetMetaData(final IArielDatabase db, final ArielResult arielResult)
 																			throws ArielException
 	{
 		final ArielResultSetMetaData result = new ArielResultSetMetaData();
-		final List<QueryFieldMetaData> fieldInfo = generateMetaData(db, aql);
+		final List<QueryFieldMetaData> fieldInfo = generateMetaData(db, arielResult);
 		
 		for (final QueryFieldMetaData field : fieldInfo)
 		{
@@ -100,14 +100,16 @@ public class MetaDataBuilder
 	 * @return
 	 */
 	protected static List<QueryFieldMetaData> generateMetaData(final IArielDatabase db, 
-																final String aql)
+																final ArielResult arielResult)
 																	 throws ArielException
 		
 	{
 		final List<QueryFieldMetaData> result = new LinkedList<QueryFieldMetaData>();
 		
-		final List<ParsedColumn> parsed = StatementParser.parseAQLStatementForFieldList(aql);
-		final String parsedTableName = StatementParser.parseAQLStatementForTable(aql);
+		final List<ParsedColumn> parsed = arielResult.getFieldList();
+		
+		//TODO: API needs to be changed to return this properly
+		final String parsedTableName = arielResult.getName();
 		
 		for (final ParsedColumn column : parsed)
 		{
@@ -152,6 +154,11 @@ public class MetaDataBuilder
 		}
 		
 		return result;
+	}
+	
+	public static List<ParsedColumn> generateFieldList( final ArielResult arielResult )
+	{
+		return null;
 	}
 	
 	/**
@@ -209,15 +216,6 @@ public class MetaDataBuilder
 
 		return result;
 	}
-	
-	
-	
-	
-	
-
-
-	
-
 }
 
 
