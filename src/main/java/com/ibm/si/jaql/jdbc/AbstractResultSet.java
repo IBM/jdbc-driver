@@ -391,14 +391,12 @@ public abstract class AbstractResultSet implements ResultSet
 
 	@Override
 	public Object getObject(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		return getString(columnIndex);
 	}
 
 	@Override
 	public Object getObject(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		return getString(columnLabel);
 	}
 
 	@Override

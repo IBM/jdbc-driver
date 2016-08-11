@@ -53,7 +53,13 @@ public class Jdbc4Connection extends JdbcConnection
     	return stmt;
     }
     
-    public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
+    @Override
+	public PreparedStatement prepareStatement(String sql, int resultSetType,
+			int resultSetConcurrency) throws SQLException {
+		return prepareStatement(sql);
+	}
+
+	public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
         try
         {
