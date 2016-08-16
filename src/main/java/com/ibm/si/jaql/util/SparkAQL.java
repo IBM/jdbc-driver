@@ -23,7 +23,7 @@ public class SparkAQL {
 	private static Pattern selectStarPattern = Pattern.compile("^SELECT\\s+(.*?)\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+(FROM\\s+(\\S+)(.*)))\\)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 	private static Pattern removeWherePattern = Pattern.compile("(.*)\\s*WHERE\\s+1\\s*=\\s*0\\s*$");
 
-	static final Logger logger = LogManager.getLogger(SparkAQL.class.getName());
+	static final Logger logger = LogManager.getLogger();
 
 	// Does the query contain a WHERE 1=0 Spark schema extractor
 	private static boolean isDetectingSchema(final String query)
@@ -72,9 +72,9 @@ public class SparkAQL {
 				String col = selected.substring(start,end);
 				String alias = getColumnName(col);
 				if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
-					columnsSelected.put(Integer.toString(index++), col);
+					columnsSelected.put(Integer.toString(index++).trim(), col.trim());
 				else
-					columnsSelected.put(alias, col);
+					columnsSelected.put(alias.trim(), col.trim());
 				end++;
 				escape = false;
 				wasFunction = false;
@@ -103,13 +103,16 @@ public class SparkAQL {
 		if (start != end) {
 			String col = selected.substring(start,end);
 			String alias = getColumnName(col);
-			columnsSelected.put(alias, col);
 			if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
-				columnsSelected.put(Integer.toString(index++), col);
+				columnsSelected.put(Integer.toString(index++).trim(), col);
+			else
+				columnsSelected.put(alias.trim(), col.trim());
 		}
+
+		logger.debug("Columns Selected: {}", columnsSelected);
 		StringBuilder sb = new StringBuilder();
 		for (String s : proj.split(",")) {
-			s = s.replaceAll("\"", "");
+			s = s.replaceAll("\"", "").trim();
 			if (columnsSelected.containsKey(s.toLowerCase()))
 			{
 				if (sb.length() > 0)
@@ -119,13 +122,15 @@ public class SparkAQL {
 				if (sb.length() > 0)
 					sb.append(",");
 				sb.append(s);
+			} else {
+			  logger.warn("Column '{}' in projection not found in original query", s);
 			}
 		}
 		return sb.toString();
 	}
 	
-    private static void quoteString(StringBuilder builder, String s)
-    {
+		private static void quoteString(StringBuilder builder, String s)
+		{
 		builder.append("'");
 		builder.append(s);
 		builder.append("'");
