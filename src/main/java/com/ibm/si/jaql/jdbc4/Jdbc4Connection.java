@@ -33,7 +33,7 @@ import com.ibm.si.jaql.util.SparkAQL;
  */
 public class Jdbc4Connection extends JdbcConnection
 {
-	static final Logger logger = LogManager.getLogger(Jdbc4Connection.class.getName());
+	static final Logger logger = LogManager.getLogger();
 	
 	private IQueryExecutor queryExecutor;
 	
@@ -65,11 +65,11 @@ public class Jdbc4Connection extends JdbcConnection
     
     public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
-        logger.info("Jdbc4Connection>>>executeQuery(): before query=",query);
+        logger.info("Jdbc4Connection>>>executeQuery(): before query={}",query);
         final String newQuery = SparkAQL.sparkQueryUnwrapper(query);
         try
         {
-            logger.info("Jdbc4Connection>>>executeQuery(): after query=",newQuery);
+          logger.info("Jdbc4Connection>>>executeQuery(): after query={}",newQuery);
         	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
         	ResultSet rs = toResultSet(result, newQuery);
           ResultSetMetaData md = rs.getMetaData();
