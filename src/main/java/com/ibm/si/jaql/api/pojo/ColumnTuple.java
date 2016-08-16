@@ -2,6 +2,10 @@ package com.ibm.si.jaql.api.pojo;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Individual Ariel data property defined in terms of its key-value and datatype 
  * Based on parsing the Ariel Query string lexicons; as opposed to data from the result sets in ariel, or querying explicit
@@ -14,7 +18,7 @@ public class ColumnTuple
 	private String name;
 	private String value;
 	private String type;
-	
+	static final Logger logger = LogManager.getLogger();
 	public ColumnTuple(final String name,
 					   final String value,
 					   final String typeString)
@@ -57,7 +61,11 @@ public class ColumnTuple
       return value;
     try {
       if (type.equalsIgnoreCase("INTEGER"))
-        return new Integer(value);
+        try {
+          return new Integer(value);
+        } catch (NumberFormatException nfe) {
+          return new Integer((new Double(value)).intValue());
+        }
       if (type.equalsIgnoreCase("SMALLINT") || type.equalsIgnoreCase("TINYINT"))
         return new Short(value);
       if (type.equalsIgnoreCase("BIGINT") || type.equalsIgnoreCase("NUMERIC") || type.equalsIgnoreCase("DECIMAL"))
@@ -67,6 +75,7 @@ public class ColumnTuple
       if (type.equalsIgnoreCase("FLOAT"))
         return new Float(value);
       } catch (NumberFormatException nfe) {
+        logger.fatal("Error parsing " + name + " " + type + " val " + value + " ", nfe);
         throw new SQLException(nfe);
       }
     if (type.equalsIgnoreCase("CHAR"))
