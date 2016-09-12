@@ -105,21 +105,21 @@ public abstract class AbstractResultSet implements ResultSet
 	}
 
 		public boolean getBoolean(int columnIndex) throws SQLException {
-			final Object value = get(columnIndex).getAs();
+			final Object value = get(columnIndex).getAs("BOOLEAN");
 			if (value instanceof Boolean )
 				return ((Boolean)value).booleanValue();
 		return false;
 	}
 
 		public byte getByte(int columnIndex) throws SQLException {
-			final Object value = get(columnIndex).getAs();
+			final Object value = get(columnIndex).getAs("SMALLINT");
 			if (value instanceof Number )
 				return ((Number)value).byteValue();
 		return 0;
 	}
 
 		public short getShort(int columnIndex) throws SQLException {
-			final Object value = get(columnIndex).getAs();
+			final Object value = get(columnIndex).getAs("SMALLINT");
 			if (value instanceof Number )
 				return ((Number)value).shortValue();
 		return 0;
@@ -128,7 +128,7 @@ public abstract class AbstractResultSet implements ResultSet
 		public int getInt(int columnIndex) throws SQLException
 	{
 		int result = 0;
-		final Object value = get(columnIndex).getAs();
+		final Object value = get(columnIndex).getAs("INTEGER");
 		if (value instanceof Number )
 			return ((Number)value).intValue();
 		return result;
@@ -137,7 +137,7 @@ public abstract class AbstractResultSet implements ResultSet
 		public long getLong(int columnIndex) throws SQLException
 	{
 		long result = 0L;
-		final Object value = get(columnIndex).getAs();
+		final Object value = get(columnIndex).getAs("BIGINT");
 		if (value instanceof Number )
 			return ((Number)value).longValue();
 		return result;
@@ -145,7 +145,7 @@ public abstract class AbstractResultSet implements ResultSet
 
 		public float getFloat(int columnIndex) throws SQLException {
 			float result = 0;
-			final Object value = get(columnIndex).getAs();
+			final Object value = get(columnIndex).getAs("FLOAT");
 			if (value instanceof Number )
 				return ((Number)value).floatValue();
 			return result;
@@ -153,7 +153,7 @@ public abstract class AbstractResultSet implements ResultSet
 
 		public double getDouble(int columnIndex) throws SQLException {
 			double result = 0.;
-			final Object value = get(columnIndex).getAs();
+			final Object value = get(columnIndex).getAs("DOUBLE");
 			if (value instanceof Number )
 				return ((Number)value).doubleValue();
 			return result;
@@ -219,21 +219,21 @@ public abstract class AbstractResultSet implements ResultSet
 	}
 
 		public boolean getBoolean(String columnLabel) throws SQLException {
-			final Object value = currentRow().get(columnLabel).getAs();
+			final Object value = currentRow().get(columnLabel).getAs("BOOLEAN");
 			if (value instanceof Boolean )
 				return ((Boolean)value).booleanValue();
 			return false;
 	}
 
 		public byte getByte(String columnLabel) throws SQLException {
-			final Object value = currentRow().get(columnLabel).getAs();
+			final Object value = currentRow().get(columnLabel).getAs("SMALLINT");
 			if (value instanceof Number )
 				return ((Number)value).byteValue();
 		return 0;
 	}
 
 		public short getShort(String columnLabel) throws SQLException {
-			final Object value = currentRow().get(columnLabel).getAs();
+			final Object value = currentRow().get(columnLabel).getAs("SMALLINT");
 			if (value instanceof Number )
 				return ((Number)value).shortValue();
 		return 0;
@@ -241,7 +241,7 @@ public abstract class AbstractResultSet implements ResultSet
 
 		public int getInt(String columnLabel) throws SQLException
 	{
-		final Object value = currentRow().get(columnLabel).getAs();
+		final Object value = currentRow().get(columnLabel).getAs("INTEGER");
 		if (value instanceof Number )
 			return ((Number)value).intValue();
 		return 0;
@@ -249,21 +249,21 @@ public abstract class AbstractResultSet implements ResultSet
 
 		public long getLong(String columnLabel) throws SQLException
 	{
-		final Object value = currentRow().get(columnLabel).getAs();
+		final Object value = currentRow().get(columnLabel).getAs("BIGINT");
 		if (value instanceof Number )
 			return ((Number)value).longValue();
 		return 0L;
 	}
 
 		public float getFloat(String columnLabel) throws SQLException {
-			final Object value = currentRow().get(columnLabel).getAs();
+			final Object value = currentRow().get(columnLabel).getAs("FLOAT");
 			if (value instanceof Number )
 				return ((Number)value).floatValue();
 			return 0;
 	}
 
 		public double getDouble(String columnLabel) throws SQLException {
-			final Object value = currentRow().get(columnLabel).getAs();
+			final Object value = currentRow().get(columnLabel).getAs("DOUBLE");
 			if (value instanceof Number )
 				return ((Number)value).doubleValue();
 			return 0.;

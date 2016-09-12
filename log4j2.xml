@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-	<Appenders>
-		<Console name="CONSOLE" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
-		</Console>
-	</Appenders>
-	
-	<Loggers>
-		<Root level="error">
-			<AppenderRef ref="Console" />
-		</Root>
-		
-		<logger name="javabeat.net.util" level="ERROR" />
-		<Root level="ERROR">
-			<AppenderRef ref="ERROR"/>
-		</Root>
-		 
-	</Loggers>
+<Configuration>
+  <Appenders>
+    <Console name="Console">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.ibm.si.jaql" level="warn"/>
+    <Logger name="com.ibm.si.jaql.jdbc4.Jdbc4Connection" level="info"/>
+    <Logger name="com.ibm.si.jaql.util.SparkAQL" level="trace"/>
+    <Root level="trace">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
 </Configuration>
+

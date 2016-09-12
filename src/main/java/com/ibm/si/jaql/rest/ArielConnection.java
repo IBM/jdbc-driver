@@ -209,7 +209,7 @@ public class ArielConnection implements IArielConnection
 				final Result res = rawClient.doGet(String.format("/api/ariel/databases/%s", db));
 				if (res != null)
 				{
-					final String body = res.getBody();					
+					final String body = res.getBody();
 					final ArielMetaData columns = gson.fromJson(body, ArielMetaData.class);
 					final Iterator<ArielColumn> itr = columns.getColumns().iterator();
 					

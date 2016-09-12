@@ -174,14 +174,10 @@ public class StatementParser
 		{
 			parsedAlias = displayCtx.alias.getText();
 		}
-		else
+		else if(parsedAlias.equals("") && wasFunction)
 		{
-			if(parsedAlias == null && wasFunction)
-			{
-				parsedAlias = Integer.toString(index);
-			}
+			parsedAlias = Integer.toString(index);
 		}
-		
 		logger.debug(String.format("Alias :: %s", parsedAlias));
 		return parsedAlias;
 	}
