@@ -152,7 +152,7 @@ public class ArielResultSet extends AbstractResultSet{
 
         public boolean isClosed() throws SQLException
     {
-        return super.isClosed();
+        return super.isClosed();    
     }
 
         public String toString()
