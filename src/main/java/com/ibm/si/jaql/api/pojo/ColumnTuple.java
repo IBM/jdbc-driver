@@ -23,6 +23,7 @@ public class ColumnTuple
 					   final String value,
 					   final String typeString)
 	{
+    logger.trace("Init ColumnTuple: {} {} {}", name,value,type);
 		this.name = name;
 		this.value = value;
 		
@@ -53,34 +54,40 @@ public class ColumnTuple
 		return this.type;
 	}
   
+  public String toString() {
+    return name + "(" + type + ")=" +value;
+  }
     // Java 8 has a JDBCType Enum that would make this easier
-  public Object getAs() throws SQLException
+  public Object getAs() throws SQLException { return getAs(type); }
+  public Object getAs(String stype) throws SQLException
   {
-    if (type.equalsIgnoreCase("NULL")) return null;
-    if (type.equalsIgnoreCase("VARCHAR"))
+    String matchtype = type.equalsIgnoreCase("UNKNOWN") ? stype : type;
+    logger.trace("Get '{}' with '{}' as '{}'", name, value, matchtype);
+    if (matchtype.equalsIgnoreCase("NULL")) return null;
+    if (matchtype.equalsIgnoreCase("VARCHAR"))
       return value;
     try {
-      if (type.equalsIgnoreCase("INTEGER"))
+      if (matchtype.equalsIgnoreCase("INTEGER"))
         try {
           return new Integer(value);
         } catch (NumberFormatException nfe) {
           return new Integer((new Double(value)).intValue());
         }
-      if (type.equalsIgnoreCase("SMALLINT") || type.equalsIgnoreCase("TINYINT"))
+      if (matchtype.equalsIgnoreCase("SMALLINT") || matchtype.equalsIgnoreCase("TINYINT"))
         return new Short(value);
-      if (type.equalsIgnoreCase("BIGINT") || type.equalsIgnoreCase("NUMERIC") || type.equalsIgnoreCase("DECIMAL"))
+      if (matchtype.equalsIgnoreCase("BIGINT") || matchtype.equalsIgnoreCase("NUMERIC") || matchtype.equalsIgnoreCase("DECIMAL"))
         return new BigDecimal(value);
-      if (type.equalsIgnoreCase("DOUBLE") || type.equalsIgnoreCase("REAL"))
+      if (matchtype.equalsIgnoreCase("DOUBLE") || matchtype.equalsIgnoreCase("REAL"))
         return new Double(value);
-      if (type.equalsIgnoreCase("FLOAT"))
+      if (matchtype.equalsIgnoreCase("FLOAT"))
         return new Float(value);
       } catch (NumberFormatException nfe) {
-        logger.fatal("Error parsing " + name + " " + type + " val " + value + " ", nfe);
+        logger.fatal("Error parsing " + name + " " + matchtype + " val " + value + " ", nfe);
         throw new SQLException(nfe);
       }
-    if (type.equalsIgnoreCase("CHAR"))
+    if (matchtype.equalsIgnoreCase("CHAR"))
       return new Character(value.charAt(0));
-    if (type.equalsIgnoreCase("BOOLEAN"))
+    if (matchtype.equalsIgnoreCase("BOOLEAN"))
       return new Boolean(value);
     return null;
   }
