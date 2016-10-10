@@ -10,7 +10,7 @@ deploy:
   api_key:
     secure: WxF9TKbpJteaBsX4mMmhfsld8vpWo9KpkZ+QCGmkxgq4S5A/Mfe8aICiCk4oMhj/pBTWFhnlNFzyqQw9uXJmFgiRnrN23Gbs5Yey0WXiRIMRiG9IThRbU0Lv27j3RgEgAqiVqy1jAxDNRTuxQV/3OBw0Q38gEo+70jOna0MWr7c=
   file:
-  - target/jaql-0.1.jar
+  - target/jaql-0.2.jar
   skip_cleanup: true
   on:
     tags: true
