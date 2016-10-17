@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
 import com.ibm.si.jaql.jdbc4.Jdbc4Connection;
 
@@ -23,15 +24,13 @@ public class ArielResultSet extends AbstractResultSet{
 	
 	static final Logger logger = LogManager.getLogger(ArielResultSet.class.getName());
 	
-	private List<Map<String,ColumnTuple>> results;
 	private Map<String,ColumnTuple> currentRow;
 	private ListIterator<Map<String,ColumnTuple>> resultsListIter;
     private int row = -1;
 
-    public ArielResultSet( final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final String query)
+    public ArielResultSet( final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final ArielResult arielResult)
     {
-    	super(conn, results, query);
-    	this.results = results;
+    	super(conn, results, arielResult);
         resultsListIter = results.listIterator();
         resultsListIter.hasNext();
     }

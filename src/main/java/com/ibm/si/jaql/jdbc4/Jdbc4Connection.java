@@ -20,8 +20,7 @@ import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.IArielDatabase;
 import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
-import com.ibm.si.jaql.aql.ParsedColumn;
-import com.ibm.si.jaql.aql.StatementParser;
+import com.ibm.si.jaql.api.pojo.ParsedColumn;
 import com.ibm.si.jaql.jdbc.ArielDatabaseMetaData;
 import com.ibm.si.jaql.jdbc.ArielResultSet;
 import com.ibm.si.jaql.jdbc.JdbcConnection;
@@ -60,14 +59,12 @@ public class Jdbc4Connection extends JdbcConnection
     }
     
     @Override
-    public PreparedStatement prepareStatement(final String sql, int resultSetType, 
-        int resultSetConcurrency) throws SQLException {
-        if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY) throw new SQLException("AQL REST interface is read only.");
-        if (resultSetType != ResultSet.TYPE_FORWARD_ONLY) throw new SQLException("AQL REST interface does not support non-forward cursors.");
-        return prepareStatement(sql);
+	public PreparedStatement prepareStatement(String sql, int resultSetType,
+			int resultSetConcurrency) throws SQLException {
+		return prepareStatement(sql);
 	}
-    
-    public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
+
+	public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
         logger.info("Jdbc4Connection>>>executeQuery(): before query={}",query);
         final String newQuery;
@@ -79,7 +76,7 @@ public class Jdbc4Connection extends JdbcConnection
         {
           logger.info("Jdbc4Connection>>>executeQuery(): after query={}",newQuery);
         	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
-        	ResultSet rs = toResultSet(result, newQuery);
+          ResultSet rs = toResultSet(result);
         	return rs ;
         }
         catch ( SQLException e )
@@ -94,7 +91,7 @@ public class Jdbc4Connection extends JdbcConnection
         }
     }
     
-    private ResultSet toResultSet (ArielResult rawRes, String query) throws SQLException
+    private ResultSet toResultSet (ArielResult rawRes) throws SQLException
 	{
     	//some examples of AQL statements :
     	//select x,y,x from events order by y
@@ -156,7 +153,7 @@ public class Jdbc4Connection extends JdbcConnection
     		orderedResults.add(orderedMap);
     	}
     	
-    	ArielResultSet arielRS = new ArielResultSet( this, orderedResults, query ); 
+    	ArielResultSet arielRS = new ArielResultSet( this, orderedResults, rawRes); 
 		return arielRS;
 	}
     

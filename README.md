@@ -58,6 +58,11 @@ mvn clean package
 mvn  -Dtest=SomeTestClass#someTestMethod test 
 ```
 
+### Download and set up Eclipse Dependancies
+```
+mvn -DoutputDirectory=./lib dependency:copy-dependencies
+```
+
 ### OUTPUT
 
 - <jdbc-driver>/target/jaql-0.1.jar
@@ -73,6 +78,9 @@ Key notes for usage:
 - **url**: jdbc:qradar://_Qradar-Console_/
 - **username**:  _admin-user_
 - **password**:  _admin-user-password_
+- **auth\_token**:  _auth-token
+
+Note that you will need either the _auth_token_ or a _username_ and _password_.
 
 AQL SQL Syntax
 ==============
@@ -82,25 +90,18 @@ The publicly available documentation stack for IBM's Qradar Security Intelligenc
 
 SparkSQL Support
 ================
-SparkSQL supports the ability to directly query an SQL database using a JDBC driver and load the results into a DataFrame for further processing. This package has experimental support for identifying and converting Spark-generated SQL queries into valid AQL queries and handling nuances of the AQL REST interface when possible. In Spark, when reading `jdbc` formatted data, simply specify add `com.ibm.si.jaql.Driver` for the `driver`. 
-
-### Optional
-There is a second project, spark, that includes a JDBC Dialect for SparkSQL. To build it,
-```
-cd spark
-sbt package
-```
-After that, you can register the dialect in Spark
-```scala
-import org.apache.spark.sql.jdbc.QRadarAqlDialect
-import org.apache.spark.sql.jdbc.JdbcDialects
-JdbcDialects.registerDialect(QRadarAqlDialect)
-```
-The dialect does not seem to be strictly required, as the changes made to the jdbc-driver appropriately converts the SQL into AQL. Works still needs to be done to map the types, but QRadar / AQL using the REST API may default to VARCHAR / Strings.
+SparkSQL supports the ability to directly query an SQL database using a JDBC driver and load the results into a DataFrame for further processing. This package has experimental support for identifying and converting Spark-generated SQL queries into valid AQL queries and handling nuances of the AQL REST interface when possible. In Spark, when reading `jdbc` formatted data, simply specify add `com.ibm.si.jaql.Driver` for the `driver` and enable Spark support through the `.option("spark", "true")`.
 
 ### Example
 ```scala
-val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/").option("driver", "com.ibm.si.jaql.Driver").option("dbtable", "(SELECT sourceip,destinationip,username FROM events)").option("user", "admin").option("password", "password").load()
+val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/")
+.option("driver", "com.ibm.si.jaql.Driver")
+.option("dbtable", "(SELECT sourceip,destinationip,username FROM events)")
+.option("user", "admin")
+.option("password", "password")
+.option("spark", "true")
+.option("auth_token", "bd576741-fdc2-41c8-9e34-728f05036eed")
+.load()
 ```
 ```
 dataframe_qradar: org.apache.spark.sql.DataFrame = [sourceip: string, destinationip: string, username: string]

@@ -33,7 +33,6 @@ public class ArielFactory
 			final String password,
 			final int port) throws ArielException
 	{
-    System.err.println("DB Cache: " + dbCache + ", " + ip);
 		IArielDatabase result = dbCache.get(ip);
 		if (result == null)
 		{

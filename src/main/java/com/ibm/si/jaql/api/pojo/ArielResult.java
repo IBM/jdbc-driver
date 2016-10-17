@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.si.jaql.aql.ParsedColumn;
-
 /**
  * Represents a generic Ariel data results.
  * 
@@ -23,6 +21,7 @@ import com.ibm.si.jaql.aql.ParsedColumn;
 public class ArielResult
 {
 	private String name;
+	private ArielSearch search = null;
 	private List<LinkedHashMap<String,ColumnTuple>> results;
 	
 	public ArielResult(final String name, final List<LinkedHashMap<String,ColumnTuple>> results)
@@ -31,6 +30,11 @@ public class ArielResult
 		this.results = results;
 	}
 	
+	public void setSearch( ArielSearch search )
+	{
+		this.search = search;
+	}
+
 	public String getName()
 	{
 		return this.name;

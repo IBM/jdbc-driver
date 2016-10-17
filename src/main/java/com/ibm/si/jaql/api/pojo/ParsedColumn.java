@@ -1,4 +1,4 @@
-package com.ibm.si.jaql.aql;
+package com.ibm.si.jaql.api.pojo;
 
 public class ParsedColumn
 {

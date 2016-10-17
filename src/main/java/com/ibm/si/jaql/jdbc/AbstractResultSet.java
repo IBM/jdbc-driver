@@ -28,6 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.ibm.si.jaql.api.ArielException;
+import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ColumnTuple;
 import com.ibm.si.jaql.jdbc4.Jdbc4Connection;
 
@@ -39,17 +40,18 @@ import com.ibm.si.jaql.jdbc4.Jdbc4Connection;
  */
 public abstract class AbstractResultSet implements ResultSet
 {
-	 private Jdbc4Connection conn;
-	 private int colSize;
-	 private List<Map<String,ColumnTuple>> results;
-	 private String query;
-	 static final Logger logger = LogManager.getLogger(AbstractResultSet.class.getName());
-   
-    public AbstractResultSet(final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final String query)
+	private Jdbc4Connection conn;
+	private int colSize;
+	private List<Map<String, ColumnTuple>> results;
+	private ArielResult arielResult;
+	static final Logger logger = LogManager.getLogger(AbstractResultSet.class.getName());
+
+    public AbstractResultSet(final Jdbc4Connection conn, final List<Map<String,ColumnTuple>> results, final ArielResult arielResult)
     {
         this.conn = conn;
         this.results = results;
-        this.query = query;
+        this.arielResult = arielResult;
+        
         if (results != null && results.size() > 0)
         {
         	if (results.get(0).keySet() != null)
@@ -335,7 +337,7 @@ public abstract class AbstractResultSet implements ResultSet
 	{
 		try
 		{
-			final ArielResultSetMetaData result = MetaDataBuilder.generateResultSetMetaData(this.conn.getArielDatabase(), query, results);
+			final ArielResultSetMetaData result = MetaDataBuilder.generateResultSetMetaData(this.conn.getArielDatabase(), arielResult, results);
 			return result;
 		}
 		catch (ArielException ae)
@@ -344,13 +346,11 @@ public abstract class AbstractResultSet implements ResultSet
 		}
 	}
 
-		public Object getObject(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
+	public Object getObject(int columnIndex) throws SQLException {
 		return getString(columnIndex);
 	}
 
-		public Object getObject(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
+	public Object getObject(String columnLabel) throws SQLException {
 		return getString(columnLabel);
 	}
 
