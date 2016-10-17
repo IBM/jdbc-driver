@@ -40,7 +40,29 @@ public class RESTClientTest extends BaseTest
 		{
 			fail(ae.getMessage());
 		}
-		
-		
+	}
+  
+	@Test
+	public void testConnectionAuth()
+	{
+		try
+		{
+			final RESTClient c = new RESTClient(_properties.getProperty(IP), _properties.getProperty(AUTH_TOKEN));
+			Result result = null;
+			
+			result = c.doGet("/api/referencedata/mapOfSets");
+			assertNotNull(result);
+			assertNotNull(result.getBody());
+			assertEquals(result.getStatus(), 200);
+			logger.debug(String.format("Result was %s", result));
+		}
+		catch (IOException e)
+		{
+			fail(e.getMessage());
+		}
+		catch (ArielException ae)
+		{
+			fail(ae.getMessage());
+		}
 	}
 }

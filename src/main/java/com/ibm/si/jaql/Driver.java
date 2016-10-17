@@ -31,11 +31,12 @@ public class Driver implements java.sql.Driver
     private final static String DRIVER_PREFIX = "jdbc:qradar:";
     
     public static final String SERVER       = "prop.server";
-    public static final String URL       	= "prop.url";
-    public static final String USER       	= "prop.user";
-    public static final String PASSWORD 	= "prop.password";
-    public static final String PORT       = "prop.port";
-
+    public static final String URL          = "prop.url";
+    public static final String USER         = "prop.user";
+    public static final String PASSWORD     = "prop.password";
+    public static final String PORT         = "prop.port";
+    public static final String AUTH_TOKEN   = "prop.auth_token";
+    public static final String SPARK_MODE   = "prop.spark";
 	static
 	{
 		//System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -227,8 +228,10 @@ public class Driver implements java.sql.Driver
 			String password = info.getProperty("password");
 			if (password != null  && !password.isEmpty() )
 				props.setProperty(PASSWORD, password );
+      String auth_token = info.getProperty("auth_token");
+      if (auth_token != null && !auth_token.isEmpty())
+        props.setProperty(AUTH_TOKEN, auth_token);
 		}
-		
 		return props;
 	}
 	
