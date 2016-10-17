@@ -33,6 +33,7 @@ public class ArielFactory
 			final String password,
 			final int port) throws ArielException
 	{
+    System.err.println("DB Cache: " + dbCache + ", " + ip);
 		IArielDatabase result = dbCache.get(ip);
 		if (result == null)
 		{
@@ -42,4 +43,23 @@ public class ArielFactory
 		
 		return result;
 	}
+  public static IArielDatabase getArielDatabase(
+    final String ip,
+    final String auth_token) throws ArielException
+  {
+    return getArielDatabase(ip,auth_token,443);
+  }
+  public static IArielDatabase getArielDatabase(
+    final String ip,
+    final String auth_token,
+    int port) throws ArielException
+  {
+    IArielDatabase result = dbCache.get(ip);
+    if (result == null)
+    {
+      result = new ArielDatabase(ip, auth_token, port);
+      dbCache.put(ip, result);
+    }
+    return result;
+  }
 }
