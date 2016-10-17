@@ -28,15 +28,14 @@ public class Driver implements java.sql.Driver
 	private final static String PROP_MINOR = "minor";
 	private final static Properties _buildProperties = new Properties();
 	private final static Properties _defaultConnectProperties = new Properties();
-    private final static String DRIVER_PREFIX = "jdbc:qradar:";
-    
-    public static final String SERVER       = "prop.server";
-    public static final String URL          = "prop.url";
-    public static final String USER         = "prop.user";
-    public static final String PASSWORD     = "prop.password";
-    public static final String PORT         = "prop.port";
-    public static final String AUTH_TOKEN   = "prop.auth_token";
-    public static final String SPARK_MODE   = "prop.spark";
+  private final static String DRIVER_PREFIX = "jdbc:qradar:";
+  public static final String SERVER       = "prop.server";
+  public static final String URL          = "prop.url";
+  public static final String USER         = "prop.user";
+  public static final String PASSWORD     = "prop.password";
+  public static final String PORT         = "prop.port";
+  public static final String AUTH_TOKEN   = "prop.auth_token";
+  public static final String SPARK_MODE   = "prop.spark";
 	static
 	{
 		//System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -185,15 +184,11 @@ public class Driver implements java.sql.Driver
 		{
 			urlServer = urlServer.substring(2);
             int slashIndex = urlServer.indexOf('/');
-            //if (slashIndex == -1) 
-            //{
-            //    return null;
-            //}
-            
+            String hostPort = urlServer;
             if (slashIndex != -1)
             {
-	            String hostPort= urlServer.substring(0, slashIndex);
-	            
+	            hostPort= urlServer.substring(0, slashIndex);
+            }
 	            int colonIdx = hostPort.lastIndexOf(':');
 	            String server = "";
 	            if (colonIdx != -1)
@@ -209,10 +204,10 @@ public class Driver implements java.sql.Driver
 	            else
 	            {
 	            	server = hostPort;
+                props.put(PORT, 443);
 	            }
 	            logger.debug("server ==>"+ server);
 	            props.setProperty(SERVER, server);
-            }
 		}
 		
 		// try to setup our must have connection properties
@@ -232,6 +227,11 @@ public class Driver implements java.sql.Driver
       if (auth_token != null && !auth_token.isEmpty())
         props.setProperty(AUTH_TOKEN, auth_token);
 		}
+    if (info != null) {
+      String spark = info.getProperty("spark");
+      if (spark != null && !spark.isEmpty())
+        props.setProperty(SPARK_MODE, spark);
+    }
 		return props;
 	}
 	
