@@ -8,7 +8,7 @@ Overview
 
 This project aims to implement and deliver a JDBC compliant Java driver project for exposing Ariel data via AQL queries, from a QRadar system.  The project is only compatible with QRadar v7.2.4+.
 
-The usage of the project's built driver jar, is as per standard JDBC Java coded constructs; or with use in conjunction with SQL client tools or reporting engines which support custom drivers (e.g. Birt, Jasper, SqlSquirell, Crystal Reports ...)
+The usage of the project's built driver jar, is as per standard JDBC Java coded constructs; or with use in conjunction with SQL client tools or reporting engines which support custom drivers (e.g. Birt, Jasper, SqlSquirell, Crystal Reports, Spark, ...)
 
 These driver and project source code come without warranties of any kind. 
 
