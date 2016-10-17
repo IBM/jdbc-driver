@@ -35,6 +35,7 @@ public class Driver implements java.sql.Driver
     public static final String USER       	= "prop.user";
     public static final String PASSWORD 	= "prop.password";
     public static final String PORT       = "prop.port";
+    public static final String SPARK_MODE   = "prop.spark";
 
 	static
 	{
@@ -223,7 +224,12 @@ public class Driver implements java.sql.Driver
 			String password = info.getProperty("password");
 			if (password != null  && !password.isEmpty() )
 				props.setProperty(PASSWORD, password );
-		}		
+		}
+    if (info != null) {
+      String spark = info.getProperty("spark");
+      if (spark != null && !spark.isEmpty())
+        props.setProperty(SPARK_MODE, spark);
+    }
 		return props;
 	}
 	
