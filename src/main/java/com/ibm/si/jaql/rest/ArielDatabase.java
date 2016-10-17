@@ -37,6 +37,7 @@ public class ArielDatabase implements IArielDatabase
 	private String ip = null;
 	private String userName = null;
 	private String password = null;
+	private String auth_token = null;
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;	
 	private int port=443;
@@ -66,15 +67,41 @@ public class ArielDatabase implements IArielDatabase
 		this.password = password;
 		this.port = port;
 		apiClient = new RESTClient(this.ip, this.userName, this.password,this.port);
+		init();
+	}
+	
+	/**
+	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
+	 * @param ip
+	 * @param auth_token
+	 */
+	public ArielDatabase(String ip, String auth_token) throws ArielException
+	{
+		this(ip, auth_token, 443);
+	}
+	
+	/**
+	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
+	 * @param ip
+	 * @param auth_token
+	 * @param port
+	 */
+	public ArielDatabase(String ip, String auth_token, int port) throws ArielException
+	{
+		this.ip = ip;
+		this.port = port;
+		this.auth_token = auth_token;
+		apiClient = new RESTClient(this.ip, this.auth_token, this.port);
+		init();
+	}
+	private void init() throws ArielException
+	{
 		gson = new GsonBuilder()
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
-		
 		metaData = new HashMap<String,ArielColumn>();
 		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
-		
 		loadColumnMetaData();
-
 	}
 	
 	/**
@@ -118,7 +145,11 @@ public class ArielDatabase implements IArielDatabase
 		public IArielConnection createConnection() throws ArielException
 	{
 		ArielConnection result = null;
-		final RESTClient client = new RESTClient(ip, userName, password,port);
+		final RESTClient client;
+		if (auth_token == null)
+			client = new RESTClient(ip, userName, password, port);
+		else
+			client = new RESTClient(ip, auth_token, port);
 		result = new ArielConnection(client);
 		return result;
 	}

@@ -21,6 +21,7 @@ public class BaseTest {
 	protected final static String IP = "ip";
 	protected final static String USER = "user";
 	protected final static String PASSWORD = "password";
+	protected final static String AUTH_TOKEN = "auth_token";
 	protected Properties _properties = new Properties();
 	
 	public BaseTest() {

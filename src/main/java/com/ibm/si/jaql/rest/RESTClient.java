@@ -25,6 +25,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpMessage;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -66,18 +67,56 @@ public class RESTClient
 	private HttpHost targetHost = null;
 	private AuthCache authCache = null;
 	private BasicScheme basicAuth = null;
+	private String auth_token = null;
 	
 	public RESTClient(final String ip,
-		  final String user,
-		  final String password) throws ArielException
+		final String user,
+		final String password) throws ArielException
 	{
 		this(ip,user,password,443);
 	}
-	
+	public RESTClient(final String ip, final String auth_token) throws ArielException
+	{
+		this(ip, auth_token, 443);
+	}
+	public RESTClient(final String ip, final String auth_token, int port) throws ArielException
+	{
+		logger.debug("Opening REST Connection("+ip+":"+port+"+auth_token);");
+		targetHost = new HttpHost(ip,port, "https");
+		this.auth_token = auth_token;
+		client = HttpClients.custom()
+				.setSSLSocketFactory(getSSLFactory())
+				.build();
+		context = HttpClientContext.create();
+		final HttpGet wakeUp = new HttpGet(String.format("https://%s:%d/restapi/doc", ip,port));
+		addAuth(wakeUp);
+		CloseableHttpResponse res = null;
+		
+		try
+		{
+			res = client.execute(targetHost, wakeUp, context);
+			EntityUtils.consume(res.getEntity());
+		}
+		catch (ClientProtocolException e)
+		{
+			throw new ArielException(e);
+		}
+		catch (IOException e)
+		{
+			throw new ArielException(e);
+		}
+		finally
+		{
+			if (res != null)
+			{
+				ConnectionUtility.closeQuietly(res);
+			}
+		}
+	}
 	public RESTClient(final String ip,
-					  final String user,
-					  final String password,
-					  final int port) throws ArielException
+		final String user,
+		final String password,
+		final int port) throws ArielException
 	{
 		logger.debug("Opening REST Connection("+ip+","+user+",password,"+port+");");
 		targetHost = new HttpHost(ip,port, "https");
@@ -105,7 +144,7 @@ public class RESTClient
 		try
 		{
 			res = client.execute(targetHost, wakeUp, context);
-			EntityUtils.consume(res.getEntity());			
+			EntityUtils.consume(res.getEntity());
 		}
 		catch (ClientProtocolException e)
 		{
@@ -123,12 +162,18 @@ public class RESTClient
 			}
 		}
 	}
-		
+	
+	private void addAuth(HttpMessage msg)
+	{
+		if (auth_token != null)
+			msg.addHeader("SEC", auth_token);
+	}
+	
 	public Result doGet(final String reqBody) throws IOException
 	{
 		Result result = null;
 		final HttpGet method = new HttpGet(buildRequestURI(reqBody));
-		 
+		addAuth(method);
 		CloseableHttpResponse res = null;
 		
 		try
@@ -157,6 +202,7 @@ public class RESTClient
 	{
 		Result result = null;
 		final HttpPost method = new HttpPost(uri);
+		addAuth(method);
 		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		for (String nvName : nvPairs.keySet())
 		{
@@ -197,6 +243,7 @@ public class RESTClient
 	{
 		Result result = null;
 		final HttpPut method = new HttpPut(uri);
+		addAuth(method);
 		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		for (String nvName : nvPairs.keySet())
 		{
@@ -237,7 +284,7 @@ public class RESTClient
 	{
 		Result result = null;
 		HttpDelete method = new HttpDelete(uri);
-
+		addAuth(method);
 		CloseableHttpResponse res = null;
 		
 		try
