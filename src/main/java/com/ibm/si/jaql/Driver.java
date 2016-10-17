@@ -184,15 +184,11 @@ public class Driver implements java.sql.Driver
 		{
 			urlServer = urlServer.substring(2);
             int slashIndex = urlServer.indexOf('/');
-            //if (slashIndex == -1) 
-            //{
-            //    return null;
-            //}
-            
+            String hostPort = urlServer;
             if (slashIndex != -1)
             {
-	            String hostPort= urlServer.substring(0, slashIndex);
-	            
+	            hostPort= urlServer.substring(0, slashIndex);
+            }
 	            int colonIdx = hostPort.lastIndexOf(':');
 	            String server = "";
 	            if (colonIdx != -1)
@@ -208,10 +204,10 @@ public class Driver implements java.sql.Driver
 	            else
 	            {
 	            	server = hostPort;
+                props.put(PORT, 443);
 	            }
 	            logger.debug("server ==>"+ server);
 	            props.setProperty(SERVER, server);
-            }
 		}
 		
 		// try to setup our must have connection properties
@@ -227,8 +223,7 @@ public class Driver implements java.sql.Driver
 			String password = info.getProperty("password");
 			if (password != null  && !password.isEmpty() )
 				props.setProperty(PASSWORD, password );
-		}
-		
+		}		
 		return props;
 	}
 	
