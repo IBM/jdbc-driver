@@ -15,6 +15,7 @@ import java.sql.ResultSetMetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.ibm.si.jaql.Driver;
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.IArielDatabase;
 import com.ibm.si.jaql.api.pojo.ArielResult;
@@ -36,10 +37,13 @@ public class Jdbc4Connection extends JdbcConnection
 	static final Logger logger = LogManager.getLogger();
 	
 	private IQueryExecutor queryExecutor;
-	
+	private boolean sparkMode = false;
 	public Jdbc4Connection (String url, Properties info) throws SQLException 
 	{
 		queryExecutor = new QueryExecutor(url, info);
+    if (info.containsKey(Driver.SPARK_MODE))
+  		sparkMode = Boolean.parseBoolean((String) info.get(Driver.SPARK_MODE));
+    logger.debug("Spark SQL=>AQL rewriting " + sparkMode);
 	}
 	
     public Jdbc4Statement createStatement() throws SQLException
@@ -66,13 +70,16 @@ public class Jdbc4Connection extends JdbcConnection
     public ResultSet executeQuery( final String query, Map<String, Object> parameters ) throws SQLException
     {
         logger.info("Jdbc4Connection>>>executeQuery(): before query={}",query);
-        final String newQuery = SparkAQL.sparkQueryUnwrapper(query);
+        final String newQuery;
+        if (sparkMode)
+          newQuery = SparkAQL.sparkQueryUnwrapper(query);
+        else
+          newQuery = query;
         try
         {
           logger.info("Jdbc4Connection>>>executeQuery(): after query={}",newQuery);
         	final ArielResult result = queryExecutor.executeQuery(newQuery, parameters);
         	ResultSet rs = toResultSet(result, newQuery);
-          ResultSetMetaData md = rs.getMetaData();
         	return rs ;
         }
         catch ( SQLException e )

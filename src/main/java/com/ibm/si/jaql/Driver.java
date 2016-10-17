@@ -35,6 +35,7 @@ public class Driver implements java.sql.Driver
     public static final String USER       	= "prop.user";
     public static final String PASSWORD 	= "prop.password";
     public static final String PORT       = "prop.port";
+    public static final String SPARK_MODE   = "prop.spark";
 
 	static
 	{
@@ -184,15 +185,11 @@ public class Driver implements java.sql.Driver
 		{
 			urlServer = urlServer.substring(2);
             int slashIndex = urlServer.indexOf('/');
-            //if (slashIndex == -1) 
-            //{
-            //    return null;
-            //}
-            
+            String hostPort = urlServer;
             if (slashIndex != -1)
             {
-	            String hostPort= urlServer.substring(0, slashIndex);
-	            
+	            hostPort= urlServer.substring(0, slashIndex);
+            }
 	            int colonIdx = hostPort.lastIndexOf(':');
 	            String server = "";
 	            if (colonIdx != -1)
@@ -208,10 +205,10 @@ public class Driver implements java.sql.Driver
 	            else
 	            {
 	            	server = hostPort;
+                props.put(PORT, 443);
 	            }
 	            logger.debug("server ==>"+ server);
 	            props.setProperty(SERVER, server);
-            }
 		}
 		
 		// try to setup our must have connection properties
@@ -228,7 +225,11 @@ public class Driver implements java.sql.Driver
 			if (password != null  && !password.isEmpty() )
 				props.setProperty(PASSWORD, password );
 		}
-		
+    if (info != null) {
+      String spark = info.getProperty("spark");
+      if (spark != null && !spark.isEmpty())
+        props.setProperty(SPARK_MODE, spark);
+    }
 		return props;
 	}
 	
