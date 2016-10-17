@@ -213,6 +213,6 @@ public class SparkAQL {
   
 	public static void main(String[] args)
 	{
-		System.out.println("New Query '" + sparkQueryUnwrapper(args[0]) + "'");
+		System.out.println("New Query \"" + sparkQueryUnwrapper(args[0]) + "\"");
 	}
 }

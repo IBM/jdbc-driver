@@ -40,10 +40,10 @@ public class Jdbc4Connection extends JdbcConnection
 	private boolean sparkMode = false;
 	public Jdbc4Connection (String url, Properties info) throws SQLException 
 	{
-    logger.info("Connection properties: " + info);
 		queryExecutor = new QueryExecutor(url, info);
-		sparkMode = Boolean.parseBoolean((String) info.getOrDefault(Driver.SPARK_MODE, "false"));
-    logger.info("Spark SQL=>AQL rewriting " + sparkMode);
+    if (info.containsKey(Driver.SPARK_MODE))
+  		sparkMode = Boolean.parseBoolean((String) info.get(Driver.SPARK_MODE));
+    logger.debug("Spark SQL=>AQL rewriting " + sparkMode);
 	}
 	
     public Jdbc4Statement createStatement() throws SQLException
