@@ -78,7 +78,7 @@ Key notes for usage:
 - **url**: jdbc:qradar://_Qradar-Console_/
 - **username**:  _admin-user_
 - **password**:  _admin-user-password_
-- **auth\_token**:  _auth-token
+- **auth\_token**:  _auth-token_
 
 Note that you will need either the _auth_token_ or a _username_ and _password_.
 
@@ -95,13 +95,13 @@ SparkSQL supports the ability to directly query an SQL database using a JDBC dri
 ### Example
 ```scala
 val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/")
-.option("driver", "com.ibm.si.jaql.Driver")
-.option("dbtable", "(SELECT sourceip,destinationip,username FROM events)")
-.option("user", "admin")
-.option("password", "password")
-.option("spark", "true")
-.option("auth_token", "bd576741-fdc2-41c8-9e34-728f05036eed")
-.load()
+  .option("driver", "com.ibm.si.jaql.Driver")
+  .option("dbtable", "(SELECT sourceip,destinationip,username FROM events)")
+  .option("user", "admin")
+  .option("password", "password")
+  .option("spark", "true")
+  .option("auth_token", "bd576741-fdc2-41c8-9e34-728f05036eed")
+  .load()
 ```
 ```
 dataframe_qradar: org.apache.spark.sql.DataFrame = [sourceip: string, destinationip: string, username: string]
