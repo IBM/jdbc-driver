@@ -400,7 +400,7 @@ public class RESTClient
 		public String getBody()
 		{
 			try {
-				logger.debug(String.format(this.body));
+				logger.trace(String.format(this.body));
 			} catch (java.util.UnknownFormatConversionException e) {
 				logger.debug("Unable log body due to exception " + e.getMessage());
 			}

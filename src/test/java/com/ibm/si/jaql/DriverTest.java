@@ -36,6 +36,7 @@ public class DriverTest  extends BaseTest {
 		// Load the driver (note clients should never do it this way!)
 		Driver drv = new Driver();
         assertNotNull(drv);
+        logger.info("Driver version: {}", drv.getVersion());
         assertEquals(drv.getMajorVersion(),0);
 	}
 	
@@ -48,7 +49,8 @@ public class DriverTest  extends BaseTest {
 		// Load the driver (note clients should never do it this way!)
 		Driver drv = new Driver();
         assertNotNull(drv);
-        assertEquals(drv.getMinorVersion(),1);
+        logger.info("Driver version: {}", drv.getVersion());
+        assertEquals(drv.getMinorVersion(),2);
 	}
 	
    /**

@@ -70,5 +70,7 @@ public class ArielResult
 		
 		return results;
 	}
-	
+	public String toString() {
+	  return String.format("Name=%s, search=%s, results=%s}", name, search, results);
+	}
 }

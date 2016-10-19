@@ -18,8 +18,9 @@ import com.ibm.si.jaql.util.BaseTest;
 
 public class MetaDataTest extends BaseTest {
   static final Logger logger = LogManager.getLogger();
+  
   @Test
-  public void test_Metadata() throws Exception {
+  public void test_Metadata_alias() throws Exception {
     logger.info("Loading connection to {}", _properties);
     if (_properties.containsKey(Driver.PORT))
       _properties.put(Driver.PORT, Integer.valueOf((String)_properties.get(Driver.PORT)));
@@ -31,7 +32,7 @@ public class MetaDataTest extends BaseTest {
     params.put("start", 0);
     params.put("end", 10);
     params.put("block", true);
-    ResultSet rs = myCon.executeQuery("select MIN(starttime) from events", params);
+    ResultSet rs = myCon.executeQuery("select starttime as foo from events", params);
     assertNotNull(rs) ;
     
     while (rs.next()) {
@@ -43,14 +44,8 @@ public class MetaDataTest extends BaseTest {
         logger.info("value {}",rs.getDouble(i));
       }
       assertNotNull(rsMeta);
-      assert(rsMeta.getColumnLabel(1).equals("0"));
+      assert(rsMeta.getColumnLabel(1).equals("foo"));
       assert(rs.getDouble(1) > 0.0);
-      
-      // assertNotNull(rsMeta.getColumnCount());
-      // assertNotNull(rsMeta.getColumnLabel(1));
-      // assertNotNull(rsMeta.getColumnType(1));
-      // assertEquals(java.sql.Types.VARCHAR,rsMeta.getColumnType(1)); //asserting on VARCHAR(String) return type
-      // assertNotNull(rsMeta.getColumnTypeName(1));
     }
   }
   
