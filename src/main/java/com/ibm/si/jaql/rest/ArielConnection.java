@@ -164,6 +164,7 @@ public class ArielConnection implements IArielConnection
 			if (null != rawResult
 					&& rawResult.getStatus() == HttpStatus.SC_OK)
 			{
+        logger.trace("Raw Json Body: {}", rawResult.getBody());
 				result = gson.fromJson(rawResult.getBody(), ArielResult.class);
 			}
 			else
@@ -206,6 +207,7 @@ public class ArielConnection implements IArielConnection
 			
 			try
 			{
+        logger.debug("Getting table metadata for {}", db);
 				final Result res = rawClient.doGet(String.format("/api/ariel/databases/%s", db));
 				if (res != null)
 				{
@@ -219,14 +221,16 @@ public class ArielConnection implements IArielConnection
 						final String name = column.getName();
 						metaData.put(name, column);
 						dbMetaData.put(name, column);
-						logger.debug(String.format("loadColumnMetaData: Loaded column %s for %s with argType %s", column.getName(), db, column.getArgumentType()));
+						logger.trace(String.format("loadColumnMetaData: Loaded column %s for %s with argType %s", column.getName(), db, column.getArgumentType()));
 					}
-				}
+				} else
+          logger.warn("Table metadata result was null");
 				
 				this.metaDataByDb.put(db, dbMetaData);
 			}
 			catch (final IOException e)
 			{
+        logger.warn("IOException getting metadata:{}",e);
 				throw new ArielException(e);
 			}
 		}

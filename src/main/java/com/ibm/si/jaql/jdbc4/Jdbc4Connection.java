@@ -102,6 +102,7 @@ public class Jdbc4Connection extends JdbcConnection
     	//select STR(sourceIp), 1+1 as alias1 from events
     	//select STR(sourceIp), 1+1 as alias1, (STRLEN(destinationIp) + 1) from events
       // CHANGED 2016-07-26 No longer looking at the parsing the query. Fails for queries like `SELECT *,foo FROM events` will return only the column `foo`
+      logger.trace("Raw ArielResult: {}", rawRes);
       List<ParsedColumn> columns = rawRes.getFieldList();
     	
     	final List<LinkedHashMap<String,ColumnTuple>> results = rawRes.getResults();
@@ -116,6 +117,7 @@ public class Jdbc4Connection extends JdbcConnection
     			//get the column we should lookup for metadata
     			//for standard fields (sourceIp, destinationIp) or standard simple use of functions (STRLEN(sourceIP)) we can use the columname
     			//else we have an aliased field/function, or an arithemtic expression, we need to rely on alias-ed ordering to extract the mapped column
+          logger.trace("Parsed column: {}", column);
     			String columnName = null;
     			if (column.alias != null && (!column.alias.equalsIgnoreCase("")) )
     			{
