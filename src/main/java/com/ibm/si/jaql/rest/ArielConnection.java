@@ -207,6 +207,7 @@ public class ArielConnection implements IArielConnection
 			
 			try
 			{
+        // TODO There are two issues here: 1. QRadar returns the wrong types and 2. The results may be wrong due to aliasing
         logger.debug("Getting table metadata for {}", db);
 				final Result res = rawClient.doGet(String.format("/api/ariel/databases/%s", db));
 				if (res != null)
