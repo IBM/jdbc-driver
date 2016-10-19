@@ -65,8 +65,8 @@ mvn -DoutputDirectory=./lib dependency:copy-dependencies
 
 ### OUTPUT
 
-- <jdbc-driver>/target/jaql-0.1.jar
-- <jdbc-driver>/target/jaql-0.1-jar-with-dependencies.jar
+- _\<jdbc-driver\>_/target/jaql-0.1.jar
+- _\<jdbc-driver\>_/target/jaql-0.1-jar-with-dependencies.jar
 
 Use the resulting **jaql-0.1-jar-with-dependencies.jar** as your jdbc driver, with your reporting engine / SQL client of choice to connect to an Ariel datastore.
 
@@ -82,14 +82,12 @@ Key notes for usage:
 
 Note that you will need either the _auth_token_ or a _username_ and _password_.
 
-AQL SQL Syntax
-==============
+# AQL SQL Syntax
 The publicly available documentation stack for IBM's Qradar Security Intelligence Platform, includes a reference section for Qradar's Ariel Database Query Language.
 
 - http://www-01.ibm.com/support/knowledgecenter/SS42VS_7.2.4/com.ibm.qradar.doc_7.2.4/c_aql_intro.html?lang=en 
 
-SparkSQL Support
-================
+## SparkSQL Support
 SparkSQL supports the ability to directly query an SQL database using a JDBC driver and load the results into a DataFrame for further processing. This package has experimental support for identifying and converting Spark-generated SQL queries into valid AQL queries and handling nuances of the AQL REST interface when possible. In Spark, when reading `jdbc` formatted data, simply specify add `com.ibm.si.jaql.Driver` for the `driver` and enable Spark support through the `.option("spark", "true")`.
 
 ### Example
