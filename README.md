@@ -8,7 +8,7 @@ Overview
 
 This project aims to implement and deliver a JDBC compliant Java driver project for exposing Ariel data via AQL queries, from a QRadar system.  The project is only compatible with QRadar v7.2.4+.
 
-The usage of the project's built driver jar, is as per standard JDBC Java coded constructs; or with use in conjunction with SQL client tools or reporting engines which support custom drivers (e.g. Birt, Jasper, SqlSquirell, Crystal Reports ...)
+The usage of the project's built driver jar, is as per standard JDBC Java coded constructs; or with use in conjunction with SQL client tools or reporting engines which support custom drivers (e.g. Birt, Jasper, SqlSquirell, Crystal Reports, Spark, ...)
 
 These driver and project source code come without warranties of any kind. 
 
@@ -78,7 +78,7 @@ Key notes for usage:
 - **url**: jdbc:qradar://_Qradar-Console_/
 - **username**:  _admin-user_
 - **password**:  _admin-user-password_
-- **auth\_token**:  _auth-token
+- **auth\_token**:  _auth-token_
 
 Note that you will need either the _auth_token_ or a _username_ and _password_.
 
@@ -95,13 +95,13 @@ SparkSQL supports the ability to directly query an SQL database using a JDBC dri
 ### Example
 ```scala
 val dataframe_qradar = sqlContext.read.format("jdbc").option("url", "jdbc:qradar://127.0.0.1:443/")
-.option("driver", "com.ibm.si.jaql.Driver")
-.option("dbtable", "(SELECT sourceip,destinationip,username FROM events)")
-.option("user", "admin")
-.option("password", "password")
-.option("spark", "true")
-.option("auth_token", "bd576741-fdc2-41c8-9e34-728f05036eed")
-.load()
+  .option("driver", "com.ibm.si.jaql.Driver")
+  .option("dbtable", "(SELECT sourceip,destinationip,username FROM events)")
+  .option("user", "admin")
+  .option("password", "password")
+  .option("spark", "true")
+  .option("auth_token", "bd576741-fdc2-41c8-9e34-728f05036eed")
+  .load()
 ```
 ```
 dataframe_qradar: org.apache.spark.sql.DataFrame = [sourceip: string, destinationip: string, username: string]
