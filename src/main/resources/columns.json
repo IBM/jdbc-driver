@@ -1,0 +1,1 @@
+{"default_columns":["sourceip","destinationip","eventcount","sourceport","protocolid","username","logsourceid","starttime","category","destinationport","qid","magnitude","identityip"]}
