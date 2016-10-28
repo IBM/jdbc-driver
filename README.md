@@ -145,3 +145,8 @@ dataframe_qradar.groupBy("sourceip").count().show
 |  127.0.0.1 |  2  |
 +------------+-----+
 ```
+### Known Issues
+1. Not all types are correctly mapped to SQL Types. The JDBC driver performs a best-guess regarding the type of the column returned by QRadar, but is not always correct.
+  - QRadar returns the incorrect type for some columns in a `/api/ariel/databases/<table>` API call, e.g., `endtime` is returned as a `JAVA_OBJECT` and not a `BIGINT`
+  - Aliases to known types will fail. For example, `DATEFORMAT(starttime, 'YYYY-MM-dd HH:mm:ss') as starttime` will return a `BIGINT` and not a `VARCHAR`
+2. In Spark Mode, not all functions work correctly. E.g., getting `df.count()` on a DateFrame will yield an SQL query `SELECT 1 FROM (...)` query, which cannot be converted into AQL.
