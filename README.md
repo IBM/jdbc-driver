@@ -65,10 +65,10 @@ mvn -DoutputDirectory=./lib dependency:copy-dependencies
 
 ### Output
 
-- _\<jdbc-driver\>_/target/jaql-0.2.jar
-- _\<jdbc-driver\>_/target/jaql-0.2-jar-with-dependencies.jar
+- _\<jdbc-driver\>_/target/jaql-0.2.1.jar
+- _\<jdbc-driver\>_/target/jaql-0.2.1-jar-with-dependencies.jar
 
-Use the resulting **jaql-0.2-jar-with-dependencies.jar** as your jdbc driver, with your reporting engine / SQL client of choice to connect to an Ariel datastore.
+Use the resulting **jaql-0.2.1-jar-with-dependencies.jar** as your jdbc driver, with your reporting engine / SQL client of choice to connect to an Ariel datastore.
 
 Usage
 =====
