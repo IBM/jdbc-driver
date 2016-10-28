@@ -4,7 +4,7 @@
 
 	<properties>
 		<jaql.major>0</jaql.major>
-		<jaql.minor>2</jaql.minor>
+		<jaql.minor>2.1</jaql.minor>
 		<log4j2.version>2.0.2</log4j2.version>
 		<httpcomponents.version>4.3.4</httpcomponents.version>
 	</properties>
