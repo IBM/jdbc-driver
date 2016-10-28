@@ -28,7 +28,7 @@ import com.ibm.si.jaql.api.pojo.ArielColumn;
  */
 public class ArielDatabaseMetaData implements DatabaseMetaData
 {
-	static final Logger logger = LogManager.getLogger(Driver.class.getName());
+	static final Logger logger = LogManager.getLogger();
 	
 	private IArielDatabase arielDb = null;
 	

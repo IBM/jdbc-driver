@@ -59,9 +59,8 @@ public class ColumnTuple
   }
     // Java 8 has a JDBCType Enum that would make this easier
   public Object getAs() throws SQLException { return getAs(type); }
-  public Object getAs(String stype) throws SQLException
+  public Object getAs(String matchtype) throws SQLException
   {
-    String matchtype = type.equalsIgnoreCase("UNKNOWN") ? stype : type;
     logger.trace("Get '{}' with '{}' as '{}'", name, value, matchtype);
     if (matchtype.equalsIgnoreCase("NULL")) return null;
     if (matchtype.equalsIgnoreCase("VARCHAR"))

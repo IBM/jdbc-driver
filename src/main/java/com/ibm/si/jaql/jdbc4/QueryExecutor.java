@@ -31,6 +31,8 @@ public class QueryExecutor implements IQueryExecutor{
 	{
 		try
 		{
+      if (info.getProperty(Driver.PORT) == null)
+        info.put(Driver.PORT, 443);
       if (info.getProperty(Driver.AUTH_TOKEN) == null)
   			arielDB = ArielFactory.getArielDatabase(info.getProperty(Driver.SERVER),
   											info.getProperty(Driver.USER),

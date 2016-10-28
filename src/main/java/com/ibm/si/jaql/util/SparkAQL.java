@@ -7,6 +7,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import com.google.gson.Gson;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +21,22 @@ public class SparkAQL {
 	private static Pattern getSchemaPattern = Pattern.compile("^SELECT\\s+\\*\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+FROM\\s+(\\S+)(.*))\\)\\s+WHERE\\s+1=0$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 	private static Pattern selectStarPattern = Pattern.compile("^SELECT\\s+(.*?)\\s+FROM\\s+\\((SELECT\\s+(.*)\\s+(FROM\\s+(\\S+)(.*)))\\)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 	private static Pattern removeWherePattern = Pattern.compile("(.*)\\s*WHERE\\s+1\\s*=\\s*0\\s*$");
-
+	private static Map<String,Object> default_columns = null;
 	static final Logger logger = LogManager.getLogger();
+
+	static {
+		init();
+	}
+
+	private static void init()
+	{
+		final InputStream fstream = SparkAQL.class.getResourceAsStream("/columns.json");
+		DataInputStream in = new DataInputStream(fstream);
+		BufferedReader  br = new BufferedReader(new InputStreamReader(in));
+		Gson gson = new Gson();
+		default_columns = gson.fromJson(br, Map.class);
+		logger.debug("Default Columns: {}", default_columns);
+	}
 
 	// Does the query contain a WHERE 1=0 Spark schema extractor
 	private static boolean isDetectingSchema(final String query)
@@ -104,14 +124,20 @@ public class SparkAQL {
 		int infunction = 0;
 		boolean wasFunction = false;
 		int index = 1; // for un-named columns
+		List<String> column_names = new ArrayList<String>();
 		while(end < selected.length()) {
 			if (selected.charAt(end) == ',' && !inquote && infunction == 0) {
 				String col = selected.substring(start,end);
 				String alias = getColumnName(col);
+				String col_trimmed = col.trim();
 				if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
-					columnsSelected.put(Integer.toString(index++).trim(), col.trim());
+					columnsSelected.put(Integer.toString(index++).trim(), col_trimmed);
 				else
-					columnsSelected.put(alias.trim(), col.trim());
+					columnsSelected.put(alias.trim(), col_trimmed);
+				if (col_trimmed.equals("*"))
+					column_names.addAll((List<String>)default_columns.get("default_columns"));
+				else
+					column_names.add(col_trimmed);
 				end++;
 				escape = false;
 				wasFunction = false;
@@ -140,16 +166,31 @@ public class SparkAQL {
 		if (start != end) {
 			String col = selected.substring(start,end);
 			String alias = getColumnName(col);
+			String col_trimmed = col.trim();
 			if (col.compareToIgnoreCase(alias) == 0 && wasFunction)
-				columnsSelected.put(Integer.toString(index++).trim(), col);
+				columnsSelected.put(Integer.toString(index++).trim(), col_trimmed);
 			else
-				columnsSelected.put(alias.trim(), col.trim());
+				columnsSelected.put(alias.trim(), col_trimmed);
+			if (col_trimmed.equals("*"))
+				column_names.addAll((List<String>)default_columns.get("default_columns"));
+			else
+				column_names.add(col_trimmed);
 		}
 
 		logger.debug("Columns Selected: {}", columnsSelected);
+		logger.debug("Columns Ordered: {}", column_names);
 		StringBuilder sb = new StringBuilder();
 		for (String s : proj.split(",")) {
 			s = s.replaceAll("\"", "").trim();
+			int column_index = -1;
+			try {
+				column_index = Integer.parseInt(s);
+			} catch (NumberFormatException e) {}
+			logger.debug("Current column index: {}", column_index);
+			if (column_index > 0 && column_index <= column_names.size()) {
+				sb.append(column_names.get(column_index-1));
+				continue;
+			}
 			if (columnsSelected.containsKey(s.toLowerCase()))
 			{
 				if (sb.length() > 0)

@@ -26,11 +26,11 @@ public class RESTClientTest extends BaseTest
 			final RESTClient c = new RESTClient(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
 			Result result = null;
 			
-			result = c.doGet("/api/referencedata/mapOfSets");
+      result = c.doGet("/api/reference_data/map_of_sets");
+			logger.debug(String.format("Result status: %s, body: %s", result.getStatus(), result.getBody()));
 			assertNotNull(result);
 			assertNotNull(result.getBody());
 			assertEquals(result.getStatus(), 200);
-			logger.debug(String.format("Result was %s", result));
 		}
 		catch (IOException e)
 		{
@@ -50,7 +50,7 @@ public class RESTClientTest extends BaseTest
 			final RESTClient c = new RESTClient(_properties.getProperty(IP), _properties.getProperty(AUTH_TOKEN));
 			Result result = null;
 			
-			result = c.doGet("/api/referencedata/mapOfSets");
+			result = c.doGet("/api/reference_data/map_of_sets");
 			assertNotNull(result);
 			assertNotNull(result.getBody());
 			assertEquals(result.getStatus(), 200);

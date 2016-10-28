@@ -1,4 +1,4 @@
-package com.ibm.si.jaql.aql;
+package com.ibm.si.jaql.api.pojo;
 
 public class ParsedColumn
 {
@@ -19,4 +19,7 @@ public class ParsedColumn
 		this.alias = alias;
 		this.isArthimeticExpression = isArthimeticExpression;
 	}
+  public String toString() {
+    return "{name=" + name + ", func=" + func + ", alias=" + alias + ", expr=" + isArthimeticExpression +"}";
+  }
 }

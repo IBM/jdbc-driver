@@ -57,7 +57,6 @@ public class ArielColumn
 		{
 			res = argumentType;
 		}
-		
 		return res;
 	}
 	public void setArgumentType(String argumentType) {
@@ -67,7 +66,7 @@ public class ArielColumn
 			argumentType= "VARCHAR";
 		}	
 		this.argumentType = argumentType;
-		
+		logger.trace("Set type from {} to {}", argumentType, this.argumentType);
 	}
 	public boolean isCustom() {
 		return custom;

@@ -163,6 +163,16 @@ public class RESTClient
 		}
 	}
 	
+	public RESTClient(final String ip, int port) throws ArielException
+	{
+		logger.debug("Opening REST Connection("+ip+":"+port+");");
+		targetHost = new HttpHost(ip,port, "https");
+		client = HttpClients.custom()
+				.setSSLSocketFactory(getSSLFactory())
+				.build();
+		context = HttpClientContext.create();
+  }
+  
 	private void addAuth(HttpMessage msg)
 	{
 		if (auth_token != null)
@@ -171,9 +181,16 @@ public class RESTClient
 	
 	public Result doGet(final String reqBody) throws IOException
 	{
+		return doGet(reqBody, true);
+	}
+	public Result doGet(final String reqBody, boolean addAuth) throws IOException
+	{
 		Result result = null;
-		final HttpGet method = new HttpGet(buildRequestURI(reqBody));
-		addAuth(method);
+		String uri = buildRequestURI(reqBody);
+		logger.debug("GET on {}", uri);
+		final HttpGet method = new HttpGet(uri);
+		if (addAuth)
+			addAuth(method);
 		CloseableHttpResponse res = null;
 		
 		try
@@ -400,7 +417,7 @@ public class RESTClient
 		public String getBody()
 		{
 			try {
-				logger.debug(String.format(this.body));
+				logger.trace(String.format(this.body));
 			} catch (java.util.UnknownFormatConversionException e) {
 				logger.debug("Unable log body due to exception " + e.getMessage());
 			}
@@ -428,7 +445,7 @@ public class RESTClient
 			
 			return returnCode;
 		}
-	}	
+	}
 	
 	
 	static class ErrorResult
@@ -452,8 +469,6 @@ public class RESTClient
 		{
 			return this.code;
 		}
-		
-			
 		public static class ColumnTuple
 		{
 			private String name;
@@ -486,5 +501,10 @@ public class RESTClient
 		}
 	}
 	
-	
+	public static void main(String[] args) throws Exception
+	{
+		RESTClient client = new RESTClient(args[0], 443);
+		Result r = client.doGet(args[1], false);
+		System.out.println(r.getBody());
+	}
 }
