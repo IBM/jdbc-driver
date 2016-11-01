@@ -34,6 +34,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -49,6 +50,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.util.ConnectionUtility;
+
+import com.ibm.si.jaql.rest.Result;
 
 /**
  * Ariel rest API endpoint client, offering transport of data into and out of the ariel store
@@ -235,6 +238,7 @@ public class RESTClient
 			res = client.execute(targetHost, method, context);
 			final HttpEntity bodyResult = res.getEntity();
 			final String body = EntityUtils.toString(bodyResult);
+      
 			result = new Result(res.getStatusLine().getStatusCode(), body);
 		}
 		catch (UnsupportedEncodingException e)
@@ -256,6 +260,47 @@ public class RESTClient
 		return result;
 	}
 	
+	public Result doPost(final String uri, final String postbody) throws IOException
+	{
+		Result result = null;
+		final HttpPost method = new HttpPost(uri);
+		addAuth(method);
+		CloseableHttpResponse res = null;
+		
+		try
+		{
+      StringEntity input = new StringEntity(postbody);
+      input.setContentType("application/json");
+      method.setEntity(input);
+			res = client.execute(targetHost, method, context);
+			final HttpEntity bodyResult = res.getEntity();
+			final String body = EntityUtils.toString(bodyResult);
+			result = new Result(res.getStatusLine().getStatusCode(), body);
+      logger.info("Result: {}", res);
+      logger.info("bodyResult: {}", bodyResult);
+      logger.info("Body: {}", body);
+		}
+		catch (UnsupportedEncodingException e)
+		{
+      logger.error("UnsupportedEncodingException", e);
+			throw new IOException(e);
+		}
+		catch (ClientProtocolException e)
+		{
+      logger.error("ClientProtocolException", e);
+			throw new IOException(e);
+		}
+		finally
+		{
+			if (res != null)
+			{
+				ConnectionUtility.closeQuietly(res);
+			}
+		}
+		
+		return result;
+	}
+  
 	public Result doPut(final String uri, final Map<String,String> nvPairs) throws IOException
 	{
 		Result result = null;
@@ -393,61 +438,6 @@ public class RESTClient
 		return sslSf;
 	}
 	
-	static class Result
-	{
-		private int status;
-		private String body;
-		
-		public Result(final int status)
-		{
-			this.status = status;
-		}
-		
-		public Result(final int status, final String body)
-		{
-			this.status = status;
-			this.body = body;
-		}
-		
-		public int getStatus()
-		{
-			return this.status;
-		}
-		
-		public String getBody()
-		{
-			try {
-				logger.trace(String.format(this.body));
-			} catch (java.util.UnknownFormatConversionException e) {
-				logger.debug("Unable log body due to exception " + e.getMessage());
-			}
-			return this.body;
-		}
-		
-		public int getCode()
-		{
-			Gson gson = null;
-			gson = new GsonBuilder()
-			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-			.create();
-			
-			int returnCode = 0;
-			
-			ErrorResult result = null;
-			if (this.status != HttpStatus.SC_OK)
-			{
-				result = gson.fromJson(this.body, ErrorResult.class);
-				if (result != null)
-				{
-					returnCode = result.getCode();
-				}
-			}
-			
-			return returnCode;
-		}
-	}
-	
-	
 	static class ErrorResult
 	{
 		private Map<String,ColumnTuple> response;
@@ -503,8 +493,8 @@ public class RESTClient
 	
 	public static void main(String[] args) throws Exception
 	{
-		RESTClient client = new RESTClient(args[0], 443);
-		Result r = client.doGet(args[1], false);
+		RESTClient client = new RESTClient(args[0], args[1], 443);
+		Result r = client.doGet(args[2], false);
 		System.out.println(r.getBody());
 	}
 }

@@ -18,7 +18,7 @@ import com.ibm.si.jaql.api.IArielConnection;
 import com.ibm.si.jaql.api.IArielDatabase;
 import com.ibm.si.jaql.api.pojo.ArielColumn;
 import com.ibm.si.jaql.api.pojo.ArielMetaData;
-import com.ibm.si.jaql.rest.RESTClient.Result;
+import com.ibm.si.jaql.rest.Result;
 
 /**
  * Ariel Database wrapper

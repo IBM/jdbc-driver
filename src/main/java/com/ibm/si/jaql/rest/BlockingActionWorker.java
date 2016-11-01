@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ibm.si.jaql.rest.RESTClient.Result;
+import com.ibm.si.jaql.rest.Result;
 
 /**
  * Blocking thread that will wait until the ariel search query completes and returns data

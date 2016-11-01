@@ -40,9 +40,9 @@ public class Jdbc4Connection extends JdbcConnection
 	public Jdbc4Connection (String url, Properties info) throws SQLException 
 	{
 		queryExecutor = new QueryExecutor(url, info);
-    if (info.containsKey(Driver.SPARK_MODE))
-  		sparkMode = Boolean.parseBoolean((String) info.get(Driver.SPARK_MODE));
-    logger.debug("Spark SQL=>AQL rewriting " + sparkMode);
+		if (info.containsKey(Driver.SPARK_MODE))
+			sparkMode = Boolean.parseBoolean((String) info.get(Driver.SPARK_MODE));
+		logger.debug("Spark SQL=>AQL rewriting " + sparkMode);
 	}
 	
     public Jdbc4Statement createStatement() throws SQLException
@@ -148,7 +148,7 @@ public class Jdbc4Connection extends JdbcConnection
     				}
     			}
     			
-				logger.debug(String.format("*** Adding meta data for %s as %s", columnName, tuple.getType() ));
+				logger.trace(String.format("*** Adding meta data for %s as %s", columnName, tuple.getType() ));
 				orderedMap.put(columnName, tuple); // Really rather this ordering occurred at the parsing stage
 			
     		}
