@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.ibm.si.jaql.api.ArielException;
-import com.ibm.si.jaql.rest.RESTClient.Result;
+import com.ibm.si.jaql.rest.Result;
 import com.ibm.si.jaql.util.BaseTest;
 
 public class RESTClientTest extends BaseTest

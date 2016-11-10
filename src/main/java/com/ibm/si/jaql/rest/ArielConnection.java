@@ -19,7 +19,7 @@ import com.ibm.si.jaql.api.pojo.ArielColumn;
 import com.ibm.si.jaql.api.pojo.ArielMetaData;
 import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ArielSearch;
-import com.ibm.si.jaql.rest.RESTClient.Result;
+import com.ibm.si.jaql.rest.Result;
 
 /**
  * Ariel datastore connection object
