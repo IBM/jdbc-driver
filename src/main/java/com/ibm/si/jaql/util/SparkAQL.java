@@ -63,7 +63,7 @@ public class SparkAQL {
 	}
 	
 	public static String getColumnName(String column) {
-		Pattern isAlias = Pattern.compile("^(.*)\\s+as\\s+([a-z_@#]+[a-z0-1_@#]*)$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+		Pattern isAlias = Pattern.compile("^(.*)\\s+as\\s+([a-z_@#]+[a-z0-1_@#]*)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 		Matcher match = isAlias.matcher(column);
 		if (match.matches())
 			return match.group(2).toLowerCase();
