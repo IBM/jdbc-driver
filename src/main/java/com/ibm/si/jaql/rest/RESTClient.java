@@ -102,10 +102,12 @@ public class RESTClient
 		}
 		catch (ClientProtocolException e)
 		{
+      logger.error("ClientProtocolException: Could not instantiate connection to Ariel DB: {}", e.getMessage());
 			throw new ArielException(e);
 		}
 		catch (IOException e)
 		{
+      logger.error("IOException: Could not instantiate connection to Ariel DB: {}", e.getMessage());
 			throw new ArielException(e);
 		}
 		finally
@@ -151,10 +153,12 @@ public class RESTClient
 		}
 		catch (ClientProtocolException e)
 		{
+      logger.error("ClientProtocolException: Could not instantiate connection to Ariel DB: {}", e.getMessage());
 			throw new ArielException(e);
 		}
 		catch (IOException e)
 		{
+      logger.error("IOException: Could not instantiate connection to Ariel DB: {}", e.getMessage());
 			throw new ArielException(e);
 		}
 		finally
@@ -418,7 +422,7 @@ public class RESTClient
 			
 			sslSf = new SSLConnectionSocketFactory(
 					sslContext,
-					new String[] { "TLSv1" },
+					new String[] { "TLSv1.2" },
 					null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 		}
