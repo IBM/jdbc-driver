@@ -422,7 +422,7 @@ public class RESTClient
 			
 			sslSf = new SSLConnectionSocketFactory(
 					sslContext,
-					new String[] { "TLSv1.2" },
+					new String[] { "TLSv1.2", "TLSv1.1", "TLSv1" },
 					null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 		}
