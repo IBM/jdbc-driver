@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.IArielConnection;
 import com.ibm.si.jaql.api.IArielDatabase;
