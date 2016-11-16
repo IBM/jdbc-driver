@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.api.IArielConnection;
 import com.ibm.si.jaql.api.IArielDatabase;
@@ -120,7 +121,12 @@ public class ArielDatabase implements IArielDatabase
 				if (res.getStatus() == HttpStatus.SC_OK)
 				{
 					result = gson.fromJson(res.getBody(), String[].class);
-				}
+				} else {
+           Map<String,Object> response = gson.fromJson(res.getBody(), Map.class);
+           if (response.containsKey("message"))
+             throw new ArielException(response.get("message").toString());
+           throw new ArielException("RESTClient returned error code " + res.getCode());
+        }
 			}
 			else
 			{
@@ -134,6 +140,8 @@ public class ArielDatabase implements IArielDatabase
 		catch (IOException e)
 		{
 			throw new ArielException(e);
+		} catch (JsonParseException e) {
+		  throw new ArielException("RESTClient returned non-json data.", e);
 		}
 		
 		return result;
@@ -170,6 +178,7 @@ public class ArielDatabase implements IArielDatabase
 	protected void loadColumnMetaData() throws ArielException
 	{
 		final String[] dbs = listDatabases();
+    if (dbs == null) throw new ArielException("");
 		for (final String db : dbs)
 		{
 			Map<String, ArielColumn> dbMetaData = new HashMap<String, ArielColumn>();
@@ -179,7 +188,7 @@ public class ArielDatabase implements IArielDatabase
 				final Result res = apiClient.doGet(String.format("/api/ariel/databases/%s", db));
 				if (res != null)
 				{
-					final String body = res.getBody();					
+					final String body = res.getBody();
 					final ArielMetaData columns = gson.fromJson(body, ArielMetaData.class);
 					final Iterator<ArielColumn> itr = columns.getColumns().iterator();
 					
