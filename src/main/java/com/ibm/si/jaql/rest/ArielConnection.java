@@ -169,6 +169,12 @@ public class ArielConnection implements IArielConnection
 			}
 			else
 			{
+        if (null == rawResult) {
+          logger.fatal("The result set returned was null");
+          throw new ArielException(String.format("Failed to retrieve results for searchId %s with returned null", searchId));
+        } else {
+          logger.fatal(String.format("Server returned code %d: %s", rawResult.getStatus(), rawResult.getBody()));
+        }
 				throw new ArielException(String.format("Failed to retrieve results for searchId %s with return code %d, uniquecode %d", searchId, rawResult.getStatus(), rawResult.getCode() ));
 			}
 		}
