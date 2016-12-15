@@ -12,13 +12,16 @@ import com.ibm.si.jaql.api.IArielDatabase;
 import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ArielSearch;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Query execution implementation against the Ariel datastore
  * @author IBM
  *
  */
 public class QueryExecutor implements IQueryExecutor{
-
+  private static Logger logger = LogManager.getLogger();
 	private IArielDatabase arielDB;
 	
 	/**
@@ -96,7 +99,7 @@ public class QueryExecutor implements IQueryExecutor{
 		try {
 			arielCon.deleteSearch(search.getSearchId());
 		} catch (ArielException e) {
-			throw new SQLException( "Error removing Ariel search.", e );
+      logger.warn("Error removing Ariel search.", e);
 		}
 		
 		return results;
