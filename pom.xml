@@ -5,8 +5,8 @@
 	<properties>
 		<jaql.major>0</jaql.major>
 		<jaql.minor>2.1</jaql.minor>
-		<log4j2.version>2.0.2</log4j2.version>
-		<httpcomponents.version>4.3.4</httpcomponents.version>
+		<log4j2.version>2.3</log4j2.version>
+		<httpcomponents.version>4.5.2</httpcomponents.version>
 	</properties>
 
 	<groupId>com.ibm.si</groupId>
@@ -21,21 +21,14 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.12</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr4-runtime</artifactId>
-			<version>4.3</version>
-
 		</dependency>
 
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.9</version>
+			<version>1.10</version>
 		</dependency>
 
 		<dependency>
@@ -81,21 +74,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.directory.studio</groupId>
-			<artifactId>org.apache.commons.io</artifactId>
-			<version>2.4</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<version>1.10</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
 		</dependency>
 
 		<dependency>
