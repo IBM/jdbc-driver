@@ -396,7 +396,7 @@ public class RESTClient
 		
 		try
 		{
-			final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());			
+			final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			final InputStream inStream = RESTClient.class.getResourceAsStream(QRADARSTORE_RESOURCE_NAME);
 			
 			try
