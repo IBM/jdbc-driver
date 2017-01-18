@@ -32,6 +32,7 @@ public class BlockingActionWorker implements Runnable
 		{
 			while (true)
 			{
+        logger.debug("Requesting search status...");
 				result = client.doGet(request);
 				int status = result.getStatus();
 				int uniqueErrorcode = result.getCode();
@@ -39,7 +40,7 @@ public class BlockingActionWorker implements Runnable
 				{
 					logger.debug(String.format("Status was %d", result.getStatus()));
 					logger.debug(String.format("Status Code was %d", result.getCode()));
-					Thread.sleep(5000);
+					Thread.sleep(100);
 				}
 				else
 				{
