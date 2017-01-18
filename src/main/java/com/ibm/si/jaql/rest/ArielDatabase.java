@@ -31,7 +31,7 @@ import com.ibm.si.jaql.rest.Result;
  */
 public class ArielDatabase implements IArielDatabase
 {
-	static final Logger logger = LogManager.getLogger(ArielConnection.class.getName());
+	static final Logger logger = LogManager.getLogger();
 	
 	private RESTClient apiClient = null;
 	private Gson gson = null;
@@ -42,7 +42,7 @@ public class ArielDatabase implements IArielDatabase
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;	
 	private int port=443;
-	
+	private long lastMetaDataPull = 0;
 	/**
 	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
 	 * @param ip
@@ -101,7 +101,8 @@ public class ArielDatabase implements IArielDatabase
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 		metaData = new HashMap<String,ArielColumn>();
-		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
+		if (metaDataByDb == null)
+      metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
 		loadColumnMetaData();
 	}
 	
@@ -110,6 +111,7 @@ public class ArielDatabase implements IArielDatabase
 	 */
 		public String[] listDatabases() throws ArielException
 	{
+    logger.warn("Getting /api/ariel/databases");
 		String[] result = null;
 		
 		try
@@ -177,6 +179,10 @@ public class ArielDatabase implements IArielDatabase
 	 */
 	protected void loadColumnMetaData() throws ArielException
 	{
+    if (System.currentTimeMillis() - lastMetaDataPull < 1000*60*60*24) {
+      logger.debug("Using cached table metadata");
+      return;
+    }
 		final String[] dbs = listDatabases();
     if (dbs == null) throw new ArielException("");
 		for (final String db : dbs)
@@ -200,6 +206,7 @@ public class ArielDatabase implements IArielDatabase
 						dbMetaData.put(name, column);
 					}
 				}
+        lastMetaDataPull = System.currentTimeMillis();
 			}
 			catch (final IOException e)
 			{

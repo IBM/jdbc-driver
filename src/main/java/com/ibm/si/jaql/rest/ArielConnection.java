@@ -36,7 +36,7 @@ public class ArielConnection implements IArielConnection
 	private RESTClient rawClient = null;
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;
-	
+	private long lastMetaDataPull = 0;
 	public ArielConnection(final RESTClient rawClient) throws ArielException
 	{
 		gson = new GsonBuilder()
@@ -45,7 +45,8 @@ public class ArielConnection implements IArielConnection
 			.create();
 		this.rawClient = rawClient;
 		metaData = new HashMap<String,ArielColumn>();
-		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
+    if (metaDataByDb == null)
+  		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
 		
 		loadColumnMetaData();
 	}
@@ -206,6 +207,10 @@ public class ArielConnection implements IArielConnection
 	
 	protected void loadColumnMetaData() throws ArielException
 	{
+    if (System.currentTimeMillis() - lastMetaDataPull < 1000*60*60*24) {
+      logger.debug("Using cached table metadata");
+      return;
+    }
 		final String[] dbs = {"flows", "events", "simarc"};
 		for (final String db : dbs)
 		{
@@ -234,6 +239,7 @@ public class ArielConnection implements IArielConnection
           logger.warn("Table metadata result was null");
 				
 				this.metaDataByDb.put(db, dbMetaData);
+        lastMetaDataPull = System.currentTimeMillis();
 			}
 			catch (final IOException e)
 			{
