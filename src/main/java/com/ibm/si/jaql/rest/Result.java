@@ -5,7 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.FieldNamingPolicy;
 
 import org.apache.commons.httpclient.HttpStatus;
-
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +16,7 @@ public class Result
 {
 	private int status;
 	private String body;
+  private HttpMessage msg = null;
 	private static Logger logger = LogManager.getLogger();
 	public Result(final int status)
 	{
@@ -25,6 +27,13 @@ public class Result
 	{
 		this.status = status;
 		this.body = body;
+	}
+  
+	public Result(final int status, final String body, HttpMessage msg)
+	{
+		this.status = status;
+		this.body = body;
+    this.msg = msg;
 	}
 	
 	public int getStatus()
@@ -63,4 +72,10 @@ public class Result
 		
 		return returnCode;
 	}
+  
+  public String getHeader(String name) {
+    Header head = msg.getFirstHeader(name);
+    if (head != null) return head.getValue();
+    return null;
+  }
 }

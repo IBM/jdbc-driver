@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.logging.log4j.LogManager;
@@ -156,7 +157,9 @@ public class ArielConnection implements IArielConnection
 		
 		try
 		{
-			final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s/results", searchId));
+      Properties p = new Properties();
+      p.setProperty("Range", "items=0-1");
+			final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s/results", searchId), p);
 			final Thread t = new Thread(worker);
 			t.start();
 			t.join();
@@ -166,6 +169,7 @@ public class ArielConnection implements IArielConnection
 					&& rawResult.getStatus() == HttpStatus.SC_OK)
 			{
         logger.trace("Raw Json Body: {}", rawResult.getBody());
+        logger.debug("Returned range: {}", rawResult.getHeader("Content-Range"));
 				result = gson.fromJson(rawResult.getBody(), ArielResult.class);
 			}
 			else
