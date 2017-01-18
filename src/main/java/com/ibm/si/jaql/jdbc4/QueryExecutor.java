@@ -99,7 +99,7 @@ public class QueryExecutor implements IQueryExecutor{
 		try {
 			arielCon.deleteSearch(search.getSearchId());
 		} catch (ArielException e) {
-      logger.warn("Error removing Ariel search.", e);
+      logger.warn("Error removing Ariel search.");
 		}
 		
 		return results;
