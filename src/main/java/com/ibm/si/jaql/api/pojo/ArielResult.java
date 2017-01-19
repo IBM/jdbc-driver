@@ -20,16 +20,27 @@ import java.util.Map;
  */
 public class ArielResult
 {
-	private String name;
+	private String name = null;
 	private ArielSearch search = null;
 	private List<LinkedHashMap<String,ColumnTuple>> results;
-	
+	private int totalRecords = 0;
+  
+  public ArielResult() {
+  }
+  
 	public ArielResult(final String name, final List<LinkedHashMap<String,ColumnTuple>> results)
 	{
 		this.name = name;
 		this.results = results;
 	}
 	
+  public void merge(ArielResult result) {
+    if (!this.name.equals(result.name)) {
+      return;
+    }
+    this.results.addAll(result.results);
+  }
+  
 	public void setSearch( ArielSearch search )
 	{
 		this.search = search;
@@ -70,6 +81,15 @@ public class ArielResult
 		
 		return results;
 	}
+  public void setTotal(int t) {
+    totalRecords = t;
+  }
+  public int getTotal() {
+    return totalRecords;
+  }
+  public int size() {
+    return results.size();
+  }
 	public String toString() {
 	  return String.format("Name=%s, search=%s, results=%s}", name, search, results);
 	}

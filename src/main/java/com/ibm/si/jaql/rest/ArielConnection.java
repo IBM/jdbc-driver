@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.logging.log4j.LogManager;
@@ -149,47 +151,59 @@ public class ArielConnection implements IArielConnection
 		
 		return result;
 	}
-
-		public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException
-	{
-		ArielResult result = null;
-		Result rawResult = null;
-		
-		try
-		{
+  
+  public ArielResult getSearchResults(String searchId) throws ArielException {
+    int batchSize = 5;
+    int start = 0;
+    int end = batchSize - 1;
+    ArielResult result = getSearchResults(searchId, start, end, true);
+    start = end + 1;
+    end = start + batchSize - 1;
+    while (result.getTotal() > start) {
+      ArielResult r2 = getSearchResults(searchId, start, end, true);
+      result.merge(r2);
+      start = end + 1;
+      end = start + batchSize - 1;
+    }
+    return result;
+  }
+  
+  public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException {
+    if (start == -1 || end == -1)
+      return getSearchResults(searchId);
+    ArielResult result = null;
+    Result rawResult = null;
+    Pattern pattern = Pattern.compile("^items (\\d+)-(\\d+)/(\\d+)$");
+    try {
       Properties p = new Properties();
-      p.setProperty("Range", "items=0-1");
-			final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s/results", searchId), p);
-			final Thread t = new Thread(worker);
-			t.start();
-			t.join();
-			
-			rawResult = worker.getResult();
-			if (null != rawResult
-					&& rawResult.getStatus() == HttpStatus.SC_OK)
-			{
+      p.setProperty("Range", String.format("items=%d-%d", start, end));
+      final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s/results", searchId), p);
+      final Thread t = new Thread(worker);
+      t.start();
+      t.join();
+      
+      rawResult = worker.getResult();
+      if (null != rawResult && rawResult.getStatus() == HttpStatus.SC_OK) {
         logger.trace("Raw Json Body: {}", rawResult.getBody());
-        logger.debug("Returned range: {}", rawResult.getHeader("Content-Range"));
-				result = gson.fromJson(rawResult.getBody(), ArielResult.class);
-			}
-			else
-			{
+        Matcher m = pattern.matcher(rawResult.getHeader("Content-Range"));
+        logger.debug("Returned range: {} {}", rawResult.getHeader("Content-Range"), m.matches() ? m.group(3) : -1);
+        result = gson.fromJson(rawResult.getBody(), ArielResult.class);
+        if (m.matches())
+          result.setTotal(Integer.parseInt(m.group(3)));
+      } else {
         if (null == rawResult) {
           logger.fatal("The result set returned was null");
           throw new ArielException(String.format("Failed to retrieve results for searchId %s with returned null", searchId));
         } else {
           logger.fatal(String.format("Server returned code %d: %s", rawResult.getStatus(), rawResult.getBody()));
         }
-				throw new ArielException(String.format("Failed to retrieve results for searchId %s with return code %d, uniquecode %d", searchId, rawResult.getStatus(), rawResult.getCode() ));
-			}
-		}
-		catch (InterruptedException e)
-		{
-			throw new ArielException(e);
-		}
-		
-		return result;
-	}
+        throw new ArielException(String.format("Failed to retrieve results for searchId %s with return code %d, uniquecode %d", searchId, rawResult.getStatus(), rawResult.getCode() ));
+      }
+    } catch (InterruptedException e) {
+      throw new ArielException(e);
+    }
+    return result;
+  }
 
 		public void close()
 	{
