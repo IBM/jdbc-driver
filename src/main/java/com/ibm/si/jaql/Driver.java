@@ -37,7 +37,7 @@ public class Driver implements java.sql.Driver
   public static final String AUTH_TOKEN   = "prop.auth_token";
   public static final String SPARK_MODE   = "prop.spark";
   public static final String PAGINATION   = "prop.pagination";
-  public static final int DEFAULT_PAGE_SIZE = 10000;
+  public static final int DEFAULT_PAGE_SIZE = 1000;
 	static
 	{
 		//System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
