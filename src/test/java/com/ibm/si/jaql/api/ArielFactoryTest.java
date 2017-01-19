@@ -24,7 +24,7 @@ public class ArielFactoryTest extends BaseTest
 		{
 			final IArielDatabase db = ArielFactory.getArielDatabase(_properties.getProperty("ip"), 
 					_properties.getProperty("user"), 
-					_properties.getProperty("password"));
+					_properties.getProperty("password"), _properties);
 			
 			assertNotNull(db);
 			
@@ -54,7 +54,7 @@ public class ArielFactoryTest extends BaseTest
 	    @SuppressWarnings({ "unused" })
 	    final IArielDatabase db = ArielFactory.getArielDatabase("255.255.255.1", 
 				_properties.getProperty("user"), 
-				_properties.getProperty("password"));
+				_properties.getProperty("password"), _properties);
 	}
 	
 	
@@ -65,7 +65,7 @@ public class ArielFactoryTest extends BaseTest
 		{
 			final IArielDatabase db = ArielFactory.getArielDatabase(_properties.getProperty("ip"), 
 					_properties.getProperty("user"), 
-					_properties.getProperty("password"));
+					_properties.getProperty("password"), _properties);
 			assertNotNull(db);
 			
 			final String[] dbs = db.listDatabases();
