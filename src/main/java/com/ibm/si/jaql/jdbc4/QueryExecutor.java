@@ -40,10 +40,10 @@ public class QueryExecutor implements IQueryExecutor{
   			arielDB = ArielFactory.getArielDatabase(info.getProperty(Driver.SERVER),
   											info.getProperty(Driver.USER),
   											info.getProperty(Driver.PASSWORD),
-  											(Integer)info.get(Driver.PORT));
+  											(Integer)info.get(Driver.PORT), info);
       else
         arielDB = ArielFactory.getArielDatabase(info.getProperty(Driver.SERVER),
-          info.getProperty(Driver.AUTH_TOKEN), (Integer)info.get(Driver.PORT));
+          info.getProperty(Driver.AUTH_TOKEN), (Integer)info.get(Driver.PORT), info);
 		}
 		catch (NullPointerException e)
 		{
@@ -86,20 +86,21 @@ public class QueryExecutor implements IQueryExecutor{
 		
 		//execute search, plugging in default param values if none passed through
 		ArielResult results;
+    
 		try {
 			results = arielCon.getSearchResults(search.getSearchId(), 
-												(Integer)parameters.get("start") ==null ? 1 : (Integer)parameters.get("start") , 
-												(Integer)parameters.get("end") ==null ? 10 : (Integer)parameters.get("end"), 
+												(Integer)parameters.get("start") ==null ? -1 : (Integer)parameters.get("start"),
+												(Integer)parameters.get("end") ==null ? -1 : (Integer)parameters.get("end"),
 												(Boolean)parameters.get("blocking") ==null ? true : (Boolean)parameters.get("blocking"));
 		} catch (ArielException e) {
 			throw new SQLException( "Error executing Ariel search.", e );
-		}	
+		}
 		
 		//delete search
 		try {
 			arielCon.deleteSearch(search.getSearchId());
 		} catch (ArielException e) {
-      logger.warn("Error removing Ariel search.", e);
+      logger.warn("Error removing Ariel search.");
 		}
 		
 		return results;

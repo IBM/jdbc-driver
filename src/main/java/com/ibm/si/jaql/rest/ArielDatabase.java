@@ -5,6 +5,7 @@ import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +32,7 @@ import com.ibm.si.jaql.rest.Result;
  */
 public class ArielDatabase implements IArielDatabase
 {
-	static final Logger logger = LogManager.getLogger(ArielConnection.class.getName());
+	static final Logger logger = LogManager.getLogger();
 	
 	private RESTClient apiClient = null;
 	private Gson gson = null;
@@ -42,16 +43,17 @@ public class ArielDatabase implements IArielDatabase
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;	
 	private int port=443;
-	
+	private long lastMetaDataPull = 0;
+  private int batchSize = com.ibm.si.jaql.Driver.DEFAULT_PAGE_SIZE;
 	/**
 	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
 	 * @param ip
 	 * @param user
 	 * @param password
 	 */
-	public ArielDatabase(String ip, String user, String password) throws ArielException
+	public ArielDatabase(String ip, String user, String password, Properties props) throws ArielException
 	{
-		this(ip, user, password, 443);
+		this(ip, user, password, 443, props);
 	} 
 	
 	/**
@@ -61,14 +63,14 @@ public class ArielDatabase implements IArielDatabase
 	 * @param password
 	 * @param port
 	 */
-	public ArielDatabase(String ip, String user, String password,int port) throws ArielException
+	public ArielDatabase(String ip, String user, String password,int port, Properties props) throws ArielException
 	{
 		this.ip = ip;
 		this.userName = user;
 		this.password = password;
 		this.port = port;
 		apiClient = new RESTClient(this.ip, this.userName, this.password,this.port);
-		init();
+		init(props);
 	}
 	
 	/**
@@ -76,9 +78,9 @@ public class ArielDatabase implements IArielDatabase
 	 * @param ip
 	 * @param auth_token
 	 */
-	public ArielDatabase(String ip, String auth_token) throws ArielException
+	public ArielDatabase(String ip, String auth_token, Properties props) throws ArielException
 	{
-		this(ip, auth_token, 443);
+		this(ip, auth_token, 443, props);
 	}
 	
 	/**
@@ -87,21 +89,28 @@ public class ArielDatabase implements IArielDatabase
 	 * @param auth_token
 	 * @param port
 	 */
-	public ArielDatabase(String ip, String auth_token, int port) throws ArielException
+	public ArielDatabase(String ip, String auth_token, int port, Properties props) throws ArielException
 	{
 		this.ip = ip;
 		this.port = port;
 		this.auth_token = auth_token;
 		apiClient = new RESTClient(this.ip, this.auth_token, this.port);
-		init();
+		init(props);
 	}
-	private void init() throws ArielException
+	private void init(Properties props) throws ArielException
 	{
 		gson = new GsonBuilder()
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 		metaData = new HashMap<String,ArielColumn>();
-		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
+		if (metaDataByDb == null)
+      metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
+    if (props.get(com.ibm.si.jaql.Driver.PAGINATION) != null)
+      try {
+        batchSize = Integer.parseInt((String)props.get(com.ibm.si.jaql.Driver.PAGINATION));
+      } catch (Exception e) {
+        logger.warn("Error parsing properties {} with value {}", com.ibm.si.jaql.Driver.PAGINATION, props.get(com.ibm.si.jaql.Driver.PAGINATION));
+      }
 		loadColumnMetaData();
 	}
 	
@@ -110,6 +119,7 @@ public class ArielDatabase implements IArielDatabase
 	 */
 		public String[] listDatabases() throws ArielException
 	{
+    logger.warn("Getting /api/ariel/databases");
 		String[] result = null;
 		
 		try
@@ -158,7 +168,7 @@ public class ArielDatabase implements IArielDatabase
 			client = new RESTClient(ip, userName, password, port);
 		else
 			client = new RESTClient(ip, auth_token, port);
-		result = new ArielConnection(client);
+		result = new ArielConnection(client, batchSize);
 		return result;
 	}
 	
@@ -177,6 +187,10 @@ public class ArielDatabase implements IArielDatabase
 	 */
 	protected void loadColumnMetaData() throws ArielException
 	{
+    if (System.currentTimeMillis() - lastMetaDataPull < 1000*60*60*24) {
+      logger.debug("Using cached table metadata");
+      return;
+    }
 		final String[] dbs = listDatabases();
     if (dbs == null) throw new ArielException("");
 		for (final String db : dbs)
@@ -200,6 +214,7 @@ public class ArielDatabase implements IArielDatabase
 						dbMetaData.put(name, column);
 					}
 				}
+        lastMetaDataPull = System.currentTimeMillis();
 			}
 			catch (final IOException e)
 			{

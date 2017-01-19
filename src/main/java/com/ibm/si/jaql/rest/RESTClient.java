@@ -11,6 +11,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
 
@@ -42,6 +43,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.Header;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -188,9 +190,16 @@ public class RESTClient
 	
 	public Result doGet(final String reqBody) throws IOException
 	{
-		return doGet(reqBody, true);
+		return doGet(reqBody, true, null);
 	}
-	public Result doGet(final String reqBody, boolean addAuth) throws IOException
+	public Result doGet(final String reqBody, Properties header) throws IOException
+	{
+		return doGet(reqBody, true, header);
+	}
+  public Result doGet(final String reqBody, boolean addAuth) throws IOException {
+    return doGet(reqBody, addAuth, null);
+  }
+	public Result doGet(final String reqBody, boolean addAuth, Properties header) throws IOException
 	{
 		Result result = null;
 		String uri = buildRequestURI(reqBody);
@@ -198,6 +207,15 @@ public class RESTClient
 		final HttpGet method = new HttpGet(uri);
 		if (addAuth)
 			addAuth(method);
+    if (header != null) {
+      for (String header_key : header.stringPropertyNames()) {
+        method.addHeader(header_key, header.getProperty(header_key));
+      }
+    } else
+      logger.debug("Supplied additional Header was null");
+    logger.debug("Request: {}", method);
+    for (Header head : method.getAllHeaders())
+      logger.debug("Header: {}", head);
 		CloseableHttpResponse res = null;
 		
 		try
@@ -205,7 +223,7 @@ public class RESTClient
 			res = client.execute(targetHost, method, context);
 			final HttpEntity bodyResult = res.getEntity();
 			final String body = EntityUtils.toString(bodyResult);
-			result = new Result(res.getStatusLine().getStatusCode(), body);
+			result = new Result(res.getStatusLine().getStatusCode(), body, res);
 		}
 		catch (ClientProtocolException e)
 		{
@@ -396,7 +414,7 @@ public class RESTClient
 		
 		try
 		{
-			final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());			
+			final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			final InputStream inStream = RESTClient.class.getResourceAsStream(QRADARSTORE_RESOURCE_NAME);
 			
 			try
