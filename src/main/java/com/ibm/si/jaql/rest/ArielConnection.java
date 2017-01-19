@@ -40,7 +40,8 @@ public class ArielConnection implements IArielConnection
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;
 	private long lastMetaDataPull = 0;
-	public ArielConnection(final RESTClient rawClient) throws ArielException
+  private int batchSize = 1;
+	public ArielConnection(final RESTClient rawClient, int batchSize) throws ArielException
 	{
 		gson = new GsonBuilder()
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -50,7 +51,7 @@ public class ArielConnection implements IArielConnection
 		metaData = new HashMap<String,ArielColumn>();
     if (metaDataByDb == null)
   		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
-		
+		this.batchSize = batchSize;
 		loadColumnMetaData();
 	}
 
@@ -153,17 +154,16 @@ public class ArielConnection implements IArielConnection
 	}
   
   public ArielResult getSearchResults(String searchId) throws ArielException {
-    int batchSize = 5;
     int start = 0;
     int end = batchSize - 1;
     ArielResult result = getSearchResults(searchId, start, end, true);
     start = end + 1;
-    end = start + batchSize - 1;
+    end = end = Math.min(start + batchSize - 1, result.getTotal() - 1);
     while (result.getTotal() > start) {
       ArielResult r2 = getSearchResults(searchId, start, end, true);
       result.merge(r2);
       start = end + 1;
-      end = start + batchSize - 1;
+      end = Math.min(start + batchSize - 1, result.getTotal() - 1);
     }
     return result;
   }
@@ -186,7 +186,7 @@ public class ArielConnection implements IArielConnection
       if (null != rawResult && rawResult.getStatus() == HttpStatus.SC_OK) {
         logger.trace("Raw Json Body: {}", rawResult.getBody());
         Matcher m = pattern.matcher(rawResult.getHeader("Content-Range"));
-        logger.debug("Returned range: {} {}", rawResult.getHeader("Content-Range"), m.matches() ? m.group(3) : -1);
+        logger.debug("Returned range: {}", rawResult.getHeader("Content-Range"));
         result = gson.fromJson(rawResult.getBody(), ArielResult.class);
         if (m.matches())
           result.setTotal(Integer.parseInt(m.group(3)));

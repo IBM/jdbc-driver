@@ -40,10 +40,10 @@ public class QueryExecutor implements IQueryExecutor{
   			arielDB = ArielFactory.getArielDatabase(info.getProperty(Driver.SERVER),
   											info.getProperty(Driver.USER),
   											info.getProperty(Driver.PASSWORD),
-  											(Integer)info.get(Driver.PORT));
+  											(Integer)info.get(Driver.PORT), info);
       else
         arielDB = ArielFactory.getArielDatabase(info.getProperty(Driver.SERVER),
-          info.getProperty(Driver.AUTH_TOKEN), (Integer)info.get(Driver.PORT));
+          info.getProperty(Driver.AUTH_TOKEN), (Integer)info.get(Driver.PORT), info);
 		}
 		catch (NullPointerException e)
 		{

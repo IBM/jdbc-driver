@@ -36,7 +36,8 @@ public class Driver implements java.sql.Driver
   public static final String PORT         = "prop.port";
   public static final String AUTH_TOKEN   = "prop.auth_token";
   public static final String SPARK_MODE   = "prop.spark";
-
+  public static final String PAGINATION   = "prop.pagination";
+  public static final int DEFAULT_PAGE_SIZE = 10000;
 	static
 	{
 		//System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -232,7 +233,10 @@ public class Driver implements java.sql.Driver
       String spark = info.getProperty("spark");
       if (spark != null && !spark.isEmpty())
         props.setProperty(SPARK_MODE, spark);
-    }
+      String page = info.getProperty("pagination");
+      if (page != null && !page.isEmpty())
+        props.setProperty(PAGINATION, page);
+    } 
 		return props;
 	}
 	
