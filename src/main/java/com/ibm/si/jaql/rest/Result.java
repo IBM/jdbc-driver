@@ -1,5 +1,7 @@
 package com.ibm.si.jaql.rest;
 
+import java.util.Map;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.FieldNamingPolicy;
@@ -72,6 +74,18 @@ public class Result
 		
 		return returnCode;
 	}
+  
+  public Map<String,Object> getParsedBody() {
+    // Consider pojo
+		Gson gson = null;
+		gson = new GsonBuilder()
+		.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+		.create();
+    if (this.status == HttpStatus.SC_OK) {
+      return gson.fromJson(this.body, Map.class);
+    }
+    return null;
+  }
   
   public String getHeader(String name) {
     Header head = msg.getFirstHeader(name);
