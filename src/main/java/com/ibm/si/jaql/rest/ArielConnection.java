@@ -41,6 +41,7 @@ public class ArielConnection implements IArielConnection
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;
 	private long lastMetaDataPull = 0;
   private int batchSize = 1;
+  private static final Pattern pattern = Pattern.compile("^items (\\d+)-(\\d+)/(\\d+)$");
 	public ArielConnection(final RESTClient rawClient, int batchSize) throws ArielException
 	{
 		gson = new GsonBuilder()
@@ -156,11 +157,13 @@ public class ArielConnection implements IArielConnection
   public ArielResult getSearchResults(String searchId) throws ArielException {
     int start = 0;
     int end = batchSize - 1;
+    // Block for the first call to wait for QRadar to finish the query
     ArielResult result = getSearchResults(searchId, start, end, true);
     start = end + 1;
     end = end = Math.min(start + batchSize - 1, result.getTotal() - 1);
     while (result.getTotal() > start) {
-      ArielResult r2 = getSearchResults(searchId, start, end, true);
+      // We know the search is complete, don't bother waiting
+      ArielResult r2 = getSearchResults(searchId, start, end, false);
       result.merge(r2);
       start = end + 1;
       end = Math.min(start + batchSize - 1, result.getTotal() - 1);
@@ -169,20 +172,28 @@ public class ArielConnection implements IArielConnection
   }
   
   public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException {
-    if (start == -1 || end == -1)
+    if ((start == -1 || end == -1) && batchSize > 0)
       return getSearchResults(searchId);
     ArielResult result = null;
     Result rawResult = null;
-    Pattern pattern = Pattern.compile("^items (\\d+)-(\\d+)/(\\d+)$");
     try {
+      // Block for the first invocation only
+      if (blocking) {
+        final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s", searchId));
+        final Thread t = new Thread(worker);
+        t.start();
+        t.join();
+      }
+      // Then pull back the results in ranges
       Properties p = new Properties();
-      p.setProperty("Range", String.format("items=%d-%d", start, end));
-      final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s/results", searchId), p);
-      final Thread t = new Thread(worker);
-      t.start();
-      t.join();
-      
-      rawResult = worker.getResult();
+      if (batchSize > 0 && start != -1 && end != -1)
+        p.setProperty("Range", String.format("items=%d-%d", start, end));
+      // rawResult = worker.getResult();
+      try {
+        rawResult = rawClient.doGet(String.format("/api/ariel/searches/%s/results", searchId), p);
+      } catch (IOException e) {
+        logger.warn("Exception getting search results: {}", e.getMessage(), e);
+      }
       if (null != rawResult && rawResult.getStatus() == HttpStatus.SC_OK) {
         logger.trace("Raw Json Body: {}", rawResult.getBody());
         Matcher m = pattern.matcher(rawResult.getHeader("Content-Range"));
