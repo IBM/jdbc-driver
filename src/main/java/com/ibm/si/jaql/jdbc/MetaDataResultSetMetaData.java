@@ -74,8 +74,7 @@ public class MetaDataResultSetMetaData implements ResultSetMetaData
 	}
 
 		public int isNullable(int column) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		return ResultSetMetaData.columnNullable;
 	}
 
 		public boolean isSigned(int column) throws SQLException {
