@@ -86,8 +86,7 @@ public class ArielResultSetMetaData implements ResultSetMetaData
 
 	
 	public int isNullable(int column) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		return ResultSetMetaData.columnNullable;
 	}
 
 	
