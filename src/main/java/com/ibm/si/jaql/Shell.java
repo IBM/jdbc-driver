@@ -8,7 +8,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.Scanner;
 import java.util.Properties;
-import java.io.Console;
 import java.lang.StringBuilder;
 
 import org.apache.commons.cli.CommandLine;
@@ -18,6 +17,16 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import java.io.IOException;
+
+// import org.jboss.aesh.console.Console;
+// import org.jboss.aesh.console.AeshConsoleCallback;
+// import org.aesh.console.ConsoleOperation;
+// import org.aesh.readline.Prompt;
+// import org.aesh.console.settings.SettingsBuilder;
+import org.jboss.aesh.console.Console;
+import org.jboss.aesh.console.ConsoleOutput;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,46 +43,49 @@ public class Shell {
     logger.info("Initialized connection", c);
   }
   
-  public void run() {
-    Scanner reader = new Scanner(System.in);
-    while (true) {
-      if (prompt)
-        System.out.print("aql> ");
-      String sql = reader.nextLine().trim();
-      if (sql.equalsIgnoreCase("exit") || sql.equalsIgnoreCase("quit"))
-        System.exit(0);
-      try {
-        Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        ResultSetMetaData rsMeta = rs.getMetaData();
-        StringBuilder buff = new StringBuilder();
-        for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-          buff.append((i > 1 ? " " : "") + sep + " " + rsMeta.getColumnLabel(i));
-        }
-        buff.append(" " + sep);
-        logger.info("Line length {}", buff.length());
-        System.out.print("+");
-        for (int i = 0; i < buff.length()-2; i++)
-          System.out.print("-");
-        System.out.println("+");
-        System.out.println(buff.toString());
-        System.out.print("+");
-        for (int i = 0; i < buff.length()-2; i++)
-          System.out.print("-");
-        System.out.println("+");
-        while (rs.next()) {
-          for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-            System.out.print((i > 1 ? " " : "") + sep + " " + rs.getString(i));
-          }
-          System.out.println(" " + sep);
-        }
-        System.out.print("+");
-        for (int i = 0; i < buff.length()-2; i++)
-          System.out.print("-");
-        System.out.println("+");
-      } catch (Exception e) {
-        System.err.println("Error: " + e);
+  public void query(String sql) {
+    try {
+      Statement stmt = c.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+      ResultSetMetaData rsMeta = rs.getMetaData();
+      StringBuilder buff = new StringBuilder();
+      for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
+        buff.append((i > 1 ? " " : "") + sep + " " + rsMeta.getColumnLabel(i));
       }
+      buff.append(" " + sep);
+      logger.info("Line length {}", buff.length());
+      System.out.print("+");
+      for (int i = 0; i < buff.length()-2; i++)
+        System.out.print("-");
+      System.out.println("+");
+      System.out.println(buff.toString());
+      System.out.print("+");
+      for (int i = 0; i < buff.length()-2; i++)
+        System.out.print("-");
+      System.out.println("+");
+      while (rs.next()) {
+        for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
+          System.out.print((i > 1 ? " " : "") + sep + " " + rs.getString(i));
+        }
+        System.out.println(" " + sep);
+      }
+      System.out.print("+");
+      for (int i = 0; i < buff.length()-2; i++)
+        System.out.print("-");
+      System.out.println("+");
+    } catch (Exception e) {
+      System.err.println("Error: " + e);
+    }
+  }
+  
+  public void run() throws IOException {
+    Console console = new Console();
+    ConsoleOutput line;
+    while ((line = console.read("aql> ")) != null) {
+      if (line.getBuffer().equalsIgnoreCase("quit") || line.getBuffer().equalsIgnoreCase("exit")) {
+        System.exit(0);
+      } else
+        query(line.getBuffer());
     }
   }
   
