@@ -198,7 +198,12 @@ public class ArielConnection implements IArielConnection
         logger.trace("Raw Json Body: {}", rawResult.getBody());
         Matcher m = pattern.matcher(rawResult.getHeader("Content-Range"));
         logger.debug("Returned range: {}", rawResult.getHeader("Content-Range"));
-        result = gson.fromJson(rawResult.getBody(), ArielResult.class);
+        try {
+          result = gson.fromJson(rawResult.getBody(), ArielResult.class);
+        } catch (Exception e) {
+          logger.fatal("Error parsing json: {}", rawResult.getBody(), e);
+          throw new ArielException(e);
+        }
         if (m.matches())
           result.setTotal(Integer.parseInt(m.group(3)));
       } else {

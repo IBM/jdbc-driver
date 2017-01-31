@@ -196,7 +196,11 @@ public class SparkAQL {
 				if (sb.length() > 0)
 					sb.append(",");
 				sb.append(columnsSelected.get(s.toLowerCase()));
-			} else if (columnsSelected.containsKey("*")) {
+			} else if (columnsSelected.containsKey('"' + s.toLowerCase() + '"')) {
+				if (sb.length() > 0)
+					sb.append(",");
+				sb.append(columnsSelected.get('"' + s.toLowerCase() + '"'));
+      } else if (columnsSelected.containsKey("*")) {
 				if (sb.length() > 0)
 					sb.append(",");
 				sb.append(s);
