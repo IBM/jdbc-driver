@@ -89,7 +89,7 @@ public class Shell {
     Options options = new Options();
     options.addOption("u", "username", true, "QRadar Username");
     options.addOption("p", "password", false, "Prompt for password");
-    options.addOption("a", "auth_token", true, "Prompt for auth token");
+    options.addOption("a", "auth_token", true, "Auth token");
     options.addOption("s", "server", true, "QRadar server");
     options.addOption("h", "help", false, "Show usage");
     try {
