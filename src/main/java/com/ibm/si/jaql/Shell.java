@@ -10,11 +10,11 @@ import java.util.Scanner;
 import java.util.Properties;
 import java.lang.StringBuilder;
 import java.io.IOException;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Formatter;
-
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -30,15 +30,24 @@ import org.jboss.aesh.console.ConsoleOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.opencsv.CSVWriter;
+
 public class Shell {
   Connection c;
   String sep = "|";
   boolean prompt = true;
   private static Logger logger = LogManager.getLogger();
+  int numQueries = 0;
+  String outputPrefix = "";
+  boolean writeFile = false;
   public Shell (Properties props, String separator) throws Exception {
     logger.info("Current props {}", props);
     sep = separator;
     c = DriverManager.getConnection("jdbc:qradar://" + props.getProperty("url"), props);
+    if (props.getProperty("outputfile") != null) {
+      outputPrefix = props.getProperty("outputfile");
+      writeFile = true;
+    }
     logger.info("Initialized connection", c);
   }
   
@@ -47,11 +56,23 @@ public class Shell {
       Statement stmt = c.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       ResultSetMetaData rsMeta = rs.getMetaData();
+      numQueries++;
+      
+      if (writeFile) {
+        String filename = outputPrefix + "_" + numQueries + ".csv";
+        CSVWriter writer = new CSVWriter(new FileWriter(filename));
+        int numRows = writer.writeAll(rs,true) -1;
+        writer.close();
+        console.pushToStdErr("Wrote " + numRows + " rows to " +filename +"\n");
+        return;
+      }
       
       List<String[]> table = new LinkedList<String[]>();
       int num_columns = rsMeta.getColumnCount();
       int[] column_widths = new int[num_columns];
       String[] header = new String[num_columns];
+      
+
       for (int i = 1; i <= num_columns; i++) {
         header[i-1] = rsMeta.getColumnLabel(i);
         column_widths[i-1] = header[i-1].length();
@@ -110,6 +131,7 @@ public class Shell {
     options.addOption("p", "password", false, "Prompt for password");
     options.addOption("a", "auth_token", true, "Auth token");
     options.addOption("s", "server", true, "QRadar server");
+    options.addOption("o", "outputfile", true, "Prefix to dump queries as csv. Files appear as [prefix]_[query_numer].csv");
     options.addOption("h", "help", false, "Show usage");
     try {
       CommandLine line = parser.parse( options, args );
@@ -133,6 +155,9 @@ public class Shell {
         props.put("url", line.getOptionValue("server"));
       } else {
         props.put("url", "localhost:443");
+      }
+      if (line.hasOption("o")) {
+        props.put("outputfile",line.getOptionValue("outputfile"));
       }
       Shell shell = new Shell(props, "|");
       shell.run();
