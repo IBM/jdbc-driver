@@ -10,6 +10,11 @@ import java.util.Scanner;
 import java.util.Properties;
 import java.lang.StringBuilder;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Formatter;
+
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -37,36 +42,50 @@ public class Shell {
     logger.info("Initialized connection", c);
   }
   
-  public void query(String sql) {
+  public void query(String sql, Console console) {
     try {
       Statement stmt = c.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       ResultSetMetaData rsMeta = rs.getMetaData();
-      StringBuilder buff = new StringBuilder();
-      for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-        buff.append((i > 1 ? " " : "") + sep + " " + rsMeta.getColumnLabel(i));
+      
+      List<String[]> table = new LinkedList<String[]>();
+      int num_columns = rsMeta.getColumnCount();
+      int[] column_widths = new int[num_columns];
+      String[] header = new String[num_columns];
+      for (int i = 1; i <= num_columns; i++) {
+        header[i-1] = rsMeta.getColumnLabel(i);
+        column_widths[i-1] = header[i-1].length();
       }
-      buff.append(" " + sep);
-      logger.info("Line length {}", buff.length());
-      System.out.print("+");
-      for (int i = 0; i < buff.length()-2; i++)
-        System.out.print("-");
-      System.out.println("+");
-      System.out.println(buff.toString());
-      System.out.print("+");
-      for (int i = 0; i < buff.length()-2; i++)
-        System.out.print("-");
-      System.out.println("+");
       while (rs.next()) {
-        for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-          System.out.print((i > 1 ? " " : "") + sep + " " + rs.getString(i));
+        String[] column = new String[num_columns];
+        for (int i = 1; i <= num_columns; i++) {
+          column[i-1] = rs.getString(i);
+          column_widths[i-1] = Math.max(column_widths[i-1], column[i-1] == null ? 4 : column[i-1].length());
         }
-        System.out.println(" " + sep);
+        table.add(column);
       }
-      System.out.print("+");
-      for (int i = 0; i < buff.length()-2; i++)
-        System.out.print("-");
-      System.out.println("+");
+      
+      StringBuilder buff = new StringBuilder();
+      Formatter formatter = new Formatter();
+      String format = sep;
+      String horizontal = "+";
+      for (int i = 0; i < num_columns; i++) {
+        format = format + " %" + column_widths[i] + "s " + sep;
+        for (int j = 0; j < column_widths[i]+2; j++)
+          horizontal = horizontal + "-";
+        horizontal = horizontal + "+";
+      }
+      format = format + "\n";
+      formatter.format("%s\n", horizontal);
+      formatter.format(format, header).toString();
+      formatter.format("%s\n", horizontal);
+      int i = 0;
+      for (String[] row : table) {
+        formatter.format(format, row).toString();
+      }
+      formatter.format("%s\n", horizontal);
+      console.pushToStdOut(formatter.toString());
+      console.pushToStdErr("Returned " + table.size() + " rows\n");
     } catch (Exception e) {
       System.err.println("Error: " + e);
     }
@@ -79,11 +98,11 @@ public class Shell {
       if (line.getBuffer().equalsIgnoreCase("quit") || line.getBuffer().equalsIgnoreCase("exit")) {
         System.exit(0);
       } else
-        query(line.getBuffer());
+        query(line.getBuffer(), console);
     }
   }
   
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
     Options options = new Options();
@@ -120,6 +139,8 @@ public class Shell {
     } catch (ParseException exp) {
       System.out.println( "Unexpected exception: " + exp.getMessage() );
       formatter.printHelp( "AQL Shell", options );
+    } catch (Exception e) {
+      e.printStackTrace(); 
     }
   }
 }
