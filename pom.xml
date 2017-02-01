@@ -143,7 +143,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.2</version>
-				<!-- nothing here -->
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.ibm.si.jaql.Shell</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 			<!-- jar build with dependencies -->
 			<plugin>
@@ -156,7 +163,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>org.sample.App</mainClass>
+							<mainClass>com.ibm.si.jaql.Shell</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

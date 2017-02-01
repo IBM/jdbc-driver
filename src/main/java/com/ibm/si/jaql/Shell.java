@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.Scanner;
 import java.util.Properties;
 import java.lang.StringBuilder;
+import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -18,13 +19,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.io.IOException;
-
-// import org.jboss.aesh.console.Console;
-// import org.jboss.aesh.console.AeshConsoleCallback;
-// import org.aesh.console.ConsoleOperation;
-// import org.aesh.readline.Prompt;
-// import org.aesh.console.settings.SettingsBuilder;
 import org.jboss.aesh.console.Console;
 import org.jboss.aesh.console.ConsoleOutput;
 
@@ -95,7 +89,7 @@ public class Shell {
     Options options = new Options();
     options.addOption("u", "username", true, "QRadar Username");
     options.addOption("p", "password", false, "Prompt for password");
-    options.addOption("a", "auth_token", true, "Prompt for auth token");
+    options.addOption("a", "auth_token", true, "Auth token");
     options.addOption("s", "server", true, "QRadar server");
     options.addOption("h", "help", false, "Show usage");
     try {
