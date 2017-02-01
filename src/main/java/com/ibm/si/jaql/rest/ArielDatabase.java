@@ -119,7 +119,7 @@ public class ArielDatabase implements IArielDatabase
 	 */
 		public String[] listDatabases() throws ArielException
 	{
-    logger.warn("Getting /api/ariel/databases");
+    logger.debug("Getting /api/ariel/databases");
 		String[] result = null;
 		
 		try
