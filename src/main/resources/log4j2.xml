@@ -6,7 +6,7 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="com.ibm.si.jaql.jdbc4.Jdbc4Connection" level="info"/>
+    <Logger name="com.ibm.si.jaql.jdbc4.Jdbc4Connection" level="warn"/>
     <Logger name="com.ibm.si.jaql" level="warn"/>
     <Logger name="com.ibm.si.jaql.rest.ArielResultGSONAdapter" level="error"/>
     <!-- <Logger name="com.ibm.si.jaql.rest.ArielConnection" level="trace"/> -->

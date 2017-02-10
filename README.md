@@ -87,6 +87,32 @@ The publicly available documentation stack for IBM's Qradar Security Intelligenc
 
 - http://www-01.ibm.com/support/knowledgecenter/SS42VS_7.2.4/com.ibm.qradar.doc_7.2.4/c_aql_intro.html?lang=en 
 
+## Interactive Shell
+You can now use the jdbc-driver as an interactive shell to issue AQL queries against your QRadar instance. The command line has a simple syntax and supports common features, such as history (including persistence), search, line editing, emacs and vi bindings, etc. It currently relies on [Æsh](https://github.com/aeshell/aesh) [0.33.x](https://github.com/aeshell/aesh/tree/0.33.x) for the more advanced features.
+
+```bash
+$ java -jar target/jaql-0.2.1-jar-with-dependencies.jar -h
+usage: AQL Shell
+ -a,--auth_token <arg>   Prompt for auth token
+ -h,--help               Show usage
+ -p,--password           Prompt for password
+ -s,--server <arg>       QRadar server
+ -u,--username <arg>     QRadar Username
+$ java -jar target/jaql-0.2.1-jar-with-dependencies.jar -a d0a0295e-031c-45e3-b6f0-84fe26d74d84
+aql> select * from events limit 5;
++-------------+---------------+------------+------------+------------+----------+-------------+---------------+----------+-----------------+----------+-----------+------------+
+|    sourceip | destinationip | eventcount | sourceport | protocolid | username | logsourceid |     starttime | category | destinationport |      qid | magnitude | identityip |
++-------------+---------------+------------+------------+------------+----------+-------------+---------------+----------+-----------------+----------+-----------+------------+
+|   127.0.0.1 |     127.0.0.1 |          1 |          0 |        255 |     null |          67 | 1485966540068 |    10009 |               0 | 68750085 |         3 |    0.0.0.0 |
+| 10.10.11.47 |     127.0.0.1 |          1 |          0 |        255 |     null |          65 | 1485966539906 |     8052 |               0 | 38750003 |         5 |    0.0.0.0 |
+| 10.10.11.47 |     127.0.0.1 |          1 |          0 |        255 |     null |          65 | 1485966540003 |     8052 |               0 | 38750003 |         5 |    0.0.0.0 |
+| 10.10.11.47 |     127.0.0.1 |          1 |          0 |        255 |     null |          65 | 1485966540003 |     8052 |               0 | 38750003 |         5 |    0.0.0.0 |
+|   127.0.0.1 |     127.0.0.1 |          1 |          0 |        255 |     null |          67 | 1485966540068 |    10009 |               0 | 68750085 |         3 |    0.0.0.0 |
++-------------+---------------+------------+------------+------------+----------+-------------+---------------+----------+-----------------+----------+-----------+------------+
+Returned 5 rows
+aql> (reverse-i-search) `ev': select * from events limit 5;
+```
+
 ## SparkSQL Support
 SparkSQL supports the ability to directly query an SQL database using a JDBC driver and load the results into a DataFrame for further processing. This package has experimental support for identifying and converting Spark-generated SQL queries into valid AQL queries and handling nuances of the AQL REST interface when possible. In Spark, when reading `jdbc` formatted data, simply specify add `com.ibm.si.jaql.Driver` for the `driver` and enable Spark support through the `.option("spark", "true")`.
 

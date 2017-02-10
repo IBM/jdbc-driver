@@ -8,8 +8,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.Scanner;
 import java.util.Properties;
-import java.io.Console;
 import java.lang.StringBuilder;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Formatter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,72 +24,114 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import org.jboss.aesh.console.Console;
+import org.jboss.aesh.console.ConsoleOutput;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.opencsv.CSVWriter;
 
 public class Shell {
   Connection c;
   String sep = "|";
   boolean prompt = true;
   private static Logger logger = LogManager.getLogger();
+  int numQueries = 0;
+  String outputPrefix = "";
+  boolean writeFile = false;
   public Shell (Properties props, String separator) throws Exception {
     logger.info("Current props {}", props);
     sep = separator;
     c = DriverManager.getConnection("jdbc:qradar://" + props.getProperty("url"), props);
+    if (props.getProperty("outputfile") != null) {
+      outputPrefix = props.getProperty("outputfile");
+      writeFile = true;
+    }
     logger.info("Initialized connection", c);
   }
   
-  public void run() {
-    Scanner reader = new Scanner(System.in);
-    while (true) {
-      if (prompt)
-        System.out.print("aql> ");
-      String sql = reader.nextLine().trim();
-      if (sql.equalsIgnoreCase("exit") || sql.equalsIgnoreCase("quit"))
-        System.exit(0);
-      try {
-        Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        ResultSetMetaData rsMeta = rs.getMetaData();
-        StringBuilder buff = new StringBuilder();
-        for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-          buff.append((i > 1 ? " " : "") + sep + " " + rsMeta.getColumnLabel(i));
-        }
-        buff.append(" " + sep);
-        logger.info("Line length {}", buff.length());
-        System.out.print("+");
-        for (int i = 0; i < buff.length()-2; i++)
-          System.out.print("-");
-        System.out.println("+");
-        System.out.println(buff.toString());
-        System.out.print("+");
-        for (int i = 0; i < buff.length()-2; i++)
-          System.out.print("-");
-        System.out.println("+");
-        while (rs.next()) {
-          for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-            System.out.print((i > 1 ? " " : "") + sep + " " + rs.getString(i));
-          }
-          System.out.println(" " + sep);
-        }
-        System.out.print("+");
-        for (int i = 0; i < buff.length()-2; i++)
-          System.out.print("-");
-        System.out.println("+");
-      } catch (Exception e) {
-        System.err.println("Error: " + e);
+  public void query(String sql, Console console) {
+    try {
+      Statement stmt = c.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+      ResultSetMetaData rsMeta = rs.getMetaData();
+      numQueries++;
+      
+      if (writeFile) {
+        String filename = outputPrefix + "_" + numQueries + ".csv";
+        CSVWriter writer = new CSVWriter(new FileWriter(filename));
+        int numRows = writer.writeAll(rs,true) -1;
+        writer.close();
+        console.pushToStdErr("Wrote " + numRows + " rows to " +filename +"\n");
+        return;
       }
+      
+      List<String[]> table = new LinkedList<String[]>();
+      int num_columns = rsMeta.getColumnCount();
+      int[] column_widths = new int[num_columns];
+      String[] header = new String[num_columns];
+      
+
+      for (int i = 1; i <= num_columns; i++) {
+        header[i-1] = rsMeta.getColumnLabel(i);
+        column_widths[i-1] = header[i-1].length();
+      }
+      while (rs.next()) {
+        String[] column = new String[num_columns];
+        for (int i = 1; i <= num_columns; i++) {
+          column[i-1] = rs.getString(i);
+          column_widths[i-1] = Math.max(column_widths[i-1], column[i-1] == null ? 4 : column[i-1].length());
+        }
+        table.add(column);
+      }
+      
+      StringBuilder buff = new StringBuilder();
+      Formatter formatter = new Formatter();
+      String format = sep;
+      String horizontal = "+";
+      for (int i = 0; i < num_columns; i++) {
+        format = format + " %" + column_widths[i] + "s " + sep;
+        for (int j = 0; j < column_widths[i]+2; j++)
+          horizontal = horizontal + "-";
+        horizontal = horizontal + "+";
+      }
+      format = format + "\n";
+      formatter.format("%s\n", horizontal);
+      formatter.format(format, header).toString();
+      formatter.format("%s\n", horizontal);
+      int i = 0;
+      for (String[] row : table) {
+        formatter.format(format, row).toString();
+      }
+      formatter.format("%s\n", horizontal);
+      console.pushToStdOut(formatter.toString());
+      console.pushToStdErr("Returned " + table.size() + " rows\n");
+    } catch (Exception e) {
+      System.err.println("Error: " + e);
     }
   }
   
-  public static void main(String[] args) throws Exception {
+  public void run() throws IOException {
+    Console console = new Console();
+    ConsoleOutput line;
+    while ((line = console.read("aql> ")) != null) {
+      if (line.getBuffer().equalsIgnoreCase("quit") || line.getBuffer().equalsIgnoreCase("exit")) {
+        System.exit(0);
+      } else
+        query(line.getBuffer(), console);
+    }
+  }
+  
+  public static void main(String[] args) {
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
     Options options = new Options();
     options.addOption("u", "username", true, "QRadar Username");
     options.addOption("p", "password", false, "Prompt for password");
-    options.addOption("a", "auth_token", true, "Prompt for auth token");
+    options.addOption("a", "auth_token", true, "Auth token");
     options.addOption("s", "server", true, "QRadar server");
+    options.addOption("o", "outputfile", true, "Prefix to dump queries as csv. Files appear as [prefix]_[query_numer].csv");
     options.addOption("h", "help", false, "Show usage");
     try {
       CommandLine line = parser.parse( options, args );
@@ -109,11 +156,16 @@ public class Shell {
       } else {
         props.put("url", "localhost:443");
       }
+      if (line.hasOption("o")) {
+        props.put("outputfile",line.getOptionValue("outputfile"));
+      }
       Shell shell = new Shell(props, "|");
       shell.run();
     } catch (ParseException exp) {
       System.out.println( "Unexpected exception: " + exp.getMessage() );
       formatter.printHelp( "AQL Shell", options );
+    } catch (Exception e) {
+      e.printStackTrace(); 
     }
   }
 }
