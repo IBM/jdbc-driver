@@ -131,7 +131,7 @@ public class Shell {
     options.addOption("p", "password", false, "Prompt for password");
     options.addOption("a", "auth_token", true, "Auth token");
     options.addOption("s", "server", true, "QRadar server");
-    options.addOption("o", "outputfile", true, "Prefix to dump queries as csv. Files appear as [prefix]_[query_numer].csv");
+    options.addOption("o", "outputfile", true, "Prefix to dump queries as csv. Files appear as [prefix]_[query_number].csv");
     options.addOption("h", "help", false, "Show usage");
     try {
       CommandLine line = parser.parse( options, args );
