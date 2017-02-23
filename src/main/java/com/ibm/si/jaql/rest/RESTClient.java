@@ -57,14 +57,14 @@ import com.ibm.si.jaql.rest.Result;
 
 /**
  * Ariel rest API endpoint client, offering transport of data into and out of the ariel store
- * e.g. posting of ariel search string constructs, get json bound data sets etc 
+ * e.g. posting of ariel search string constructs, get json bound data sets etc
  * @author IBM
  *
  */
 public class RESTClient
 {
 	static final Logger logger = LogManager.getLogger(RESTClient.class.getName());
-	
+
 	private CloseableHttpClient client = null;
 	private UsernamePasswordCredentials creds = null;
 	private CredentialsProvider credProvider = null;
@@ -73,7 +73,7 @@ public class RESTClient
 	private AuthCache authCache = null;
 	private BasicScheme basicAuth = null;
 	private String auth_token = null;
-	
+
 	public RESTClient(final String ip,
 		final String user,
 		final String password) throws ArielException
@@ -96,7 +96,7 @@ public class RESTClient
 		final HttpGet wakeUp = new HttpGet(String.format("https://%s:%d/restapi/doc", ip,port));
 		addAuth(wakeUp);
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
 			res = client.execute(targetHost, wakeUp, context);
@@ -130,24 +130,24 @@ public class RESTClient
 		credProvider = new BasicCredentialsProvider();
 		creds = new UsernamePasswordCredentials(user, password);
 		credProvider.setCredentials(new AuthScope(ip, AuthScope.ANY_PORT), creds);
-		
+
 		authCache = new BasicAuthCache();
 		basicAuth = new BasicScheme();
 		authCache.put(targetHost, basicAuth);
-		
-		
+
+
 		context = HttpClientContext.create();
 		context.setCredentialsProvider(credProvider);
 		context.setAuthCache(authCache);
-		
+
 		client = HttpClients.custom()
 				.setDefaultCredentialsProvider(credProvider)
 				.setSSLSocketFactory(getSSLFactory())
 				.build();
-		
+
 		final HttpGet wakeUp = new HttpGet(String.format("https://%s:%d/restapi/doc", ip,port));
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
 			res = client.execute(targetHost, wakeUp, context);
@@ -171,7 +171,7 @@ public class RESTClient
 			}
 		}
 	}
-	
+
 	public RESTClient(final String ip, int port) throws ArielException
 	{
 		logger.debug("Opening REST Connection("+ip+":"+port+");");
@@ -181,13 +181,13 @@ public class RESTClient
 				.build();
 		context = HttpClientContext.create();
   }
-  
+
 	private void addAuth(HttpMessage msg)
 	{
 		if (auth_token != null)
 			msg.addHeader("SEC", auth_token);
 	}
-	
+
 	public Result doGet(final String reqBody) throws IOException
 	{
 		return doGet(reqBody, true, null);
@@ -217,7 +217,7 @@ public class RESTClient
     for (Header head : method.getAllHeaders())
       logger.debug("Header: {}", head);
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
 			res = client.execute(targetHost, method, context);
@@ -236,12 +236,13 @@ public class RESTClient
 				ConnectionUtility.closeQuietly(res);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public Result doPost(final String uri, final Map<String,String> nvPairs) throws IOException
 	{
+		logger.debug("POST on {}", uri);
 		Result result = null;
 		final HttpPost method = new HttpPost(uri);
 		addAuth(method);
@@ -251,17 +252,17 @@ public class RESTClient
 			final BasicNameValuePair pair = new BasicNameValuePair(nvName, nvPairs.get(nvName));
 			nvps.add(pair);
 		}
-		
+
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
 			method.setEntity(new UrlEncodedFormEntity(nvps));
 			res = client.execute(targetHost, method, context);
 			final HttpEntity bodyResult = res.getEntity();
 			final String body = EntityUtils.toString(bodyResult);
-      
 			result = new Result(res.getStatusLine().getStatusCode(), body);
+      logger.trace("bodyResult: {}", body);
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -278,17 +279,18 @@ public class RESTClient
 				ConnectionUtility.closeQuietly(res);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public Result doPost(final String uri, final String postbody) throws IOException
 	{
+		logger.debug("POST on {}", uri);
 		Result result = null;
 		final HttpPost method = new HttpPost(uri);
 		addAuth(method);
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
       StringEntity input = new StringEntity(postbody);
@@ -298,9 +300,9 @@ public class RESTClient
 			final HttpEntity bodyResult = res.getEntity();
 			final String body = EntityUtils.toString(bodyResult);
 			result = new Result(res.getStatusLine().getStatusCode(), body);
-      logger.info("Result: {}", res);
-      logger.info("bodyResult: {}", bodyResult);
-      logger.info("Body: {}", body);
+      logger.trace("Result: {}", res);
+      logger.trace("bodyResult: {}", bodyResult);
+      logger.trace("Body: {}", body);
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -319,12 +321,13 @@ public class RESTClient
 				ConnectionUtility.closeQuietly(res);
 			}
 		}
-		
+
 		return result;
 	}
-  
+
 	public Result doPut(final String uri, final Map<String,String> nvPairs) throws IOException
 	{
+		logger.debug("PUT on {}", uri);
 		Result result = null;
 		final HttpPut method = new HttpPut(uri);
 		addAuth(method);
@@ -334,9 +337,9 @@ public class RESTClient
 			final BasicNameValuePair pair = new BasicNameValuePair(nvName, nvPairs.get(nvName));
 			nvps.add(pair);
 		}
-		
+
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
 			method.setEntity(new UrlEncodedFormEntity(nvps));
@@ -360,17 +363,18 @@ public class RESTClient
 				ConnectionUtility.closeQuietly(res);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public Result doDelete(final String uri) throws IOException
 	{
+		logger.debug("DELETE on {}", uri);
 		Result result = null;
 		HttpDelete method = new HttpDelete(uri);
 		addAuth(method);
 		CloseableHttpResponse res = null;
-		
+
 		try
 		{
 			res = client.execute(targetHost, method, context);
@@ -392,31 +396,31 @@ public class RESTClient
 				ConnectionUtility.closeQuietly(res);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private String buildRequestURI(final String req)
 	{
 		String result = null;
-		
+
 		result = String.format("https://%s/%s", targetHost.getHostName(), req);
-		
+
 		return result;
 	}
-	
+
     /** Name of the <code>qradarstore</code> resource. */
 	private final String QRADARSTORE_RESOURCE_NAME = "/qradarstore";
-	
+
 	private SSLConnectionSocketFactory getSSLFactory() throws ArielException
 	{
 		SSLConnectionSocketFactory sslSf = null;
-		
+
 		try
 		{
 			final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			final InputStream inStream = RESTClient.class.getResourceAsStream(QRADARSTORE_RESOURCE_NAME);
-			
+
 			try
 			{
 				trustStore.load(inStream, "devtest".toCharArray());
@@ -433,11 +437,11 @@ public class RESTClient
 			{
 				ConnectionUtility.closeQuietly(inStream);
 			}
-			
+
 			final SSLContext sslContext = SSLContexts.custom()
 					.loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
 					.build();
-			
+
 			sslSf = new SSLConnectionSocketFactory(
 					sslContext,
 					new String[] { "TLSv1.2", "TLSv1.1", "TLSv1" },
@@ -456,10 +460,10 @@ public class RESTClient
 		{
 			throw new ArielException(e);
 		}
-		
+
 		return sslSf;
 	}
-	
+
 	static class ErrorResult
 	{
 		private Map<String,ColumnTuple> response;
@@ -467,7 +471,7 @@ public class RESTClient
 		private String message;
 		private String description;
 		private Map<String,ColumnTuple> details;
-		
+
 		public ErrorResult(final Map<String,ColumnTuple> response, final int code, final String message, final String description, final Map<String,ColumnTuple> details)
 		{
 			this.response = response;
@@ -476,7 +480,7 @@ public class RESTClient
 			this.description = description;
 			this.details = details;
 		}
-		
+
 		public int getCode()
 		{
 			return this.code;
@@ -486,7 +490,7 @@ public class RESTClient
 			private String name;
 			private String value;
 			private String type;
-			
+
 			public ColumnTuple(final String name,
 							   final String value,
 							   final String typeString)
@@ -495,24 +499,24 @@ public class RESTClient
 				this.value = value;
 				this.type = typeString;
 			}
-			
+
 			public String getName()
 			{
 				return this.name;
 			}
-			
+
 			public String getValue()
 			{
 				return this.value;
 			}
-			
+
 			public String getType()
 			{
 				return this.type;
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception
 	{
 		RESTClient client = new RESTClient(args[0], args[1], 443);

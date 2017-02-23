@@ -66,9 +66,14 @@ public class ArielConnection implements IArielConnection
 		try
 		{
 			rawResult = rawClient.doPost("/api/ariel/searches", queryMap);
-			if (null != rawResult)
-			{
+			if (null != rawResult) {
 				result = gson.fromJson(rawResult.getBody(), ArielSearch.class);
+				if (result.getSearchId() == null) {
+					Map<String,Object> error = rawResult.getParsedBody();
+					String message = (error != null && error.containsKey("message")) ? rawResult.getParsedBody().get("message").toString() : "Unknown error";
+					logger.fatal("There was an error issuing the AQL query: {}",  message);
+					throw new ArielException("Error executing query: " + message);
+				}
 			}
 			else
 			{
@@ -160,7 +165,7 @@ public class ArielConnection implements IArielConnection
     // Block for the first call to wait for QRadar to finish the query
     ArielResult result = getSearchResults(searchId, start, end, true);
     start = end + 1;
-    end = end = Math.min(start + batchSize - 1, result.getTotal() - 1);
+    end = Math.min(start + batchSize - 1, result.getTotal() - 1);
     while (result.getTotal() > start) {
       // We know the search is complete, don't bother waiting
       ArielResult r2 = getSearchResults(searchId, start, end, false);
