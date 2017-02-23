@@ -81,10 +81,7 @@ public class Result
 		gson = new GsonBuilder()
 		.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 		.create();
-    if (this.status == HttpStatus.SC_OK) {
-      return gson.fromJson(this.body, Map.class);
-    }
-    return null;
+		return gson.fromJson(this.body, Map.class);
   }
   
   public String getHeader(String name) {
