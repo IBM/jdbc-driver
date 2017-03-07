@@ -37,6 +37,7 @@ public class Driver implements java.sql.Driver
   public static final String AUTH_TOKEN   = "prop.auth_token";
   public static final String SPARK_MODE   = "prop.spark";
   public static final String PAGINATION   = "prop.pagination";
+	public static final String SSL_VERIFY   = "prop.ssl_verify";
   public static final int DEFAULT_PAGE_SIZE = 1000;
 	static
 	{
@@ -236,7 +237,10 @@ public class Driver implements java.sql.Driver
       String page = info.getProperty("pagination");
       if (page != null && !page.isEmpty())
         props.setProperty(PAGINATION, page);
-    } 
+			String ssl_verification = info.getProperty("ssl_verify");
+			if (ssl_verification != null && !ssl_verification.isEmpty())
+				props.setProperty(SSL_VERIFY, ssl_verification);
+    }
 		return props;
 	}
 	

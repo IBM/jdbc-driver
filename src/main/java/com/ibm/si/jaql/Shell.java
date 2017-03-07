@@ -132,6 +132,7 @@ public class Shell {
     options.addOption("a", "auth_token", true, "Auth token");
     options.addOption("s", "server", true, "QRadar server");
     options.addOption("o", "outputfile", true, "Prefix to dump queries as csv. Files appear as [prefix]_[query_number].csv");
+    options.addOption("ssl", true, "SSL Verification. Options = FULL_VERIFY, NO_TRUST, SELF_SIGNED");
     options.addOption("h", "help", false, "Show usage");
     try {
       CommandLine line = parser.parse( options, args );
@@ -158,6 +159,9 @@ public class Shell {
       }
       if (line.hasOption("o")) {
         props.put("outputfile",line.getOptionValue("outputfile"));
+      }
+      if (line.hasOption("ssl")) {
+        props.put("ssl_verify", line.getOptionValue("ssl"));
       }
       Shell shell = new Shell(props, "|");
       shell.run();

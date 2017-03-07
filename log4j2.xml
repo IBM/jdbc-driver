@@ -2,13 +2,10 @@
 <Configuration>
   <Appenders>
     <Console name="Console">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L - %msg%n"/>
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="com.ibm.si.jaql" level="warn"/>
-    <Logger name="com.ibm.si.jaql.jdbc4.Jdbc4Connection" level="info"/>
-    <Logger name="com.ibm.si.jaql.util.SparkAQL" level="trace"/>
     <Root level="trace">
       <AppenderRef ref="Console"/>
     </Root>
