@@ -1,11 +1,13 @@
 package com.ibm.si.jaql.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContexts;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
@@ -39,6 +41,7 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+// import org.apache.http.impl.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -46,6 +49,9 @@ import org.apache.http.Header;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ibm.si.jaql.api.ArielException;
 import com.ibm.si.jaql.util.ConnectionUtility;
 
@@ -59,7 +65,7 @@ import com.ibm.si.jaql.rest.Result;
  */
 public class RESTClient
 {
-	static final Logger logger = LogManager.getLogger();
+	static final Logger logger = LogManager.getLogger(RESTClient.class.getName());
 
 	private CloseableHttpClient client = null;
 	private UsernamePasswordCredentials creds = null;
@@ -69,26 +75,20 @@ public class RESTClient
 	private AuthCache authCache = null;
 	private BasicScheme basicAuth = null;
 	private String auth_token = null;
-	private SslVerification ssl_verify = SslVerification.FULL_VERIFY;
-
-	public enum SslVerification { FULL_VERIFY, NO_TRUST, SELF_SIGNED };
 
 	public RESTClient(final String ip,
 		final String user,
 		final String password) throws ArielException
 	{
-		this(ip,user,password,443, null);
+		this(ip,user,password,443);
 	}
 	public RESTClient(final String ip, final String auth_token) throws ArielException
 	{
-		this(ip, auth_token, 443, null);
+		this(ip, auth_token, 443);
 	}
-	public RESTClient(final String ip, final String auth_token, int port, Properties props) throws ArielException
+	public RESTClient(final String ip, final String auth_token, int port) throws ArielException
 	{
 		logger.debug("Opening REST Connection("+ip+":"+port+"+auth_token);");
-		if (props != null && props.containsKey(com.ibm.si.jaql.Driver.SSL_VERIFY)) {
-			ssl_verify = SslVerification.valueOf(props.getProperty(com.ibm.si.jaql.Driver.SSL_VERIFY));
-		}
 		targetHost = new HttpHost(ip,port, "https");
 		this.auth_token = auth_token;
 		client = HttpClients.custom()
@@ -125,13 +125,9 @@ public class RESTClient
 	public RESTClient(final String ip,
 		final String user,
 		final String password,
-		final int port,
-		Properties props) throws ArielException
+		final int port) throws ArielException
 	{
-		logger.debug("Opening REST Connection("+ip+","+user+",password,"+port+"); {}", props);
-		if (props != null && props.containsKey(com.ibm.si.jaql.Driver.SSL_VERIFY)) {
-			ssl_verify = SslVerification.valueOf(props.getProperty(com.ibm.si.jaql.Driver.SSL_VERIFY));
-		}
+		logger.debug("Opening REST Connection("+ip+","+user+",password,"+port+");");
 		targetHost = new HttpHost(ip,port, "https");
 		credProvider = new BasicCredentialsProvider();
 		creds = new UsernamePasswordCredentials(user, password);
@@ -415,41 +411,62 @@ public class RESTClient
 		return result;
 	}
 
+    /** Name of the <code>qradarstore</code> resource. */
+	private final String QRADARSTORE_RESOURCE_NAME = "/qradarstore";
+
 	private SSLConnectionSocketFactory getSSLFactory() throws ArielException
 	{
-		logger.info("Current SSL Verification Level: {}", ssl_verify);
 		SSLConnectionSocketFactory sslSf = null;
-		try {
-			final KeyStore trustStore = KeyStore.getInstance("JKS");
-			SSLContext sslContext = null;
-			if (ssl_verify == SslVerification.NO_TRUST) {
-				sslContext  = SSLContexts.custom()
+
+		try
+		{
+			final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+			final InputStream inStream = RESTClient.class.getResourceAsStream(QRADARSTORE_RESOURCE_NAME);
+
+			try
+			{
+				trustStore.load(inStream, "devtest".toCharArray());
+			}
+			catch (final CertificateException e)
+			{
+				throw new ArielException(e);
+			}
+			catch (final IOException e)
+			{
+				throw new ArielException(e);
+			}
+			finally
+			{
+				ConnectionUtility.closeQuietly(inStream);
+			}
+
+			final SSLContext sslContext = SSLContexts.custom()
 					.loadTrustMaterial(trustStore, new TrustStrategy() {
 						public boolean isTrusted(X509Certificate[] chain, String authType) {
 							return true;
 						}
 					})
 					.build();
-			} else if (ssl_verify == SslVerification.SELF_SIGNED) {
-				sslContext  = SSLContexts.custom()
-					.loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
-					.build();
-			} else if (ssl_verify == SslVerification.FULL_VERIFY) {
-				sslContext  = SSLContexts.createSystemDefault();
-			}
-			// 7.2.8 switched to TLSv1.2 I think...we can probably drop v1 and v1.1 at some point
+
 			sslSf = new SSLConnectionSocketFactory(
 					sslContext,
 					new String[] { "TLSv1.2", "TLSv1.1", "TLSv1" },
 					null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		} catch (final KeyManagementException e) {
-			throw new ArielException(e);
-		} catch (final NoSuchAlgorithmException e) {
-			throw new ArielException(e);
-		} catch (KeyStoreException e) {
+		}
+		catch (final KeyManagementException e)
+		{
 			throw new ArielException(e);
 		}
+		catch (final NoSuchAlgorithmException e)
+		{
+			throw new ArielException(e);
+		}
+		catch (KeyStoreException e)
+		{
+			throw new ArielException(e);
+		}
+
 		return sslSf;
 	}
 
@@ -508,7 +525,7 @@ public class RESTClient
 
 	public static void main(String[] args) throws Exception
 	{
-		RESTClient client = new RESTClient(args[0], args[1], 443, null);
+		RESTClient client = new RESTClient(args[0], args[1], 443);
 		Result r = client.doGet(args[2], false);
 		System.out.println(r.getBody());
 	}

@@ -42,10 +42,9 @@ public class ArielDatabase implements IArielDatabase
 	private String auth_token = null;
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;	
-	private int port = 443;
+	private int port=443;
 	private long lastMetaDataPull = 0;
   private int batchSize = com.ibm.si.jaql.Driver.DEFAULT_PAGE_SIZE;
-	private Properties props = null;
 	/**
 	 * Create the database, getting from ariel endpoints the column metadata for all tables (events/flows/simarc), and ariel functions
 	 * @param ip
@@ -70,8 +69,7 @@ public class ArielDatabase implements IArielDatabase
 		this.userName = user;
 		this.password = password;
 		this.port = port;
-		this.props = props;
-		apiClient = createRawClient();
+		apiClient = new RESTClient(this.ip, this.userName, this.password,this.port);
 		init(props);
 	}
 	
@@ -96,8 +94,7 @@ public class ArielDatabase implements IArielDatabase
 		this.ip = ip;
 		this.port = port;
 		this.auth_token = auth_token;
-		this.props = props;
-		apiClient = createRawClient();
+		apiClient = new RESTClient(this.ip, this.auth_token, this.port);
 		init(props);
 	}
 	private void init(Properties props) throws ArielException
@@ -163,21 +160,16 @@ public class ArielDatabase implements IArielDatabase
 	/**
 	 * Create the actual connection to ariel, via rest api endpoints over a http client 
 	 */
-		public IArielConnection createConnection() throws ArielException {
+		public IArielConnection createConnection() throws ArielException
+	{
 		ArielConnection result = null;
-		// TODO Can we use the apiClient object here?
-		final RESTClient client = createRawClient();
-		result = new ArielConnection(client, batchSize);
-		return result;
-	}
-
-	private RESTClient createRawClient() throws ArielException {
 		final RESTClient client;
 		if (auth_token == null)
-			client = new RESTClient(ip, userName, password, port, props);
+			client = new RESTClient(ip, userName, password, port);
 		else
-			client = new RESTClient(ip, auth_token, port, props);
-		return client;
+			client = new RESTClient(ip, auth_token, port);
+		result = new ArielConnection(client, batchSize);
+		return result;
 	}
 	
 	public ArielColumn getColumnMetaData(final String key) throws ArielException
