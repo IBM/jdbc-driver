@@ -36,7 +36,9 @@ public class BlockingActionWorker implements Runnable
 				result = client.doGet(request);
 				int status = result.getStatus();
 				int uniqueErrorcode = result.getCode();
-				if (status == 404 && uniqueErrorcode == 1003)
+				// 404 1003 Search results not found. The search is still in progress.
+				// 503 1010 The ariel server might be temporarily unavailable or offline. Please try again later.
+				if (status == 404 && uniqueErrorcode == 1003 || status == 503 && uniqueErrorcode == 1010)
 				{
 					logger.debug(String.format("Status was %d", result.getStatus()));
 					logger.debug(String.format("Status Code was %d", result.getCode()));
