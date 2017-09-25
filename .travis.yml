@@ -1,0 +1,28 @@
+language: java
+env:
+- OCTOKIT_API_ENDPOINT=https://github.ibm.com/api/v3/
+jdk:
+- oraclejdk8
+- oraclejdk7
+script: true
+deploy:
+  provider: releases
+  api_key:
+    secure: WxF9TKbpJteaBsX4mMmhfsld8vpWo9KpkZ+QCGmkxgq4S5A/Mfe8aICiCk4oMhj/pBTWFhnlNFzyqQw9uXJmFgiRnrN23Gbs5Yey0WXiRIMRiG9IThRbU0Lv27j3RgEgAqiVqy1jAxDNRTuxQV/3OBw0Q38gEo+70jOna0MWr7c=
+  file:
+  - target/jaql-0.2.jar
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    repo: infosec/jdbc-driver
+    jdk: oraclejdk8
+
+# before_install:
+# install IBM JDK7
+# - curl -S -O http://watc4eb3.watson.ibm.com/ocdc/pool/IBM/i/ibm-j2sdk1.7/ibm-j2sdk1.7_1.7.0.9.30-0_amd64.deb
+# - sudo dpkg -i ibm-j2sdk1.7_1.7.0.9.30-0_amd64.deb
+# env:
+#   global:
+#   - JAVA_HOME=/usr/lib/j2sdk1.7-ibm
+#   - PATH=${PATH}:${JAVA_HOME}/bin

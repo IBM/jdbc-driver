@@ -47,11 +47,10 @@ public class MetaDataBuilder
 	{
 		ArielResultSetMetaData result = generateResultSetMetaData(db, arielResult);
 		List<QueryFieldMetaData> fieldInfo = generateMetaData(db, arielResult);
-		
 		final String parsedTableName = arielResult.getName();
-		
+		logger.trace("Table metadata: {}", db.getMetaData(parsedTableName));
 		//wildcard search has been passed through
-		if (fieldInfo.size() == 0)
+		if (fieldInfo.size() == 0 || (results != null && results.size() > 0 && results.get(0).size() != fieldInfo.size()))
 		{
 			if (results != null && results.size() > 0)
 			{
@@ -59,15 +58,11 @@ public class MetaDataBuilder
 				fieldInfo = generateMetaData(db, datarow, parsedTableName);
 			}
 		}
-
 		for (final QueryFieldMetaData field : fieldInfo)
 		{
 			result.addColumnDef(field);
-			logger.debug("QueryFieldMetaData> %s", field);
+			logger.debug("QueryFieldMetaData> {}", field);
 		}
-		
-		
-		
 		return result;
 	}
 	
@@ -86,7 +81,7 @@ public class MetaDataBuilder
 		for (final QueryFieldMetaData field : fieldInfo)
 		{
 			result.addColumnDef(field);
-			logger.debug("QueryFieldMetaData> %s", field);
+			logger.debug("QueryFieldMetaData> {}", field);
 		}
 		
 		return result;
@@ -117,7 +112,7 @@ public class MetaDataBuilder
 			md.name = column.name;
 			md.alias = column.alias;
 			md.isFunction = column.func;
-			
+			logger.debug("Current Metadata name: {} alias: {} func: {} column: {}", md.name, md.alias, md.isFunction, column);
 			if (md.isFunction)
 			{
 				md.type = ArielDatabaseMetaData.toJDBCType(FunctionMetaData.getInstance().getType(md.name));
@@ -175,6 +170,7 @@ public class MetaDataBuilder
 																final String parsedTableName)
 																	 throws ArielException
 	{
+		logger.debug("generateMetaData row: {}, table: {}", datarow, parsedTableName);
 		final List<QueryFieldMetaData> result = new LinkedList<QueryFieldMetaData>();
 		
 		for (Map.Entry<String, ColumnTuple> entry : datarow.entrySet()) {
@@ -211,11 +207,7 @@ public class MetaDataBuilder
 			}
 			
 			result.add(md);
-	        
 	    }
-
 		return result;
 	}
 }
-
-

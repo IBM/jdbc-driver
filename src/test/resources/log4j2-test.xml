@@ -2,7 +2,7 @@
 <Configuration status="WARN">
 	<Appenders>
 		<Console name="CONSOLE" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d [%t] %-5level %logger{36} - %msg%n" />
+			<PatternLayout pattern="%d [%t] %-5level %logger{36}:%L - %msg%n" />
 		</Console>
 		
 		<File name="JAQL_LOG_FILE" fileName="jaql-output.log">
@@ -14,9 +14,11 @@
 	</Appenders>
 	
 	<Loggers>
-		<Root level="trace">
+    <Logger name="com.ibm.si.jaql.jdbc4.MetaDataTest" level="info"/>
+    <Logger name="com.ibm.si.jaql.api.pojo.ColumnTuple" level="trace"/>
+		<Root level="debug">
 			<appender-ref ref="JAQL_LOG_FILE" level="ERROR"/>
-			<appender-ref ref="CONSOLE" level="ERROR"/>
+			<appender-ref ref="CONSOLE" level="TRACE"/>
 		</Root> 
 	</Loggers>
 </Configuration>

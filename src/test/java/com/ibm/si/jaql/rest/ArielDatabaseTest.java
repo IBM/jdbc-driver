@@ -26,7 +26,7 @@ public class ArielDatabaseTest extends BaseTest {
 	{
 		logger.debug(String.format("testListDatabases>>>"));
 		try {
-			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
+			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD), _properties);
 			String[] dbs;
 			dbs = db.listDatabases();
 			assertNotNull(dbs);
@@ -45,7 +45,7 @@ public class ArielDatabaseTest extends BaseTest {
 	{
 		logger.debug(String.format("testListSearches>>>"));
 		try {
-			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
+			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD), _properties);
 			IArielConnection conn;
 			conn = db.createConnection();
 			String[] dbs = conn.listSearches();
@@ -66,7 +66,7 @@ public class ArielDatabaseTest extends BaseTest {
 		logger.debug(String.format("testGetSearch>>>"));
 		try
 		{
-			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
+			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD), _properties);
 			
 			IArielConnection conn = db.createConnection();
 			String[] dbs = conn.listSearches();
@@ -90,7 +90,7 @@ public class ArielDatabaseTest extends BaseTest {
 	public void testGetSearchResultsForNonExistingSearch() throws ArielException
 	{
 			logger.debug(String.format("testGetSearchResultsForNonExistingSearch>>> for search-id='does-not-exist-search-id' "));
-			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
+			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD), _properties);
 			assertNotNull(db);
 			IArielConnection conn = db.createConnection();
 			assertNotNull(conn);
@@ -155,7 +155,7 @@ public class ArielDatabaseTest extends BaseTest {
 		try
 		{
 			logger.debug(String.format("testCreateSearch>>>"));
-			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
+			ArielDatabase db = new ArielDatabase(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD), _properties);
 			IArielConnection conn = db.createConnection();
 			ArielSearch id = conn.createSearch("select * from events");
 			logger.debug(String.format("Created query id :: %s", id.getSearchId()));

@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.ibm.si.jaql.api.ArielException;
-import com.ibm.si.jaql.rest.RESTClient.Result;
+import com.ibm.si.jaql.rest.Result;
 import com.ibm.si.jaql.util.BaseTest;
 
 public class RESTClientTest extends BaseTest
@@ -26,7 +26,31 @@ public class RESTClientTest extends BaseTest
 			final RESTClient c = new RESTClient(_properties.getProperty(IP), _properties.getProperty(USER), _properties.getProperty(PASSWORD));
 			Result result = null;
 			
-			result = c.doGet("/api/referencedata/mapOfSets");
+      result = c.doGet("/api/reference_data/map_of_sets");
+			logger.debug(String.format("Result status: %s, body: %s", result.getStatus(), result.getBody()));
+			assertNotNull(result);
+			assertNotNull(result.getBody());
+			assertEquals(result.getStatus(), 200);
+		}
+		catch (IOException e)
+		{
+			fail(e.getMessage());
+		}
+		catch (ArielException ae)
+		{
+			fail(ae.getMessage());
+		}
+	}
+  
+	@Test
+	public void testConnectionAuth()
+	{
+		try
+		{
+			final RESTClient c = new RESTClient(_properties.getProperty(IP), _properties.getProperty(AUTH_TOKEN));
+			Result result = null;
+			
+			result = c.doGet("/api/reference_data/map_of_sets");
 			assertNotNull(result);
 			assertNotNull(result.getBody());
 			assertEquals(result.getStatus(), 200);
@@ -40,7 +64,5 @@ public class RESTClientTest extends BaseTest
 		{
 			fail(ae.getMessage());
 		}
-		
-		
 	}
 }

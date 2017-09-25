@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-	<Appenders>
-		<Console name="CONSOLE" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d [%t] %-5level %logger{36} - %msg%n" />
-		</Console>
-		
-		<File name="JAQL_LOG_FILE" fileName="jaql-output.log">
-	      <PatternLayout>
-	        <Pattern>%d [%t] %-5level %logger{36} - %msg%n</Pattern>
-	      </PatternLayout>
-	    </File>
-	    
-	</Appenders>
-	
-	<Loggers>
-		<Root level="trace">
-			<appender-ref ref="JAQL_LOG_FILE" level="ERROR"/>
-			<appender-ref ref="CONSOLE" level="ERROR"/>
-		</Root> 
-	</Loggers>
+<Configuration>
+  <Appenders>
+    <Console name="Console">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.ibm.si.jaql.jdbc4.Jdbc4Connection" level="warn"/>
+    <Logger name="com.ibm.si.jaql" level="warn"/>
+    <Logger name="com.ibm.si.jaql.rest.ArielResultGSONAdapter" level="error"/>
+    <!-- <Logger name="com.ibm.si.jaql.rest.ArielConnection" level="trace"/> -->
+    <Root level="warn">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
 </Configuration>

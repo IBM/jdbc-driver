@@ -150,7 +150,7 @@ public class Jdbc4ConnectionTest extends BaseTest{
 			assertNotNull(data);
 			
 			//get qid
-			newqid = rs.getInt(10);
+			newqid = rs.getInt("qid");
 			assertTrue(newqid >= oldqid);
 			oldqid=  newqid;
 			

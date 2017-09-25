@@ -31,8 +31,8 @@ public class QueryFieldMetaData
 	@Override
 	public String toString()
 	{
-		logger.debug(String.format("FieldName=%s, Alias=%s, Function=%b, Type=%d, tableName=%s, schema=%s, catalog=%s, type=%d, typeName=%s, columnSize=%d, decimalDigits=%d ",
+		logger.debug(String.format("{FieldName=%s, Alias=%s, Function=%b, Type=%d, tableName=%s, schema=%s, catalog=%s, type=%d, typeName=%s, columnSize=%d, decimalDigits=%d}",
 										name, alias, isFunction, type, tableName, schema, catalog, type, typeName, columnSize, decimalDigits ));
-		return String.format("FieldName=%s, Alias=%s, Function=%b, Type=%d, tableName=%s, schema=%s, catalog=%s", name, alias, isFunction, type, tableName, schema, catalog);
+		return String.format("{FieldName=%s, Alias=%s, Function=%b, Type=%d, tableName=%s, schema=%s, catalog=%s}", name, alias, isFunction, type, tableName, schema, catalog);
 	}
 }

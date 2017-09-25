@@ -9,6 +9,9 @@ import java.sql.ResultSetMetaData;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.Test;
 
 import com.ibm.si.jaql.Driver;
@@ -16,6 +19,7 @@ import com.ibm.si.jaql.util.BaseTest;
 
 public class Jdbc4ConnectionAQLFunctionsTest extends BaseTest{
 
+	static final Logger logger = LogManager.getLogger();
 	@Test 
 	public void test_NoFunctions_ExplictField() throws Exception
 	{
@@ -415,7 +419,7 @@ public class Jdbc4ConnectionAQLFunctionsTest extends BaseTest{
 		params.put("end", 10);
 		params.put("block", true);
 		
-		ResultSet rs = myCon.executeQuery("select SUBSTRING(userName, 0, 4) from events", params);
+		ResultSet rs = myCon.executeQuery("select SUBSTRING(userName, 0, 4) from events where username is not null", params);
 		assertNotNull(rs) ;
 		
 		while (rs.next()) {
@@ -431,8 +435,7 @@ public class Jdbc4ConnectionAQLFunctionsTest extends BaseTest{
 			assertNotNull(rsMeta.getColumnType(1));
 			assertEquals(java.sql.Types.VARCHAR,rsMeta.getColumnType(1)); 
 			assertNotNull(rsMeta.getColumnTypeName(1));
-
-		}	
+		}
 	}
 	
 	 
@@ -498,7 +501,7 @@ public class Jdbc4ConnectionAQLFunctionsTest extends BaseTest{
 		params.put("end", 10);
 		params.put("block", true);
 		
-		ResultSet rs = myCon.executeQuery("select DATEFORMAT(startTime, 'YYYY-MM-DD HH:mm:ss') as StartTime from events", params);
+		ResultSet rs = myCon.executeQuery("select DATEFORMAT(starttime, 'YYYY-MM-dd HH:mm:ss') as starttime from events", params);
 		assertNotNull(rs) ;
 		
 		while (rs.next()) {
@@ -512,7 +515,7 @@ public class Jdbc4ConnectionAQLFunctionsTest extends BaseTest{
 			assertNotNull(rsMeta.getColumnCount());
 			assertNotNull(rsMeta.getColumnLabel(1));
 			assertNotNull(rsMeta.getColumnType(1));
-			assertEquals(java.sql.Types.VARCHAR,rsMeta.getColumnType(1)); 
+			assertEquals(java.sql.Types.VARCHAR,rsMeta.getColumnType(1));
 			assertNotNull(rsMeta.getColumnTypeName(1));
 
 		}	

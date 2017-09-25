@@ -41,8 +41,7 @@ public class ArielResultGSONAdapter implements JsonDeserializer<ArielResult>
 		this.conn = conn;
 	}
 	
-	@Override
-	public ArielResult deserialize(final JsonElement elem,
+		public ArielResult deserialize(final JsonElement elem,
 								   final Type type,
 								   final JsonDeserializationContext ctx) throws JsonParseException
 	{

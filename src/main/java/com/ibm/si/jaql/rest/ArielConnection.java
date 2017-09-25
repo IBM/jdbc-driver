@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +22,7 @@ import com.ibm.si.jaql.api.pojo.ArielColumn;
 import com.ibm.si.jaql.api.pojo.ArielMetaData;
 import com.ibm.si.jaql.api.pojo.ArielResult;
 import com.ibm.si.jaql.api.pojo.ArielSearch;
-import com.ibm.si.jaql.rest.RESTClient.Result;
+import com.ibm.si.jaql.rest.Result;
 
 /**
  * Ariel datastore connection object
@@ -36,8 +39,10 @@ public class ArielConnection implements IArielConnection
 	private RESTClient rawClient = null;
 	private Map<String,ArielColumn> metaData = null;
 	private Map<String,Map<String,ArielColumn>> metaDataByDb = null;
-	
-	public ArielConnection(final RESTClient rawClient) throws ArielException
+	private long lastMetaDataPull = 0;
+  private int batchSize = 1;
+  private static final Pattern pattern = Pattern.compile("^items (\\d+)-(\\d+)/(\\d+)$");
+	public ArielConnection(final RESTClient rawClient, int batchSize) throws ArielException
 	{
 		gson = new GsonBuilder()
 			.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -45,13 +50,13 @@ public class ArielConnection implements IArielConnection
 			.create();
 		this.rawClient = rawClient;
 		metaData = new HashMap<String,ArielColumn>();
-		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
-		
+    if (metaDataByDb == null)
+  		metaDataByDb = new HashMap<String,Map<String,ArielColumn>>();
+		this.batchSize = batchSize;
 		loadColumnMetaData();
 	}
 
-	@Override
-	public ArielSearch createSearch(final String query) throws ArielException
+		public ArielSearch createSearch(final String query) throws ArielException
 	{
 		ArielSearch result = null;
 		final Map<String,String> queryMap = new HashMap<String,String>();
@@ -61,9 +66,14 @@ public class ArielConnection implements IArielConnection
 		try
 		{
 			rawResult = rawClient.doPost("/api/ariel/searches", queryMap);
-			if (null != rawResult)
-			{
+			if (null != rawResult) {
 				result = gson.fromJson(rawResult.getBody(), ArielSearch.class);
+				if (result.getSearchId() == null) {
+					Map<String,Object> error = rawResult.getParsedBody();
+					String message = (error != null && error.containsKey("message")) ? rawResult.getParsedBody().get("message").toString() : "Unknown error";
+					logger.fatal("There was an error issuing the AQL query: {}",  message);
+					throw new ArielException("Error executing query: " + message);
+				}
 			}
 			else
 			{
@@ -78,8 +88,7 @@ public class ArielConnection implements IArielConnection
 		return result;
 	}
 
-	@Override
-	public void deleteSearch(final String searchId) throws ArielException
+		public void deleteSearch(final String searchId) throws ArielException
 	{
 		Result rawResult;
 		
@@ -98,8 +107,7 @@ public class ArielConnection implements IArielConnection
 		}
 	}
 
-	@Override
-	public String[] listSearches() throws ArielException
+		public String[] listSearches() throws ArielException
 	{
 		String[] result = null;
 		Result rawResult;
@@ -125,8 +133,7 @@ public class ArielConnection implements IArielConnection
 		return result;
 	}
 
-	@Override
-	public ArielSearch getSearch(final String id) throws ArielException
+		public ArielSearch getSearch(final String id) throws ArielException
 	{
 		ArielSearch result = null;
 		Result rawResult;
@@ -151,41 +158,75 @@ public class ArielConnection implements IArielConnection
 		
 		return result;
 	}
+  
+  public ArielResult getSearchResults(String searchId) throws ArielException {
+    int start = 0;
+    int end = batchSize - 1;
+    // Block for the first call to wait for QRadar to finish the query
+    ArielResult result = getSearchResults(searchId, start, end, true);
+    start = end + 1;
+    end = Math.min(start + batchSize - 1, result.getTotal() - 1);
+    while (result.getTotal() > start) {
+      // We know the search is complete, don't bother waiting
+      ArielResult r2 = getSearchResults(searchId, start, end, false);
+      result.merge(r2);
+      start = end + 1;
+      end = Math.min(start + batchSize - 1, result.getTotal() - 1);
+    }
+    return result;
+  }
+  
+  public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException {
+    if ((start == -1 || end == -1) && batchSize > 0)
+      return getSearchResults(searchId);
+    ArielResult result = null;
+    Result rawResult = null;
+    try {
+      // Block for the first invocation only
+      if (blocking) {
+        final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s", searchId));
+        final Thread t = new Thread(worker);
+        t.start();
+        t.join();
+      }
+      // Then pull back the results in ranges
+      Properties p = new Properties();
+      if (batchSize > 0 && start != -1 && end != -1)
+        p.setProperty("Range", String.format("items=%d-%d", start, end));
+      // rawResult = worker.getResult();
+      try {
+        rawResult = rawClient.doGet(String.format("/api/ariel/searches/%s/results", searchId), p);
+      } catch (IOException e) {
+        logger.warn("Exception getting search results: {}", e.getMessage(), e);
+      }
+      if (null != rawResult && rawResult.getStatus() == HttpStatus.SC_OK) {
+        logger.trace("Raw Json Body: {}", rawResult.getBody());
+        Matcher m = pattern.matcher(rawResult.getHeader("Content-Range"));
+        logger.debug("Returned range: {}", rawResult.getHeader("Content-Range"));
+        try {
+          result = gson.fromJson(rawResult.getBody(), ArielResult.class);
+        } catch (Exception e) {
+          logger.fatal("Error parsing json: {}", rawResult.getBody(), e);
+          throw new ArielException(e);
+        }
+        if (m.matches())
+          result.setTotal(Integer.parseInt(m.group(3)));
+      } else {
+        if (null == rawResult) {
+          logger.fatal("The result set returned was null");
+          throw new ArielException(String.format("Failed to retrieve results for searchId %s with returned null", searchId));
+        } else {
+          logger.fatal(String.format("Server returned code %d: %s", rawResult.getStatus(), rawResult.getBody()));
+        }
+        throw new ArielException(String.format("Failed to retrieve results for searchId %s with return code %d, uniquecode %d", searchId, rawResult.getStatus(), rawResult.getCode() ));
+      }
+    } catch (InterruptedException e) {
+      throw new ArielException(e);
+    }
+    return result;
+  }
 
-	@Override
-	public ArielResult getSearchResults(String searchId, int start, int end, boolean blocking) throws ArielException
-	{
-		ArielResult result = null;
-		Result rawResult = null;
-		
-		try
-		{
-			final BlockingActionWorker worker = new BlockingActionWorker(rawClient, String.format("/api/ariel/searches/%s/results", searchId));
-			final Thread t = new Thread(worker);
-			t.start();
-			t.join();
-			
-			rawResult = worker.getResult();
-			if (null != rawResult
-					&& rawResult.getStatus() == HttpStatus.SC_OK)
-			{
-				result = gson.fromJson(rawResult.getBody(), ArielResult.class);
-			}
-			else
-			{
-				throw new ArielException(String.format("Failed to retrieve results for searchId %s with return code %d, uniquecode %d", searchId, rawResult.getStatus(), rawResult.getCode() ));
-			}
-		}
-		catch (InterruptedException e)
-		{
-			throw new ArielException(e);
-		}
-		
-		return result;
-	}
-
-	@Override
-	public void close()
+		public void close()
 	{
 	}
 	
@@ -205,6 +246,10 @@ public class ArielConnection implements IArielConnection
 	
 	protected void loadColumnMetaData() throws ArielException
 	{
+    if (System.currentTimeMillis() - lastMetaDataPull < 1000*60*60*24) {
+      logger.debug("Using cached table metadata");
+      return;
+    }
 		final String[] dbs = {"flows", "events", "simarc"};
 		for (final String db : dbs)
 		{
@@ -212,10 +257,12 @@ public class ArielConnection implements IArielConnection
 			
 			try
 			{
+        // TODO There are two issues here: 1. QRadar returns the wrong types and 2. The results may be wrong due to aliasing
+        logger.debug("Getting table metadata for {}", db);
 				final Result res = rawClient.doGet(String.format("/api/ariel/databases/%s", db));
 				if (res != null)
 				{
-					final String body = res.getBody();					
+					final String body = res.getBody();
 					final ArielMetaData columns = gson.fromJson(body, ArielMetaData.class);
 					final Iterator<ArielColumn> itr = columns.getColumns().iterator();
 					
@@ -225,14 +272,17 @@ public class ArielConnection implements IArielConnection
 						final String name = column.getName();
 						metaData.put(name, column);
 						dbMetaData.put(name, column);
-						logger.debug(String.format("loadColumnMetaData: Loaded column %s for %s with argType %s", column.getName(), db, column.getArgumentType()));
+						logger.trace(String.format("loadColumnMetaData: Loaded column %s for %s with argType %s", column.getName(), db, column.getArgumentType()));
 					}
-				}
+				} else
+          logger.warn("Table metadata result was null");
 				
 				this.metaDataByDb.put(db, dbMetaData);
+        lastMetaDataPull = System.currentTimeMillis();
 			}
 			catch (final IOException e)
 			{
+        logger.warn("IOException getting metadata:{}",e);
 				throw new ArielException(e);
 			}
 		}

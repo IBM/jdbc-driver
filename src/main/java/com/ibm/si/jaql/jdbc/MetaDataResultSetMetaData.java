@@ -32,20 +32,17 @@ public class MetaDataResultSetMetaData implements ResultSetMetaData
     }
 	
 
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
+		public <T> T unwrap(Class<T> iface) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public int getColumnCount() throws SQLException {
+		public int getColumnCount() throws SQLException {
 		int result = 0;
 
 		if (columns != null)
@@ -56,87 +53,71 @@ public class MetaDataResultSetMetaData implements ResultSetMetaData
 		return result;
 	}
 
-	@Override
-	public boolean isAutoIncrement(int column) throws SQLException {
+		public boolean isAutoIncrement(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean isCaseSensitive(int column) throws SQLException {
+		public boolean isCaseSensitive(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean isSearchable(int column) throws SQLException {
+		public boolean isSearchable(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean isCurrency(int column) throws SQLException {
+		public boolean isCurrency(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public int isNullable(int column) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		public int isNullable(int column) throws SQLException {
+		return ResultSetMetaData.columnNullable;
 	}
 
-	@Override
-	public boolean isSigned(int column) throws SQLException {
+		public boolean isSigned(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public int getColumnDisplaySize(int column) throws SQLException {
+		public int getColumnDisplaySize(int column) throws SQLException {
 		return 20;
 	}
 
-	@Override
-	public String getColumnLabel(int column) throws SQLException {
+		public String getColumnLabel(int column) throws SQLException {
 		return columns.get( column - 1 ).getName();
 	}
 
-	@Override
-	public String getColumnName(int column) throws SQLException {
+		public String getColumnName(int column) throws SQLException {
 		return columns.get( column - 1 ).getName();
 	}
 
-	@Override
-	public String getSchemaName(int column) throws SQLException {
+		public String getSchemaName(int column) throws SQLException {
 		 return "ariel";
 	}
 
-	@Override
-	public int getPrecision(int column) throws SQLException {
+		public int getPrecision(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getScale(int column) throws SQLException {
+		public int getScale(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public String getTableName(int column) throws SQLException {
+		public String getTableName(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public String getCatalogName(int column) throws SQLException {
+		public String getCatalogName(int column) throws SQLException {
 		 return "ariel";
 	}
 
-	@Override
-	public int getColumnType(int column) throws SQLException {
+		public int getColumnType(int column) throws SQLException {
 		int result = 0;
 		
 		if (columns != null)
@@ -147,8 +128,7 @@ public class MetaDataResultSetMetaData implements ResultSetMetaData
 		return result;
 	}
 
-	@Override
-	public String getColumnTypeName(int column) throws SQLException {
+		public String getColumnTypeName(int column) throws SQLException {
 		String result = "";
 		
 		if (columns != null)
@@ -159,26 +139,22 @@ public class MetaDataResultSetMetaData implements ResultSetMetaData
 		return result;
 	}
 
-	@Override
-	public boolean isReadOnly(int column) throws SQLException {
+		public boolean isReadOnly(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean isWritable(int column) throws SQLException {
+		public boolean isWritable(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean isDefinitelyWritable(int column) throws SQLException {
+		public boolean isDefinitelyWritable(int column) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public String getColumnClassName(int column) throws SQLException {
+		public String getColumnClassName(int column) throws SQLException {
 		String result = "";
 		
 		if (columns != null)
