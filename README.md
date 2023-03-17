@@ -1,6 +1,6 @@
 # DEPRECATED #
 
-This sourc code remains available for historical purposes, but it is no longer actively maintained or supported by IBM. 
+This source code remains available for historical purposes, but it is no longer actively maintained or supported by IBM. 
 
 Issues and pull requests may not be responded to in a timely fashion, or at all.
 
