@@ -1,3 +1,9 @@
+# DEPRECATED #
+
+This source code remains available for historical purposes, but it is no longer actively maintained or supported by IBM. 
+
+Issues and pull requests may not be responded to in a timely fashion, or at all.
+
 [![Build Status](https://travis.ibm.com/infosec/jdbc-driver.svg?token=Fx3jYFGyqy98EpQ63Kbn&branch=travis)](https://travis.ibm.com/infosec/jdbc-driver)
 
 # jdbc-driver
